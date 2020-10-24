@@ -45,7 +45,7 @@ export const CustomizedRoute = ({
 
 CustomizedRoute.defaultProps = {
   protect: true,
-  noHeader: false,
+  noHeader: true,
 };
 
 export const GoHomeIfLogged = ({

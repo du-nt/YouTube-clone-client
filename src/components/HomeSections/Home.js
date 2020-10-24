@@ -6,11 +6,13 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Link } from "@material-ui/core";
 import { NavLink } from "react-router-dom";
 
+import BottomTabs from "./BottomTabs";
+import Header from "../HeaderSections/Header";
+
 const useStyles = makeStyles((theme) => ({
   root: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
+    position: "relative",
+    height: "100vh"
   },
 }));
 
@@ -18,13 +20,12 @@ export default function Home() {
   const classes = useStyles();
 
   return (
-    <Container maxWidth="md">
+    <Container maxWidth="sm" disableGutters className={classes.root}>
+      <Header />
       <Typography variant="h4" className={classes.x}>
         Homepage
       </Typography>
-      <Link variant="h5" component={NavLink} to="/private">
-        Go to private
-      </Link>
+      <BottomTabs />
     </Container>
   );
 }
