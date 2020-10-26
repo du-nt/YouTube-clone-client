@@ -10,7 +10,7 @@ const config = {
 };
 
 const initialState = {
-  isAuthenticated: false,
+  isAuthenticated: true,
   user: null,
 };
 

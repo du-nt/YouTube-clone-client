@@ -3,9 +3,13 @@ import { useSelector } from "react-redux";
 import { Route, Redirect } from "react-router-dom";
 
 import Header from "./components/HeaderSections/Header";
+import BottomTabs from "./components/HomeSections/BottomTabs";
 import Home from "./components/HomeSections/Home";
 import Profile from "./components/ProfileSections/Profile";
 import Private from "./components/Private";
+import Trending from "./components/TrendingSections/Trending";
+import Library from "./components/TrendingSections/Library";
+import Subscriptions from "./components/Subscriptions/Subscriptions";
 
 export const CustomizedRoute = ({
   component: Component,
@@ -21,7 +25,7 @@ export const CustomizedRoute = ({
         protect ? (
           isAuthenticated ? (
             <div>
-              {!noHeader && <Header />}
+              {!noHeader && <BottomTabs />}
               <Component {...props} />
             </div>
           ) : (
@@ -34,7 +38,7 @@ export const CustomizedRoute = ({
           )
         ) : (
           <div>
-            {!noHeader && <Header />}
+            {!noHeader && <BottomTabs />}
             <Component {...props} />
           </div>
         )
@@ -45,7 +49,7 @@ export const CustomizedRoute = ({
 
 CustomizedRoute.defaultProps = {
   protect: true,
-  noHeader: true,
+  noHeader: false,
 };
 
 export const GoHomeIfLogged = ({
@@ -91,5 +95,19 @@ export const routes = [
   {
     path: "/private",
     component: () => <Private />,
+  },
+  {
+    path: "/feed/trending",
+    protect: false,
+    component: () => <Trending />,
+  },
+  {
+    path: "/feed/library",
+    protect: false,
+    component: () => <Library />,
+  },
+  {
+    path: "/feed/subscriptions",
+    component: () => <Subscriptions />,
   },
 ];

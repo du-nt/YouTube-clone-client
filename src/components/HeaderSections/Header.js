@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 
@@ -10,7 +10,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
-import Button from "@material-ui/core/Button";
 import SearchIcon from "@material-ui/icons/Search";
 
 import { logout } from "../../slices/authSlice";
@@ -39,15 +38,18 @@ const useStyles = makeStyles((theme) => ({
   logo: {
     width: 92,
     height: 25,
-    marginLeft: 10,
+    marginLeft: theme.spacing(2),
     backgroundImage: logoUrl,
     backgroundRepeat: "no-repeat",
     backgroundSize: "100%",
     backgroundPosition: "center",
   },
+  cursor: {
+    cursor: "pointer",
+  },
 }));
 
-export default function Header() {
+export default function Header({ openSearch, openMenu }) {
   const location = useLocation();
   const dispatch = useDispatch();
   const history = useHistory();
@@ -60,31 +62,17 @@ export default function Header() {
     dispatch(logout(history));
   };
 
-  const AuthButtons = (
-    <div className={classes.authsButtons}>
-      <Button
-        component={NavLink}
-        to={{ pathname: "/login", state: { from: location.pathname } }}
-        color="primary"
-        variant="contained"
-        className={classes.button}
-      >
-        Login
-      </Button>
-      <Button
-        component={NavLink}
-        to={{ pathname: "/register", state: { from: location.pathname } }}
-        color="primary"
-        className={classes.button}
-      >
-        Register
-      </Button>
-    </div>
-  );
+  const handleOpen = () => {
+    openSearch();
+  };
+
+  const handleOpenMenu = () => {
+    openMenu();
+  };
 
   return (
     <AppBar
-      position="sticky"
+      position="static"
       variant="outlined"
       color="default"
       className={classes.appbar}
@@ -94,11 +82,10 @@ export default function Header() {
           <div className={classes.logo}></div>
         </Link>
         <div className={classes.right}>
-          <SearchIcon />
+          <SearchIcon className={classes.cursor} onClick={handleOpen} />
           <IconButton
             aria-haspopup="true"
-            // onClick={handleMobileMenuOpen}
-            color="inherit"
+            onClick={handleOpenMenu}
             className={classes.account}
           >
             <AccountCircleIcon />
