@@ -1,16 +1,14 @@
 import React from "react";
-import { useSelector } from "react-redux";
 
 import { NavLink } from "react-router-dom";
 
 import Link from "@material-ui/core/Link";
-import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
 import SearchIcon from "@material-ui/icons/Search";
-import Avatar from "@material-ui/core/Avatar";
+import MoreVertIcon from "@material-ui/icons/MoreVert";
 
 const logoUrl =
   "url(https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg)";
@@ -56,8 +54,6 @@ const useStyles = makeStyles((theme) => ({
 export default function Header({ openSearch, openMenu }) {
   const classes = useStyles();
 
-  const { user, isAuthenticated } = useSelector((state) => state.auth);
-
   const handleOpen = () => {
     openSearch();
   };
@@ -79,21 +75,14 @@ export default function Header({ openSearch, openMenu }) {
         </Link>
         <div className={classes.right}>
           <SearchIcon className={classes.cursor} onClick={handleOpen} />
-          {isAuthenticated ? (
-            <IconButton className={classes.account} onClick={handleOpenMenu}>
-              <Avatar alt="avatar" src={user.avatar} className={classes.small}>
-                {user.displayName.charAt(0).toUpperCase()}
-              </Avatar>
-            </IconButton>
-          ) : (
-            <IconButton
-              aria-haspopup="true"
-              onClick={handleOpenMenu}
-              className={classes.account}
-            >
-              <AccountCircleIcon />
-            </IconButton>
-          )}
+
+          <IconButton
+            aria-haspopup="true"
+            onClick={handleOpenMenu}
+            className={classes.account}
+          >
+            <MoreVertIcon />
+          </IconButton>
         </div>
       </Toolbar>
     </AppBar>

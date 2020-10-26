@@ -243,7 +243,12 @@ export default function Refister() {
               >
                 Sign Up
               </Button>
-              <Grid container justify="flex-end">
+              <Grid container justify="space-between">
+                <Grid item>
+                  <Link component={NavLink} to="/" variant="body2">
+                    Back to home
+                  </Link>
+                </Grid>
                 <Grid item>
                   <Link
                     component={NavLink}

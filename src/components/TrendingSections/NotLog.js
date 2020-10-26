@@ -1,6 +1,7 @@
 import React from "react";
 import { Button, Typography, makeStyles } from "@material-ui/core";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
+import { NavLink } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -57,7 +58,13 @@ export default function NotLog() {
         >
           Sign in now to upload, save, and comment on videos
         </Typography>
-        <Button variant="contained" color="primary" className={classes.btn}>
+        <Button
+          component={NavLink}
+          to="/login"
+          variant="contained"
+          color="primary"
+          className={classes.btn}
+        >
           Sign in
         </Button>
       </div>

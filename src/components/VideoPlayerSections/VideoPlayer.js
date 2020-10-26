@@ -1,10 +1,6 @@
 import React from "react";
 
-import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
-import { Link } from "@material-ui/core";
-
-import { NavLink } from "react-router-dom";
 
 import TopBar from "./TopBar";
 import Video from "./Video";
@@ -23,10 +19,6 @@ export default function Home() {
     <>
       <TopBar />
       <Video />
-      <Typography>Homepage</Typography>
-      <Link component={NavLink} to="/watch/dfd">
-        watch video
-      </Link>
     </>
   );
 }

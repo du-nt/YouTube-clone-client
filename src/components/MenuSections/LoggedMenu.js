@@ -24,6 +24,12 @@ import Avatar from "@material-ui/core/Avatar";
 import Link from "@material-ui/core/Link";
 import Fab from "@material-ui/core/Fab";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
+import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
+
+import { useDispatch, useSelector } from "react-redux";
+
+import { logout } from "../../slices/authSlice";
+import { useHistory, NavLink } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -55,12 +61,15 @@ const useStyles = makeStyles((theme) => ({
   info: {
     display: "flex",
     flexDirection: "column",
-    marginLeft: 12,
+    marginLeft: 13,
+    color: "#111",
   },
   large: {
     width: theme.spacing(6),
     height: theme.spacing(6),
-    marginTop: 4,
+    backgroundColor: "#00579c",
+    marginTop: 5,
+    fontSize: 26,
   },
   link: {
     marginTop: 6,
@@ -71,10 +80,26 @@ const useStyles = makeStyles((theme) => ({
     right: 50,
     backgroundColor: "red",
   },
+  displayName: {
+    display: "flex",
+    alignItems: "center",
+  },
+  icon: {
+    marginLeft: 10,
+    alignSelf: "baseline",
+  },
 }));
 
 export default function LoggedMenu({ closeMenu }) {
   const classes = useStyles();
+  const dispatch = useDispatch();
+  const history = useHistory();
+
+  const { user } = useSelector((state) => state.auth);
+
+  const handleLogOut = () => {
+    dispatch(logout(history, closeMenu));
+  };
 
   return (
     <div className={classes.root}>
@@ -93,10 +118,31 @@ export default function LoggedMenu({ closeMenu }) {
       </Paper>
       <Divider />
       <div className={classes.personal}>
-        <Avatar alt="avatar" src="" className={classes.large} />
+        <Avatar
+          onClick={() => closeMenu()}
+          component={NavLink}
+          to="/"
+          alt="avatar"
+          src={user.avatar}
+          className={classes.large}
+        >
+          {user.displayName.charAt(0).toUpperCase()}
+        </Avatar>
         <div className={classes.info}>
-          <Typography>userName</Typography>
-          <Typography>email.com</Typography>
+          <div className={classes.displayName}>
+            <Link
+              variant="subtitle1"
+              underline="none"
+              color="inherit"
+              onClick={() => closeMenu()}
+              component={NavLink}
+              to="/"
+            >
+              {user.displayName}
+            </Link>
+            <KeyboardArrowDownIcon className={classes.icon} />
+          </div>
+          <Typography>{user.email}</Typography>
           <Link underline="none" variant="subtitle1" className={classes.link}>
             Manage your Google Account
           </Link>
@@ -126,7 +172,9 @@ export default function LoggedMenu({ closeMenu }) {
             <ListItemIcon>
               <ExitToAppIcon />
             </ListItemIcon>
-            <Typography variant="inherit">Sign out</Typography>
+            <Typography variant="inherit" onClick={handleLogOut}>
+              Sign out
+            </Typography>
           </MenuItem>
           <Divider />
           <MenuItem className={classes.menuItem}>

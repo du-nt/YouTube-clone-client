@@ -17,6 +17,7 @@ import FeedbackIcon from "@material-ui/icons/Feedback";
 import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import Divider from "@material-ui/core/Divider";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -45,6 +46,12 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Menu({ closeMenu }) {
   const classes = useStyles();
+  const history = useHistory();
+
+  const goToLogin = () => {
+    closeMenu();
+    history.push("/login");
+  };
 
   return (
     <div className={classes.root}>
@@ -63,7 +70,7 @@ export default function Menu({ closeMenu }) {
       </Paper>
       <Paper variant="outlined" square className={classes.part2}>
         <MenuList className={classes.menuList}>
-          <MenuItem className={classes.menuItem}>
+          <MenuItem className={classes.menuItem} onClick={goToLogin}>
             <ListItemIcon>
               <ExitToAppIcon />
             </ListItemIcon>

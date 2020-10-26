@@ -203,6 +203,11 @@ export default function Login({ setIsRedirect }) {
                   </Link>
                 </Grid>
               </Grid>
+              <Grid>
+                <Link component={NavLink} to="/" variant="body2">
+                  Back to home
+                </Link>
+              </Grid>
             </form>
           </Paper>
         </Grid>

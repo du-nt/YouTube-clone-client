@@ -10,7 +10,7 @@ const config = {
 };
 
 const initialState = {
-  isAuthenticated: true,
+  isAuthenticated: false,
   user: null,
 };
 
@@ -114,14 +114,14 @@ export const resetPassword = (
   }
 };
 
-export const logout = (history, handleMenuClose) => async (dispatch) => {
+export const logout = (history, closeMenu) => async (dispatch) => {
   try {
     await axios.get("/auth/logout");
-    handleMenuClose();
+    closeMenu();
     dispatch(logoutSuccess());
-    history.push("/login");
+    history.push("/");
   } catch (error) {
-    handleMenuClose();
+    closeMenu();
     history.push("/");
   }
 };

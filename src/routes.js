@@ -10,6 +10,7 @@ import Private from "./components/Private";
 import Trending from "./components/TrendingSections/Trending";
 import Library from "./components/TrendingSections/Library";
 import Subscriptions from "./components/Subscriptions/Subscriptions";
+import VideoPlayer from "./components/VideoPlayerSections/VideoPlayer";
 
 export const CustomizedRoute = ({
   component: Component,
@@ -109,5 +110,11 @@ export const routes = [
   {
     path: "/feed/subscriptions",
     component: () => <Subscriptions />,
+  },
+  {
+    path: "/watch/:videoId",
+    protect: false,
+    noHeader: true,
+    component: () => <VideoPlayer />,
   },
 ];
