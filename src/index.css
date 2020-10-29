@@ -6,3 +6,14 @@ body {
 #root {
   width: 100vw;
 }
+video::cue {
+  font-family: "Noto Serif JP", serif;
+  font-family: "Sawarabi Mincho", sans-serif;
+  opacity: 1;
+  background-color: transparent;
+  font-size: 46px !important;
+  color: rgb(15, 93, 196);
+  text-shadow: -5px -5px 0 #fff, 5px -5px 0 #fff, -5px 5px 0 #fff,
+    5px 5px 0 #fff;
+  font-weight: bolder;
+}
