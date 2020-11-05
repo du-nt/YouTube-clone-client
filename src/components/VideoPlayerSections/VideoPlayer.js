@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useEffect, useState } from "react";
 
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -21,14 +21,21 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Home() {
   const classes = useStyles();
+  const [playerHeight, setPlayerHeight] = useState(null);
+  const divRef = useRef(null);
+
+  useEffect(() => {
+    const height = divRef.current.offsetHeight + 1;
+    setPlayerHeight(height);
+  }, []);
 
   return (
     <>
-      <div className={classes.sticky}>
+      <div ref={divRef} className={classes.sticky}>
         <TopBar />
         <Video />
       </div>
-      <ActionBar />
+      <ActionBar playerHeight={playerHeight} />
       <UpNext />
     </>
   );

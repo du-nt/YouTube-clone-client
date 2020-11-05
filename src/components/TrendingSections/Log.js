@@ -6,20 +6,20 @@ import Paper from "@material-ui/core/Paper";
 import { makeStyles } from "@material-ui/core/styles";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import Typography from "@material-ui/core/Typography";
-import Divider from "@material-ui/core/Divider";
 import HistoryIcon from "@material-ui/icons/History";
 import OndemandVideoIcon from "@material-ui/icons/OndemandVideo";
 import LocalOfferIcon from "@material-ui/icons/LocalOffer";
 import WatchLaterIcon from "@material-ui/icons/WatchLater";
 
+import PlayList from "./PlayList";
+
 const useStyles = makeStyles((theme) => ({
   root: {
-    height: "100vh",
     display: "flex",
     flexDirection: "column",
+    flex: 1,
   },
   part2: {
-    flex: 1,
     borderBottom: "none",
   },
   menuList: {
@@ -28,10 +28,19 @@ const useStyles = makeStyles((theme) => ({
   menuItem: {
     padding: "19px 16px",
   },
+  playlists: {
+    padding: theme.spacing(1.5, 3, 0.5, 3),
+  },
+  nothing: {
+    textAlign: "center",
+    marginTop: 100,
+    color: "#b7b7b7",
+  },
 }));
 
 export default function Log() {
   const classes = useStyles();
+  const playlist = true;
 
   return (
     <div className={classes.root}>
@@ -68,7 +77,23 @@ export default function Log() {
             </Typography>
           </MenuItem>
         </MenuList>
-        <Divider />
+      </Paper>
+
+      <Paper variant="outlined" square className={classes.part2}>
+        <Typography className={classes.playlists} variant="body2">
+          Playlists
+        </Typography>
+        {!playlist ? (
+          <Typography className={classes.nothing}>Nothing</Typography>
+        ) : (
+          <>
+            <PlayList />
+            <PlayList />
+            <PlayList />
+            <PlayList />
+            <PlayList />
+          </>
+        )}
       </Paper>
     </div>
   );

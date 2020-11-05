@@ -1,11 +1,6 @@
 import React, { useState } from "react";
 import { makeStyles, Typography, Link } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import ThumbUpAltIcon from "@material-ui/icons/ThumbUpAlt";
-import ThumbDownAltIcon from "@material-ui/icons/ThumbDownAlt";
-import ReplyIcon from "@material-ui/icons/Reply";
-import PlaylistAddIcon from "@material-ui/icons/PlaylistAdd";
-import FlagIcon from "@material-ui/icons/Flag";
 import Divider from "@material-ui/core/Divider";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
@@ -13,7 +8,12 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
+import UnfoldMoreIcon from "@material-ui/icons/UnfoldMore";
+
 import { NavLink } from "react-router-dom";
+
+import ActionButtons from "./ActionButtons";
+import CommentsDialog from "./CommentsDialog";
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -22,13 +22,6 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "space-between",
     marginTop: theme.spacing(1),
     cursor: "pointer",
-  },
-  btnGroup: {
-    margin: theme.spacing(0, 1.5),
-    marginBottom: 3,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-evenly",
   },
   small: {
     width: theme.spacing(4.5),
@@ -52,33 +45,14 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     justifyContent: "center",
   },
-  label: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    textTransform: "capitalize",
-    fontSize: 12,
-    color: "#707070",
-  },
-  startIcon: {
-    margin: 0,
-  },
-  iconBtn: {
-    "& > *": {
-      fontSize: "28px !important",
-    },
-  },
-  iconBtn2: {
-    "& > *": {
-      fontSize: "28px !important",
-      transform: "rotateY(180deg)",
-    },
-  },
   text: {
+    display: "-webkit-box",
+    WebkitBoxOrient: "vertical",
+    WebkitLineClamp: "2",
+    overflow: "hidden",
+    fontWeight: 400,
     lineHeight: "normal",
     wordBreak: "break-word",
-    fontWeight: 400,
   },
   moreicon: {
     marginLeft: 10,
@@ -107,11 +81,67 @@ const useStyles = makeStyles((theme) => ({
   contentText: {
     margin: 0,
   },
+  comments: {
+    padding: theme.spacing(1.5),
+    paddingTop: theme.spacing(1),
+    borderTop: "1px solid rgba(0, 0, 0, 0.12)",
+    color: "hsla(0,0%,6.7%, .6 )",
+    cursor: "pointer",
+  },
+  toppart: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  cmm: {
+    display: "flex",
+  },
+  botpart: {
+    display: "flex",
+    marginTop: theme.spacing(1),
+  },
+  firstcomment: {
+    marginLeft: 8,
+    flex: 1,
+    alignSelf: "center",
+    display: "-webkit-box",
+    WebkitBoxOrient: "vertical",
+    WebkitLineClamp: "2",
+    overflow: "hidden",
+    lineHeight: "normal",
+    wordBreak: "break-word",
+  },
+  commentsCount: {
+    marginLeft: 10,
+  },
+  small2: {
+    width: 28,
+    height: 28,
+    backgroundColor: "#00579c",
+  },
+  small3: {
+    width: 28,
+    height: 28,
+    alignSelf: "center",
+    backgroundColor: "#00579c",
+  },
+  smallInput: {
+    flex: 1,
+    alignSelf: "center",
+    marginLeft: 8,
+    backgroundColor: "#e8e8e8",
+    borderRadius: 4,
+    padding: "8px 15px",
+    cursor: "pointer",
+    color: "#9a9a9a",
+  },
 }));
 
-function ActionBar() {
+function ActionBar({ playerHeight }) {
   const [open, setOpen] = useState(false);
   const [openModal, setOpenModal] = useState(false);
+  const [openComments, setOpenComments] = useState(false);
+  const [focus, setFocus] = useState(false);
   const classes = useStyles();
 
   const isSub = true;
@@ -128,12 +158,27 @@ function ActionBar() {
     setOpenModal(false);
   };
 
+  const handleOpenComments = () => {
+    setOpenComments(true);
+  };
+
+  const handleCloseComments = () => {
+    setFocus(false);
+    setOpenComments(false);
+  };
+
+  const handleFocus = () => {
+    setFocus(true);
+  };
+
   return (
     <div>
       <div className={classes.title} onClick={handleOpen}>
         <div>
           <Typography className={classes.text} variant="h6">
-            hellossssssssssssssssssssssssss
+            Các bro cho mình hỏi, mình đã connect thành công vs Mongo, với model
+            như này, nhưng khi User.findOne thì tìm ko đc, mình test với
+            postman, vấn đề ở đâu ạ
           </Typography>
           <Typography variant="caption" className={classes.view}>
             222K view
@@ -142,58 +187,8 @@ function ActionBar() {
         <ExpandMoreIcon className={classes.moreicon} />
       </div>
 
-      <div className={classes.btnGroup}>
-        <Button
-          classes={{
-            label: classes.label,
-            startIcon: classes.startIcon,
-            iconSizeMedium: classes.iconBtn,
-          }}
-          startIcon={<ThumbUpAltIcon />}
-        >
-          3
-        </Button>
-        <Button
-          classes={{
-            label: classes.label,
-            startIcon: classes.startIcon,
-            iconSizeMedium: classes.iconBtn,
-          }}
-          startIcon={<ThumbDownAltIcon />}
-        >
-          3
-        </Button>
-        <Button
-          classes={{
-            label: classes.label,
-            startIcon: classes.startIcon,
-            iconSizeMedium: classes.iconBtn2,
-          }}
-          startIcon={<ReplyIcon />}
-        >
-          Share
-        </Button>
-        <Button
-          classes={{
-            label: classes.label,
-            startIcon: classes.startIcon,
-            iconSizeMedium: classes.iconBtn,
-          }}
-          startIcon={<PlaylistAddIcon />}
-        >
-          Save
-        </Button>
-        <Button
-          classes={{
-            label: classes.label,
-            startIcon: classes.startIcon,
-            iconSizeMedium: classes.iconBtn,
-          }}
-          startIcon={<FlagIcon />}
-        >
-          Report
-        </Button>
-      </div>
+      <ActionButtons />
+
       <Divider />
       <div className={classes.info}>
         <Link
@@ -219,6 +214,34 @@ function ActionBar() {
           </Button>
         )}
       </div>
+
+      <div className={classes.comments} onClick={handleOpenComments}>
+        <div className={classes.toppart}>
+          <div className={classes.cmm}>
+            <Typography variant="body2">Comments</Typography>
+            <Typography variant="body2" className={classes.commentsCount}>
+              189
+            </Typography>
+          </div>
+          <UnfoldMoreIcon fontSize="small" />
+        </div>
+        <div className={classes.botpart}>
+          <Avatar className={classes.small3} />
+          {/* <Typography className={classes.firstcomment} variant="caption">
+            Nếu muốn Windows tự lấy màu dựa theo hình nền trên desktop thì ta
+            click vào dòng Automatically pick an accent color from my
+            background.
+          </Typography> */}
+          <Typography
+            onClick={handleFocus}
+            className={classes.smallInput}
+            variant="body2"
+          >
+            Add a public comment...
+          </Typography>
+        </div>
+      </div>
+
       {open && (
         <div className={classes.discription}>
           <Typography variant="body2">
@@ -249,6 +272,14 @@ function ActionBar() {
             </Button>
           </DialogActions>
         </Dialog>
+      )}
+      {openComments && playerHeight && (
+        <CommentsDialog
+          playerHeight={playerHeight}
+          open={openComments}
+          closeComments={handleCloseComments}
+          focus={focus}
+        />
       )}
     </div>
   );

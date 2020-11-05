@@ -25,6 +25,7 @@ import Link from "@material-ui/core/Link";
 import Fab from "@material-ui/core/Fab";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
+import Menu from "@material-ui/core/Menu";
 
 import { useDispatch, useSelector } from "react-redux";
 
@@ -78,7 +79,6 @@ const useStyles = makeStyles((theme) => ({
     position: "absolute",
     bottom: 150,
     right: 50,
-    backgroundColor: "red",
   },
   displayName: {
     display: "flex",
@@ -88,17 +88,30 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: 10,
     alignSelf: "baseline",
   },
+  menus: {
+    padding: 0,
+  },
 }));
 
 export default function LoggedMenu({ closeMenu }) {
   const classes = useStyles();
   const dispatch = useDispatch();
   const history = useHistory();
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
 
   const { user } = useSelector((state) => state.auth);
 
   const handleLogOut = () => {
     dispatch(logout(history, closeMenu));
+  };
+
+  const handleMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
   };
 
   return (
@@ -214,9 +227,27 @@ export default function LoggedMenu({ closeMenu }) {
       <Typography align="center" variant="caption" className={classes.botText}>
         Privacy Policy • Terms of Service
       </Typography>
-      <Fab color="secondary" className={classes.upload}>
+      <Fab color="secondary" className={classes.upload} onClick={handleMenu}>
         <CloudUploadIcon />
       </Fab>
+      <Menu
+        anchorEl={anchorEl}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+        keepMounted
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+        open={open}
+        onClose={handleClose}
+        classes={{ list: classes.menus }}
+      >
+        <MenuItem onClick={handleClose}>Upload</MenuItem>
+        <MenuItem onClick={handleClose}>Add video's url</MenuItem>
+      </Menu>
     </div>
   );
 }

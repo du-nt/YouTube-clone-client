@@ -3,14 +3,14 @@ import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import { Link, Typography } from "@material-ui/core";
 import { NavLink } from "react-router-dom";
+import PlaylistPlayIcon from "@material-ui/icons/PlaylistPlay";
 
 const url =
   "https://vcdn-ngoisao.vnecdn.net/2019/03/12/y-thien-do-long-ky-8903-1552359368.jpg";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    marginTop: 8,
-    padding: theme.spacing(0, 1.5),
+    margin: theme.spacing(1, 3, 0, 3),
   },
   cover: {
     position: "relative",
@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
     objectFit: "cover",
   },
   info: {
-    padding: theme.spacing(0, 1),
+    paddingLeft: theme.spacing(1),
     height: "100%",
   },
   gray: {
@@ -41,18 +41,27 @@ const useStyles = makeStyles((theme) => ({
     lineHeight: "100%",
   },
   duration: {
+    height: "100%",
+    minWidth: 50,
     position: "absolute",
-    right: 5,
-    bottom: 5,
+    right: 0,
+    bottom: 0,
     backgroundColor: "hsla(0,0%,6.7%, .8 )",
     color: "#eee",
-    padding: "1px 4px",
-    fontSize: 13,
-    borderRadius: 2,
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  icon: {
+    fontSize: 30,
+  },
+  count: {
+    lineHeight: "normal",
   },
 }));
 
-export default function MediaItem() {
+export default function PlayList() {
   const classes = useStyles();
 
   return (
@@ -62,7 +71,12 @@ export default function MediaItem() {
           <Link component={NavLink} to="/">
             <div className={classes.cover}>
               <img alt="poster" src={url} className={classes.img} />
-              <div className={classes.duration}>21:36</div>
+              <div className={classes.duration}>
+                <Typography className={classes.count} variant="subtitle1">
+                  3
+                </Typography>
+                <PlaylistPlayIcon className={classes.icon} />
+              </div>
             </div>
           </Link>
         </Grid>
@@ -70,14 +84,13 @@ export default function MediaItem() {
           <Link component={NavLink} to="/" underline="none" color="inherit">
             <div className={classes.info}>
               <Typography className={classes.title} variant="subtitle1">
-                Đây là group trao đổi kinh nghiệm thực tế khi làm việc: khó
-                khăn, công nghệ mới, tuyển dụng và nhiều thứ khác
+                Playlist title
               </Typography>
               <Typography variant="body2" className={classes.channel}>
                 Dua Leo
               </Typography>
               <Typography variant="caption" className={classes.gray}>
-                100K views
+                100 videos
               </Typography>
             </div>
           </Link>

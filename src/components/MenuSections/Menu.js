@@ -17,7 +17,7 @@ import FeedbackIcon from "@material-ui/icons/Feedback";
 import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import Divider from "@material-ui/core/Divider";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -47,10 +47,11 @@ const useStyles = makeStyles((theme) => ({
 export default function Menu({ closeMenu }) {
   const classes = useStyles();
   const history = useHistory();
+  const location = useLocation();
 
   const goToLogin = () => {
     closeMenu();
-    history.push("/login");
+    history.push({ pathname: "/login", state: { from: location.pathname } });
   };
 
   return (

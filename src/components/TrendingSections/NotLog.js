@@ -1,7 +1,7 @@
 import React from "react";
 import { Button, Typography, makeStyles } from "@material-ui/core";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -37,6 +37,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function NotLog() {
   const classes = useStyles();
+  const location = useLocation();
 
   return (
     <div className={classes.root}>
@@ -60,7 +61,7 @@ export default function NotLog() {
         </Typography>
         <Button
           component={NavLink}
-          to="/login"
+          to={{ pathname: "/login", state: { from: location.pathname } }}
           variant="contained"
           color="primary"
           className={classes.btn}
