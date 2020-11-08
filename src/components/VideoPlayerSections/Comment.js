@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Avatar from "@material-ui/core/Avatar";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
@@ -11,6 +11,8 @@ import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import { makeStyles } from "@material-ui/core/styles";
 
+import ReplyComments from "./ReplyComments";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
@@ -19,6 +21,7 @@ const useStyles = makeStyles((theme) => ({
   },
   info: {
     marginLeft: theme.spacing(2),
+    flex: 1,
   },
   btn: {
     position: "relative",
@@ -64,7 +67,9 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Comment() {
   const classes = useStyles();
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [showComment, setShowComment] = useState(false);
+  const [showReplyForm, setShowReplyForm] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 
   const handleMenu = (event) => {
@@ -73,6 +78,20 @@ export default function Comment() {
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleShowComment = () => {
+    setShowComment(true);
+  };
+
+  const handleOpenReply = () => {
+    setShowReplyForm(true);
+    setShowComment(true);
+  };
+
+  const handleOpenReplyComments = () => {
+    setAnchorEl(null);
+    setTimeout(() => handleOpenReply(), 0);
   };
 
   return (
@@ -101,7 +120,10 @@ export default function Comment() {
             <Typography variant="body2">345</Typography>
           </div>
           <div className={classes.dislike}>
-            <IconButton className={classes.iconButton}>
+            <IconButton
+              className={classes.iconButton}
+              onClick={handleOpenReply}
+            >
               <CommentIcon fontSize="small" />
             </IconButton>
             <Typography variant="body2">345</Typography>
@@ -110,9 +132,17 @@ export default function Comment() {
             <MoreVertIcon fontSize="small" />
           </IconButton>
         </div>
-        <Button className={classes.btn} color="primary">
-          Show more replies
-        </Button>
+        {showComment ? (
+          <ReplyComments showReplyForm={showReplyForm} />
+        ) : (
+          <Button
+            onClick={handleShowComment}
+            className={classes.btn}
+            color="primary"
+          >
+            Show more replies
+          </Button>
+        )}
 
         <Menu
           anchorEl={anchorEl}
@@ -129,7 +159,10 @@ export default function Comment() {
           onClose={handleClose}
           classes={{ list: classes.menus }}
         >
-          <MenuItem className={classes.menuItem} onClick={handleClose}>
+          <MenuItem
+            className={classes.menuItem}
+            onClick={handleOpenReplyComments}
+          >
             Reply
           </MenuItem>
           <MenuItem className={classes.menuItem} onClick={handleClose}>

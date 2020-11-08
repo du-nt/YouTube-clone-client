@@ -6,6 +6,7 @@ import {
   LoadingSpinner,
   ControlBar,
   ClosedCaptionButton,
+  VolumeMenuButton,
 } from "video-react";
 import "video-react/dist/video-react.css";
 
@@ -26,6 +27,7 @@ function Video() {
       <LoadingSpinner />
       <BigPlayButton position="center" />
       <ControlBar autoHide>
+        <VolumeMenuButton vertical />
         <ClosedCaptionButton order={7} />
       </ControlBar>
     </Player>
