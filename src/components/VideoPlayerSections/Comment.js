@@ -89,9 +89,9 @@ export default function Comment() {
     setShowComment(true);
   };
 
-  const handleOpenReplyComments = () => {
-    setAnchorEl(null);
-    setTimeout(() => handleOpenReply(), 0);
+  const handleOpenReplyComments = async () => {
+    await handleClose();
+    handleOpenReply();
   };
 
   return (
