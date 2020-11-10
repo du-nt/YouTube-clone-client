@@ -5,7 +5,6 @@ import { Route, Redirect } from "react-router-dom";
 import Header from "./components/HeaderSections/Header";
 import BottomTabs from "./components/HomeSections/BottomTabs";
 import Home from "./components/HomeSections/Home";
-import Profile from "./components/ProfileSections/Profile";
 import Channel from "./components/Channel";
 import Trending from "./components/TrendingSections/Trending";
 import Library from "./components/TrendingSections/Library";
@@ -83,15 +82,14 @@ GoHomeIfLogged.defaultProps = {
 
 export const routes = [
   {
+    path: "/feed/subscriptions",
+    component: () => <Subscriptions />,
+  },
+  {
     path: "/",
     protect: false,
     exact: true,
     component: () => <Home />,
-  },
-  {
-    path: "/users/:userNameParam",
-    protect: false,
-    component: () => <Profile />,
   },
   {
     path: "/channel/:channelId",
@@ -108,10 +106,6 @@ export const routes = [
     path: "/feed/library",
     protect: false,
     component: () => <Library />,
-  },
-  {
-    path: "/feed/subscriptions",
-    component: () => <Subscriptions />,
   },
   {
     path: "/watch/:videoId",

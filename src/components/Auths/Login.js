@@ -203,7 +203,7 @@ export default function Login({ setIsRedirect }) {
                   </Link>
                 </Grid>
               </Grid>
-              <Grid>
+              <Grid container justify="flex-end">
                 <Link component={NavLink} to="/" variant="body2">
                   Back to home
                 </Link>
