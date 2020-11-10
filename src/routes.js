@@ -6,7 +6,7 @@ import Header from "./components/HeaderSections/Header";
 import BottomTabs from "./components/HomeSections/BottomTabs";
 import Home from "./components/HomeSections/Home";
 import Profile from "./components/ProfileSections/Profile";
-import Private from "./components/Private";
+import Channel from "./components/Channel";
 import Trending from "./components/TrendingSections/Trending";
 import Library from "./components/TrendingSections/Library";
 import Subscriptions from "./components/Subscriptions/Subscriptions";
@@ -94,8 +94,10 @@ export const routes = [
     component: () => <Profile />,
   },
   {
-    path: "/private",
-    component: () => <Private />,
+    path: "/channel/:channelId",
+    protect: false,
+    noHeader: true,
+    component: () => <Channel />,
   },
   {
     path: "/feed/trending",
