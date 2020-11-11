@@ -6,6 +6,7 @@ import Header from "./components/HeaderSections/Header";
 import BottomTabs from "./components/HomeSections/BottomTabs";
 import Home from "./components/HomeSections/Home";
 import Channel from "./components/Channel";
+import Upload from "./components/UploadSections/Upload";
 import Trending from "./components/TrendingSections/Trending";
 import Library from "./components/TrendingSections/Library";
 import Subscriptions from "./components/Subscriptions/Subscriptions";
@@ -52,6 +53,23 @@ CustomizedRoute.defaultProps = {
   noHeader: false,
 };
 
+export const AdminRoute = ({ component: Component, ...rest }) => {
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
+
+  return (
+    <Route
+      {...rest}
+      render={(props) =>
+        isAuthenticated && user.adminRole ? (
+          <Component {...props} />
+        ) : (
+          <Redirect to="/" />
+        )
+      }
+    />
+  );
+};
+
 export const GoHomeIfLogged = ({
   component: Component,
   hasHeader,
@@ -84,6 +102,11 @@ export const routes = [
   {
     path: "/feed/subscriptions",
     component: () => <Subscriptions />,
+  },
+  {
+    path: "/upload",
+    noHeader: true,
+    component: () => <Upload />,
   },
   {
     path: "/",

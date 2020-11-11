@@ -26,11 +26,10 @@ const useStyles = makeStyles((theme) => ({
   channel: {
     display: "flex",
     alignItems: "flex-start",
-    padding: "10px 0 16px 16px",
+    padding: "12px 0 18px 16px",
   },
   avatar: {
     backgroundColor: "#00579c",
-    marginTop: 2,
   },
   info: {
     marginLeft: theme.spacing(1.5),
@@ -113,7 +112,8 @@ export default function VideoItem() {
           to="/watch/dfd"
         >
           <Typography className={classes.title} variant="subtitle1">
-            Lorem ipsum dolor sit amet
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos
+            blanditiis tenetur unde suscipit, quam beatae
           </Typography>
           <Typography className={classes.sub} variant="caption">
             NoobCoder &#8226; 22 views &#8226; 2 days ago

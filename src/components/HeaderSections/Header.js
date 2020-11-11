@@ -22,6 +22,7 @@ const useStyles = makeStyles((theme) => ({
     height: 51,
   },
   tollbar: {
+    paddingLeft: theme.spacing(2),
     minHeight: 51,
     height: "100%",
   },
@@ -36,7 +37,6 @@ const useStyles = makeStyles((theme) => ({
   logo: {
     width: 92,
     height: 25,
-    marginLeft: theme.spacing(2),
     backgroundImage: logoUrl,
     backgroundRepeat: "no-repeat",
     backgroundSize: "100%",

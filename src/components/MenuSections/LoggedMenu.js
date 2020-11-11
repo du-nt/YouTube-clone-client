@@ -100,6 +100,8 @@ export default function LoggedMenu({ closeMenu }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
 
+  const auth = true;
+
   const { user } = useSelector((state) => state.auth);
 
   const handleLogOut = () => {
@@ -112,6 +114,20 @@ export default function LoggedMenu({ closeMenu }) {
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const openForm = () => {
+    history.push("/upload");
+  };
+
+  const goUpload = () => {
+    setAnchorEl(null);
+    history.push("/upload");
+  };
+
+  const goAdminUpload = () => {
+    setAnchorEl(null);
+    history.push("/admin/upload");
   };
 
   return (
@@ -227,7 +243,11 @@ export default function LoggedMenu({ closeMenu }) {
       <Typography align="center" variant="caption" className={classes.botText}>
         Privacy Policy • Terms of Service
       </Typography>
-      <Fab color="secondary" className={classes.upload} onClick={handleMenu}>
+      <Fab
+        color="secondary"
+        className={classes.upload}
+        onClick={auth ? handleMenu : openForm}
+      >
         <CloudUploadIcon />
       </Fab>
       <Menu
@@ -236,7 +256,6 @@ export default function LoggedMenu({ closeMenu }) {
           vertical: "top",
           horizontal: "right",
         }}
-        keepMounted
         transformOrigin={{
           vertical: "top",
           horizontal: "right",
@@ -245,8 +264,8 @@ export default function LoggedMenu({ closeMenu }) {
         onClose={handleClose}
         classes={{ list: classes.menus }}
       >
-        <MenuItem onClick={handleClose}>Upload</MenuItem>
-        <MenuItem onClick={handleClose}>Add video's url</MenuItem>
+        <MenuItem onClick={goUpload}>Upload a video</MenuItem>
+        <MenuItem onClick={goAdminUpload}>Add video's url</MenuItem>
       </Menu>
     </div>
   );

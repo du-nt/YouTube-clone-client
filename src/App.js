@@ -7,10 +7,11 @@ import Login from "./components/Auths/Login";
 import ForgotPassword from "./components/Auths/ForgotPassword";
 import ResetPassword from "./components/Auths/ResetPassword";
 import NotFound from "./components/NotFound";
+import AdminUpload from "./components/UploadSections/AdminUpload";
 
 import { getCurrentUser } from "./slices/authSlice";
 
-import { routes, GoHomeIfLogged, CustomizedRoute } from "./routes";
+import { routes, GoHomeIfLogged, CustomizedRoute, AdminRoute } from "./routes";
 
 export default function App() {
   const [loading, setLoading] = useState(true);
@@ -35,6 +36,8 @@ export default function App() {
           path="/password/reset/:userId/:token"
           component={ResetPassword}
         />
+        <AdminRoute path="/admin/upload" component={AdminUpload} />
+
         {routes.map((route, index) => (
           <CustomizedRoute key={index} {...route} />
         ))}
