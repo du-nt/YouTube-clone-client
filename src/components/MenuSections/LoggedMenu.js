@@ -1,5 +1,6 @@
 import React from "react";
 
+import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
 import MenuList from "@material-ui/core/MenuList";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItemAvatar from "@material-ui/core/ListItemAvatar";
@@ -23,7 +24,6 @@ import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import Avatar from "@material-ui/core/Avatar";
 import Link from "@material-ui/core/Link";
 import Fab from "@material-ui/core/Fab";
-import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import Menu from "@material-ui/core/Menu";
 
@@ -116,7 +116,7 @@ export default function LoggedMenu({ closeMenu }) {
     setAnchorEl(null);
   };
 
-  const openForm = () => {
+  const goToUpload = () => {
     history.push("/upload");
   };
 
@@ -246,9 +246,9 @@ export default function LoggedMenu({ closeMenu }) {
       <Fab
         color="secondary"
         className={classes.upload}
-        onClick={auth ? handleMenu : openForm}
+        onClick={auth ? handleMenu : goToUpload}
       >
-        <CloudUploadIcon />
+        <ArrowUpwardIcon />
       </Fab>
       <Menu
         anchorEl={anchorEl}
