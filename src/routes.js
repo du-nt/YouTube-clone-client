@@ -5,7 +5,7 @@ import { Route, Redirect } from "react-router-dom";
 import Header from "./components/HeaderSections/Header";
 import BottomTabs from "./components/HomeSections/BottomTabs";
 import Home from "./components/HomeSections/Home";
-import Channel from "./components/Channel";
+import Channel from "./components/ChannelSections/Channel";
 import Upload from "./components/UploadSections/Upload";
 import Trending from "./components/TrendingSections/Trending";
 import Library from "./components/TrendingSections/Library";
@@ -117,7 +117,6 @@ export const routes = [
   {
     path: "/channel/:channelId",
     protect: false,
-    noHeader: true,
     component: () => <Channel />,
   },
   {

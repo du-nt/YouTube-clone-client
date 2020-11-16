@@ -2,6 +2,7 @@ import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import { Link, Typography } from "@material-ui/core";
+import CardMedia from "@material-ui/core/CardMedia";
 import { NavLink } from "react-router-dom";
 
 const url =
@@ -9,17 +10,8 @@ const url =
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    marginTop: 8,
+    marginTop: 12,
     padding: theme.spacing(0, 1.5),
-  },
-  cover: {
-    position: "relative",
-    height: "100%",
-  },
-  img: {
-    width: "100%",
-    height: "100%",
-    objectFit: "cover",
   },
   info: {
     padding: theme.spacing(0, 1),
@@ -50,6 +42,11 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 13,
     borderRadius: 2,
   },
+  media: {
+    height: 0,
+    paddingTop: "62%",
+    position: "relative",
+  },
 }));
 
 export default function MediaItem() {
@@ -59,12 +56,15 @@ export default function MediaItem() {
     <div className={classes.root}>
       <Grid container>
         <Grid item xs={5}>
-          <Link component={NavLink} to="/">
-            <div className={classes.cover}>
-              <img alt="poster" src={url} className={classes.img} />
-              <div className={classes.duration}>21:36</div>
-            </div>
-          </Link>
+          <CardMedia
+            component={NavLink}
+            to="/"
+            className={classes.media}
+            image={url}
+            title="poster"
+          >
+            <div className={classes.duration}>21:36</div>
+          </CardMedia>
         </Grid>
         <Grid item xs={7}>
           <Link component={NavLink} to="/" underline="none" color="inherit">

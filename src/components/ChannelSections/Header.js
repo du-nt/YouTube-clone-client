@@ -1,6 +1,6 @@
 import React from "react";
 
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 import Link from "@material-ui/core/Link";
 import { makeStyles } from "@material-ui/core/styles";
@@ -9,10 +9,8 @@ import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
 import SearchIcon from "@material-ui/icons/Search";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
-import AccountCircleIcon from "@material-ui/icons/AccountCircle";
-import Button from "@material-ui/core/Button";
 
-import { useSelector } from "react-redux";
+import { Typography } from "@material-ui/core";
 
 const logoUrl =
   "url(https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg)";
@@ -36,18 +34,17 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     alignItems: "center",
     justifyContent: "flex-end",
-    alignSelf: "flex-start",
   },
   account: {
     marginLeft: 18,
   },
   logo: {
-    width: 92,
-    height: 25,
+    width: 30,
+    height: 24,
     backgroundImage: logoUrl,
     backgroundRepeat: "no-repeat",
-    backgroundSize: "100%",
-    backgroundPosition: "center",
+    backgroundSize: "306%",
+    backgroundPosition: "left",
   },
   cursor: {
     cursor: "pointer",
@@ -68,12 +65,15 @@ const useStyles = makeStyles((theme) => ({
   btn: {
     marginRight: theme.spacing(2),
   },
+  channel: {
+    paddingLeft: 13,
+    fontWeight: 500,
+    color: "#111",
+  },
 }));
 
 export default function Header({ openSearch, openMenu }) {
   const classes = useStyles();
-  const { isAuthenticated } = useSelector((state) => state.auth);
-  const location = useLocation();
 
   const handleOpen = () => {
     openSearch();
@@ -94,38 +94,20 @@ export default function Header({ openSearch, openMenu }) {
         <Link to="/" component={NavLink}>
           <div className={classes.logo}></div>
         </Link>
-        {isAuthenticated ? (
-          <div className={classes.right}>
-            <SearchIcon className={classes.cursor} onClick={handleOpen} />
+        <Typography className={classes.channel} variant="subtitle1">
+          userName
+        </Typography>
+        <div className={classes.right}>
+          <SearchIcon className={classes.cursor} onClick={handleOpen} />
 
-            <IconButton
-              aria-haspopup="true"
-              onClick={handleOpenMenu}
-              className={classes.account}
-            >
-              <MoreVertIcon />
-            </IconButton>
-          </div>
-        ) : (
-          <div className={classes.notSignIn}>
-            <IconButton onClick={handleOpen}>
-              <SearchIcon />
-            </IconButton>
-            <IconButton onClick={handleOpenMenu}>
-              <MoreVertIcon />
-            </IconButton>
-            <Button
-              className={classes.btn}
-              variant="outlined"
-              color="primary"
-              startIcon={<AccountCircleIcon />}
-              component={NavLink}
-              to={{ pathname: "/login", state: { from: location.pathname } }}
-            >
-              Sign in
-            </Button>
-          </div>
-        )}
+          <IconButton
+            aria-haspopup="true"
+            onClick={handleOpenMenu}
+            className={classes.account}
+          >
+            <MoreVertIcon />
+          </IconButton>
+        </div>
       </Toolbar>
     </AppBar>
   );

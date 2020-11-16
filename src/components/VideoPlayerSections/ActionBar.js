@@ -14,6 +14,9 @@ import { NavLink } from "react-router-dom";
 
 import ActionButtons from "./ActionButtons";
 import CommentsDialog from "./CommentsDialog";
+import SignInDialog from "./SignInDialog";
+
+import { useSelector } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -141,8 +144,10 @@ function ActionBar({ playerHeight }) {
   const [open, setOpen] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [openComments, setOpenComments] = useState(false);
+  const [openSignInDialog, setOpenSignInDialog] = useState(false);
   const [focus, setFocus] = useState(false);
   const classes = useStyles();
+  const { isAuthenticated } = useSelector((state) => state.auth);
 
   const isSub = true;
 
@@ -171,6 +176,14 @@ function ActionBar({ playerHeight }) {
     setFocus(true);
   };
 
+  const hanleOpenSignInDialog = () => {
+    setOpenSignInDialog(true);
+  };
+
+  const handleCloseSignInDialog = () => {
+    setOpenSignInDialog(false);
+  };
+
   return (
     <div>
       <div className={classes.title} onClick={handleOpen}>
@@ -195,7 +208,7 @@ function ActionBar({ playerHeight }) {
           color="inherit"
           underline="none"
           component={NavLink}
-          to="/"
+          to="/channel/dfd"
           className={classes.channel}
         >
           <Avatar className={classes.small} />
@@ -206,7 +219,11 @@ function ActionBar({ playerHeight }) {
             </Typography>
           </div>
         </Link>
-        {!isSub ? (
+        {!isAuthenticated ? (
+          <Button color="secondary" onClick={hanleOpenSignInDialog}>
+            Subscribe
+          </Button>
+        ) : !isSub ? (
           <Button color="secondary">Subscribe</Button>
         ) : (
           <Button onClick={handleOpenMadal} className={classes.btn}>
@@ -245,21 +262,16 @@ function ActionBar({ playerHeight }) {
       {open && (
         <div className={classes.discription}>
           <Typography variant="body2">
-            Huấn Hoa Hồng cover Anh chẳng sao mà quá tuyệt #HuấnHoaHồng
-            #AnhChẳngSaoMà
-          </Typography>
-          <Typography variant="body2">
-            Music: Anh Chẳng Sao Mà (KHANG VIET) Cover Huấn Hoa Hồng
+            Nếu muốn Windows tự lấy màu dựa theo hình nền trên desktop thì ta
+            click vào dòng Automatically pick an accent color from my
+            background.
           </Typography>
         </div>
       )}
       {openModal && (
         <Dialog open={openModal} onClose={handleCloseModal}>
           <DialogContent className={classes.content}>
-            <DialogContentText
-              className={classes.contentText}
-              variant="caption"
-            >
+            <DialogContentText className={classes.contentText} variant="body2">
               Unsubscribe from Tony Stark ABC Dua Leo?
             </DialogContentText>
           </DialogContent>
@@ -279,6 +291,14 @@ function ActionBar({ playerHeight }) {
           open={openComments}
           closeComments={handleCloseComments}
           focus={focus}
+        />
+      )}
+      {openSignInDialog && (
+        <SignInDialog
+          openSignInDialog={openSignInDialog}
+          handleCloseSignInDialog={handleCloseSignInDialog}
+          title="Want to subscribe to this channel?"
+          content="Sign in to subscribe to this channel."
         />
       )}
     </div>

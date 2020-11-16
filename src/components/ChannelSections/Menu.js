@@ -31,7 +31,6 @@ export default function Menu({ closeMenu }) {
           </MenuItem>
         )}
         <MenuItem>Settings</MenuItem>
-        <MenuItem>Playback Settings</MenuItem>
         <MenuItem>Your data in YouTube</MenuItem>
         <MenuItem>Feedback</MenuItem>
         <MenuItem>Help</MenuItem>

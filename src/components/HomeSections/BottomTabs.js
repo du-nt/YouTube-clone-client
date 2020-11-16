@@ -8,8 +8,9 @@ import WhatshotIcon from "@material-ui/icons/Whatshot";
 import VideoLibraryIcon from "@material-ui/icons/VideoLibrary";
 import SubscriptionsIcon from "@material-ui/icons/Subscriptions";
 
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { useRouteMatch } from "react-router-dom";
 
 const useStyles = makeStyles({
   root: {
@@ -32,17 +33,20 @@ const useStyles = makeStyles({
     height: 0,
     width: 0,
   },
+  hidden: {
+    display: "none",
+  },
 });
 
 export default function BottomTabs() {
   const classes = useStyles();
-  const { pathname } = useLocation();
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  const { path } = useRouteMatch();
 
   return (
     <Paper square variant="outlined" className={classes.root}>
       <Tabs
-        value={pathname}
+        value={path}
         variant="fullWidth"
         indicatorColor="secondary"
         textColor="secondary"
@@ -81,6 +85,11 @@ export default function BottomTabs() {
           label="Library"
           component={NavLink}
           to="/feed/library"
+        />
+        <Tab
+          disabled
+          classes={{ root: classes.hidden }}
+          value="/channel/:channelId"
         />
       </Tabs>
     </Paper>

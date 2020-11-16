@@ -150,7 +150,7 @@ export default function LoggedMenu({ closeMenu }) {
         <Avatar
           onClick={() => closeMenu()}
           component={NavLink}
-          to="/"
+          to="/channel/dfd"
           alt="avatar"
           src={user.avatar}
           className={classes.large}
@@ -165,7 +165,7 @@ export default function LoggedMenu({ closeMenu }) {
               color="inherit"
               onClick={() => closeMenu()}
               component={NavLink}
-              to="/"
+              to="/channel/dfd"
             >
               {user.displayName}
             </Link>
@@ -179,7 +179,11 @@ export default function LoggedMenu({ closeMenu }) {
       </div>
       <Paper variant="outlined" square className={classes.part2}>
         <MenuList className={classes.menuList}>
-          <MenuItem className={classes.menuItem}>
+          <MenuItem
+            className={classes.menuItem}
+            component={NavLink}
+            to="/channel/dfd"
+          >
             <ListItemIcon>
               <AccountBoxIcon />
             </ListItemIcon>
@@ -197,13 +201,11 @@ export default function LoggedMenu({ closeMenu }) {
             </ListItemIcon>
             <Typography variant="inherit">Purchases and memberships</Typography>
           </MenuItem>
-          <MenuItem className={classes.menuItem}>
+          <MenuItem className={classes.menuItem} onClick={handleLogOut}>
             <ListItemIcon>
               <ExitToAppIcon />
             </ListItemIcon>
-            <Typography variant="inherit" onClick={handleLogOut}>
-              Sign out
-            </Typography>
+            <Typography variant="inherit">Sign out</Typography>
           </MenuItem>
           <Divider />
           <MenuItem className={classes.menuItem}>
