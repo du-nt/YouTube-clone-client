@@ -9,6 +9,8 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import UnfoldMoreIcon from "@material-ui/icons/UnfoldMore";
+import SettingsIcon from "@material-ui/icons/Settings";
+import IconButton from "@material-ui/core/IconButton";
 
 import { NavLink } from "react-router-dom";
 
@@ -150,12 +152,13 @@ function ActionBar({ playerHeight }) {
   const { isAuthenticated } = useSelector((state) => state.auth);
 
   const isSub = true;
+  const isMe = false;
 
   const handleOpen = () => {
     setOpen((prev) => !prev);
   };
 
-  const handleOpenMadal = () => {
+  const handleOpenModal = () => {
     setOpenModal(true);
   };
 
@@ -223,10 +226,14 @@ function ActionBar({ playerHeight }) {
           <Button color="secondary" onClick={hanleOpenSignInDialog}>
             Subscribe
           </Button>
+        ) : isMe ? (
+          <IconButton component={NavLink} to="/profile/dfdfs">
+            <SettingsIcon />
+          </IconButton>
         ) : !isSub ? (
           <Button color="secondary">Subscribe</Button>
         ) : (
-          <Button onClick={handleOpenMadal} className={classes.btn}>
+          <Button onClick={handleOpenModal} className={classes.btn}>
             Subscribed
           </Button>
         )}

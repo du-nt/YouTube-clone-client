@@ -165,7 +165,7 @@ export default function LoggedMenu({ closeMenu }) {
               color="inherit"
               onClick={() => closeMenu()}
               component={NavLink}
-              to="/channel/dfd"
+              to="/profile/dfd"
             >
               {user.displayName}
             </Link>

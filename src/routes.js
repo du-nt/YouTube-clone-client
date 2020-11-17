@@ -6,6 +6,7 @@ import Header from "./components/HeaderSections/Header";
 import BottomTabs from "./components/HomeSections/BottomTabs";
 import Home from "./components/HomeSections/Home";
 import Channel from "./components/ChannelSections/Channel";
+import Profile from "./components/ProfileSections/Profile";
 import Upload from "./components/UploadSections/Upload";
 import Trending from "./components/TrendingSections/Trending";
 import Library from "./components/TrendingSections/Library";
@@ -107,6 +108,11 @@ export const routes = [
     path: "/upload",
     noHeader: true,
     component: () => <Upload />,
+  },
+  {
+    path: "/profile/:userId",
+    noHeader: true,
+    component: () => <Profile />,
   },
   {
     path: "/",

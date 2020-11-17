@@ -35,9 +35,6 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     justifyContent: "flex-end",
   },
-  account: {
-    marginLeft: 18,
-  },
   logo: {
     width: 30,
     height: 24,
@@ -45,9 +42,6 @@ const useStyles = makeStyles((theme) => ({
     backgroundRepeat: "no-repeat",
     backgroundSize: "306%",
     backgroundPosition: "left",
-  },
-  cursor: {
-    cursor: "pointer",
   },
   small: {
     width: theme.spacing(3),
@@ -69,6 +63,12 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: 13,
     fontWeight: 500,
     color: "#111",
+    display: "-webkit-box",
+    WebkitBoxOrient: "vertical",
+    WebkitLineClamp: "2",
+    overflow: "hidden",
+    lineHeight: "normal",
+    wordBreak: "break-word",
   },
 }));
 
@@ -95,16 +95,13 @@ export default function Header({ openSearch, openMenu }) {
           <div className={classes.logo}></div>
         </Link>
         <Typography className={classes.channel} variant="subtitle1">
-          userName
+          SofM
         </Typography>
         <div className={classes.right}>
-          <SearchIcon className={classes.cursor} onClick={handleOpen} />
-
-          <IconButton
-            aria-haspopup="true"
-            onClick={handleOpenMenu}
-            className={classes.account}
-          >
+          <IconButton onClick={handleOpen}>
+            <SearchIcon />
+          </IconButton>
+          <IconButton onClick={handleOpenMenu}>
             <MoreVertIcon />
           </IconButton>
         </div>
