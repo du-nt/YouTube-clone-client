@@ -107,14 +107,18 @@ export default function Profile() {
       </div>
 
       <div className={classes.body}>
-        <Typography color="textSecondary">Name</Typography>
+        <Typography color="textSecondary" variant="body2">
+          Name
+        </Typography>
         <div className={classes.div}>
           <Typography variant="h6">User Name</Typography>
           <IconButton>
             <EditIcon />
           </IconButton>
         </div>
-        <Typography color="textSecondary">Description</Typography>
+        <Typography color="textSecondary" variant="body2">
+          Description
+        </Typography>
         <div className={classes.div}>
           <Typography variant="subtitle1">Nothing</Typography>
           <IconButton>
