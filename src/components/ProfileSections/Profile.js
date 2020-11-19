@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { makeStyles } from "@material-ui/core/styles";
 import CameraAltIcon from "@material-ui/icons/CameraAlt";
@@ -7,9 +7,10 @@ import IconButton from "@material-ui/core/IconButton";
 import EditIcon from "@material-ui/icons/Edit";
 import Divider from "@material-ui/core/Divider";
 import Switch from "@material-ui/core/Switch";
+import { Typography } from "@material-ui/core";
 
 import BlankHeader from "./BlankHeader";
-import { Typography } from "@material-ui/core";
+import FormDialog from "./FormDialog";
 
 const useStyles = makeStyles((theme) => ({
   img: {
@@ -25,15 +26,11 @@ const useStyles = makeStyles((theme) => ({
     position: "absolute",
     right: 10,
     bottom: 10,
-    backgroundColor: "#e4e6eb",
     zIndex: 100,
-    padding: theme.spacing(0.5),
-    borderRadius: "50%",
-    border: "1px solid #404040",
-    color: "#404040",
-    cursor: "pointer",
   },
   icon2: {
+    width: 64,
+    height: 64,
     position: "absolute",
     bottom: "50%",
     left: "50%",
@@ -41,9 +38,10 @@ const useStyles = makeStyles((theme) => ({
     zIndex: 1000,
     padding: 18,
     borderRadius: "50%",
-    border: "2px solid #fff",
+    border: "3px solid #fff",
     color: "#fff",
     cursor: "pointer",
+    boxSizing: "border-box",
   },
   large: {
     width: theme.spacing(8),
@@ -80,19 +78,41 @@ const useStyles = makeStyles((theme) => ({
   bold: {
     fontWeight: 600,
   },
+  input: {
+    display: "none",
+  },
 }));
 
 export default function Profile() {
   const classes = useStyles();
+  const [open, setOpen] = useState(false);
   const url =
     "https://media.istockphoto.com/vectors/vector-white-triangular-mosaic-texture-modern-low-poly-background-vector-id1200558861?b=1&k=6&m=1200558861&s=612x612&w=0&h=tEcC_NMFGARPnTQOxXYobgdAyVWvVYDRuK4-7_ZbEds=";
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   return (
     <>
       <BlankHeader />
       <div className={classes.parent}>
         <img alt="cover" src={url} className={classes.img} />
-        <CameraAltIcon className={classes.icon} />
+        <input
+          accept="image/*"
+          className={classes.input}
+          id="contained-button-file"
+          type="file"
+        />
+        <label htmlFor="contained-button-file">
+          <IconButton className={classes.icon} component="span">
+            <CameraAltIcon />
+          </IconButton>
+        </label>
         <Avatar
           alt="avatar"
           src="https://i.pinimg.com/736x/3e/11/bf/3e11bf0157a7604ad2de5c6269d6ab57.jpg"
@@ -100,10 +120,17 @@ export default function Profile() {
         >
           <CameraAltIcon />
         </Avatar>
-        <CameraAltIcon
-          className={classes.icon2}
-          onClick={() => console.log("object")}
+        <input
+          accept="image/*"
+          className={classes.input}
+          id="icon-button-file"
+          type="file"
         />
+        <label htmlFor="icon-button-file">
+          <div className={classes.icon2}>
+            <CameraAltIcon />
+          </div>
+        </label>
       </div>
 
       <div className={classes.body}>
@@ -112,7 +139,7 @@ export default function Profile() {
         </Typography>
         <div className={classes.div}>
           <Typography variant="h6">User Name</Typography>
-          <IconButton>
+          <IconButton onClick={handleOpen}>
             <EditIcon />
           </IconButton>
         </div>
@@ -152,6 +179,8 @@ export default function Profile() {
           </Typography>
         </Typography>
       </div>
+
+      {open && <FormDialog open={open} handleCloseForm={handleClose} />}
     </>
   );
 }

@@ -10,7 +10,7 @@ video::cue {
   font-family: "Noto Sans JP", sans-serif;
   opacity: 1;
   background-color: transparent;
-  font-size: 46px !important;
+  font-size: 1.2em !important;
   color: rgb(255, 255, 255);
   text-shadow: rgb(45, 63, 224) 6px 0px 0px,
     rgb(45, 63, 224) 5.91686px 0.995377px 0px,
