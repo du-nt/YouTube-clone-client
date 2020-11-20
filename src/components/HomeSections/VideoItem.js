@@ -127,7 +127,7 @@ export default function VideoItem() {
         <Dialog
           open={isOpen}
           onClose={closeMenu}
-          PaperProps={{ variant: "outlined", square: true }}
+          //   PaperProps={{ variant: "outlined", square: true }}
         >
           <MenuList className={classes.menuList}>
             <MenuItem>Not interested</MenuItem>

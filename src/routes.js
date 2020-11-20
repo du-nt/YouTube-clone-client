@@ -26,10 +26,10 @@ export const CustomizedRoute = ({
       render={(props) =>
         protect ? (
           isAuthenticated ? (
-            <div>
+            <>
               {!noHeader && <BottomTabs />}
               <Component {...props} />
-            </div>
+            </>
           ) : (
             <Redirect
               to={{
@@ -39,10 +39,10 @@ export const CustomizedRoute = ({
             />
           )
         ) : (
-          <div>
+          <>
             {!noHeader && <BottomTabs />}
             <Component {...props} />
-          </div>
+          </>
         )
       }
     />
