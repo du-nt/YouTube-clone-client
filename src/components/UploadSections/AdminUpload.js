@@ -9,7 +9,27 @@ import TextField from "@material-ui/core/TextField";
 import { useTheme } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 
+import * as Yup from "yup";
+import { useFormik } from "formik";
+
 import BlankHeader from "./BlankHeader";
+
+import { addUrl } from "../../slices/videoSlice";
+import { useDispatch } from "react-redux";
+
+const initialValues = {
+  title: "",
+  url: "",
+  subtitle: "",
+  description: "",
+};
+
+const validationSchema = Yup.object().shape({
+  title: Yup.string().required("Title is required"),
+  url: Yup.string().required("Video's url is required"),
+  subtitle: Yup.string(),
+  description: Yup.string(),
+});
 
 const useStyles = makeStyles((theme) => ({
   contain: {
@@ -37,7 +57,16 @@ const useStyles = makeStyles((theme) => ({
 export default function AdminUpload() {
   const classes = useStyles();
   const theme = useTheme();
+  const dispatch = useDispatch();
   const blurMatch = useMediaQuery(theme.breakpoints.up(780));
+
+  const { values, isValid, dirty, handleChange, handleSubmit } = useFormik({
+    initialValues,
+    validationSchema,
+    onSubmit: (values, { resetForm }) => {
+      dispatch(addUrl(values, resetForm));
+    },
+  });
 
   return (
     <>
@@ -46,10 +75,13 @@ export default function AdminUpload() {
         <Grid container justify="center" alignContent="center">
           <Grid item xs={12} md={8}>
             <Paper elevation={blurMatch ? 3 : 0} className={classes.paperstyle}>
-              <form noValidate>
+              <form noValidate onSubmit={handleSubmit}>
                 <TextField
-                  variant="outlined"
                   name="title"
+                  onChange={handleChange}
+                  value={values.title}
+                  autoComplete="off"
+                  variant="outlined"
                   required
                   fullWidth
                   id="title"
@@ -57,8 +89,11 @@ export default function AdminUpload() {
                   margin="normal"
                 />
                 <TextField
-                  variant="outlined"
                   name="url"
+                  onChange={handleChange}
+                  value={values.url}
+                  autoComplete="off"
+                  variant="outlined"
                   required
                   fullWidth
                   id="url"
@@ -66,25 +101,32 @@ export default function AdminUpload() {
                   margin="normal"
                 />
                 <TextField
+                  name="subtitle"
+                  onChange={handleChange}
+                  value={values.subtitle}
+                  autoComplete="off"
                   fullWidth
                   variant="outlined"
                   id="caption"
                   label="Caption's url"
-                  name="caption"
                   margin="normal"
                 />
                 <TextField
+                  name="description"
+                  onChange={handleChange}
+                  value={values.description}
+                  autoComplete="off"
                   fullWidth
                   variant="outlined"
                   id="description"
                   label="Description"
-                  name="description"
                   margin="normal"
                   multiline
                   rows="3"
                   rowsMax={3}
                 />
                 <Button
+                  disabled={!(isValid && dirty)}
                   type="submit"
                   fullWidth
                   variant="contained"
