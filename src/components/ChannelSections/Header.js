@@ -11,6 +11,7 @@ import SearchIcon from "@material-ui/icons/Search";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 
 import { Typography } from "@material-ui/core";
+import { useSelector } from "react-redux";
 
 const logoUrl =
   "url(https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg)";
@@ -74,6 +75,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Header({ openSearch, openMenu }) {
   const classes = useStyles();
+  const { displayName } = useSelector((state) => state.user);
 
   const handleOpen = () => {
     openSearch();
@@ -95,7 +97,7 @@ export default function Header({ openSearch, openMenu }) {
           <div className={classes.logo}></div>
         </Link>
         <Typography className={classes.channel} variant="subtitle1">
-          SofM
+          {displayName}
         </Typography>
         <div className={classes.right}>
           <IconButton onClick={handleOpen}>

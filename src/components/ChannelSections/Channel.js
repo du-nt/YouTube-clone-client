@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import Tabs from "@material-ui/core/Tabs";
 import { makeStyles } from "@material-ui/core/styles";
@@ -6,11 +6,13 @@ import Tab from "@material-ui/core/Tab";
 import IconButton from "@material-ui/core/IconButton";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import Paper from "@material-ui/core/Paper";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 import TopBar from "./TopBar";
 import Modal from "./Modal";
 import Videos from "./Videos";
 import BannerInfo from "./BannerInfo";
+import Dead from "./ Dead";
 
 import {
   NavLink,
@@ -18,10 +20,20 @@ import {
   Switch,
   Route,
   useLocation,
+  useParams,
 } from "react-router-dom";
 import { Typography } from "@material-ui/core";
+import { useDispatch } from "react-redux";
+
+import { getProfile } from "../../slices/userSlice";
 
 const useStyles = makeStyles((theme) => ({
+  root: {
+    position: "absolute",
+    bottom: "50%",
+    left: "50%",
+    transform: "translate(-50%,50%)",
+  },
   tabspart: {
     display: "flex",
     borderTop: "none",
@@ -39,6 +51,15 @@ export default function Channel() {
   const { pathname } = useLocation();
   const { path, url } = useRouteMatch();
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [isDead, setIsDead] = useState(false);
+  const { channelName } = useParams();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    setLoading(true);
+    dispatch(getProfile(channelName, setLoading, setIsDead));
+  }, [channelName, dispatch]);
 
   const handleOpen = () => {
     setOpen(true);
@@ -47,6 +68,15 @@ export default function Channel() {
   const handleClose = () => {
     setOpen(false);
   };
+
+  if (isDead) return <Dead />;
+
+  if (loading)
+    return (
+      <div className={classes.root}>
+        <CircularProgress />
+      </div>
+    );
 
   return (
     <>

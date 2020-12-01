@@ -71,6 +71,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: "#00579c",
     marginTop: 5,
     fontSize: 26,
+    textDecoration: "none",
   },
   link: {
     marginTop: 6,
@@ -100,9 +101,9 @@ export default function LoggedMenu({ closeMenu }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
 
-  const auth = true;
-
   const { user } = useSelector((state) => state.auth);
+  const { _id, avatar, displayName, email, userName, adminRole } = user;
+  const letterAvatar = displayName.charAt(0).toUpperCase();
 
   const handleLogOut = () => {
     dispatch(logout(history, closeMenu));
@@ -150,12 +151,12 @@ export default function LoggedMenu({ closeMenu }) {
         <Avatar
           onClick={() => closeMenu()}
           component={NavLink}
-          to="/channel/dfd"
+          to={`/channel/${userName}`}
           alt="avatar"
-          src={user.avatar}
+          src={avatar}
           className={classes.large}
         >
-          {user.displayName.charAt(0).toUpperCase()}
+          {letterAvatar}
         </Avatar>
         <div className={classes.info}>
           <div className={classes.displayName}>
@@ -165,13 +166,13 @@ export default function LoggedMenu({ closeMenu }) {
               color="inherit"
               onClick={() => closeMenu()}
               component={NavLink}
-              to="/profile/dfd"
+              to={`/profile/${_id}`}
             >
-              {user.displayName}
+              {displayName}
             </Link>
             <KeyboardArrowDownIcon className={classes.icon} />
           </div>
-          <Typography>{user.email}</Typography>
+          <Typography>{email}</Typography>
           <Link underline="none" variant="subtitle1" className={classes.link}>
             Manage your Google Account
           </Link>
@@ -182,7 +183,7 @@ export default function LoggedMenu({ closeMenu }) {
           <MenuItem
             className={classes.menuItem}
             component={NavLink}
-            to="/channel/dfd"
+            to={`/channel/${userName}`}
           >
             <ListItemIcon>
               <AccountBoxIcon />
@@ -248,7 +249,7 @@ export default function LoggedMenu({ closeMenu }) {
       <Fab
         color="secondary"
         className={classes.upload}
-        onClick={auth ? handleMenu : goToUpload}
+        onClick={adminRole ? handleMenu : goToUpload}
       >
         <ArrowUpwardIcon />
       </Fab>

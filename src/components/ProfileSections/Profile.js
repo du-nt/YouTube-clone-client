@@ -11,6 +11,9 @@ import { Typography } from "@material-ui/core";
 
 import BlankHeader from "./BlankHeader";
 import FormDialog from "./FormDialog";
+import { useSelector, useDispatch } from "react-redux";
+
+import { changeCover, changePhoto } from "../../slices/authSlice";
 
 const useStyles = makeStyles((theme) => ({
   img: {
@@ -86,8 +89,10 @@ const useStyles = makeStyles((theme) => ({
 export default function Profile() {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
-  const url =
-    "https://media.istockphoto.com/vectors/vector-white-triangular-mosaic-texture-modern-low-poly-background-vector-id1200558861?b=1&k=6&m=1200558861&s=612x612&w=0&h=tEcC_NMFGARPnTQOxXYobgdAyVWvVYDRuK4-7_ZbEds=";
+  const { avatar, displayName, cover } = useSelector(
+    (state) => state.auth.user
+  );
+  const dispatch = useDispatch();
 
   const handleOpen = () => {
     setOpen(true);
@@ -97,27 +102,40 @@ export default function Profile() {
     setOpen(false);
   };
 
+  const handleChangeCover = ({ target }) => {
+    if (target.files[0]) {
+      const data = new FormData();
+      data.append("file", target.files[0]);
+      dispatch(changeCover(data));
+    }
+  };
+
+  const handleChangePhoto = ({ target }) => {
+    if (target.files[0]) {
+      const data = new FormData();
+      data.append("file", target.files[0]);
+      dispatch(changePhoto(data));
+    }
+  };
+
   return (
     <>
       <BlankHeader />
       <div className={classes.parent}>
-        <img alt="cover" src={url} className={classes.img} />
+        <img alt="cover" src={cover} className={classes.img} />
         <input
           accept="image/*"
           className={classes.input}
           id="contained-button-file"
           type="file"
+          onChange={handleChangeCover}
         />
         <label htmlFor="contained-button-file">
           <IconButton className={classes.icon} component="span">
             <CameraAltIcon />
           </IconButton>
         </label>
-        <Avatar
-          alt="avatar"
-          src="https://i.pinimg.com/736x/3e/11/bf/3e11bf0157a7604ad2de5c6269d6ab57.jpg"
-          className={classes.large}
-        >
+        <Avatar alt="avatar" src={avatar} className={classes.large}>
           <CameraAltIcon />
         </Avatar>
         <input
@@ -125,6 +143,7 @@ export default function Profile() {
           className={classes.input}
           id="icon-button-file"
           type="file"
+          onChange={handleChangePhoto}
         />
         <label htmlFor="icon-button-file">
           <div className={classes.icon2}>
@@ -138,7 +157,7 @@ export default function Profile() {
           Name
         </Typography>
         <div className={classes.div}>
-          <Typography variant="h6">User Name</Typography>
+          <Typography variant="h6">{displayName}</Typography>
           <IconButton onClick={handleOpen}>
             <EditIcon />
           </IconButton>

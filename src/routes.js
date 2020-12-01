@@ -8,10 +8,10 @@ import Home from "./components/HomeSections/Home";
 import Channel from "./components/ChannelSections/Channel";
 import Profile from "./components/ProfileSections/Profile";
 import Upload from "./components/UploadSections/Upload";
-import Trending from "./components/TrendingSections/Trending";
-import Library from "./components/TrendingSections/Library";
+import Library from "./components/LibrarySections/Library";
 import Subscriptions from "./components/Subscriptions/Subscriptions";
 import VideoPlayer from "./components/VideoPlayerSections/VideoPlayer";
+import Trending from "./components/Trending";
 
 export const CustomizedRoute = ({
   component: Component,
@@ -121,7 +121,7 @@ export const routes = [
     component: () => <Home />,
   },
   {
-    path: "/channel/:channelId",
+    path: "/channel/:channelName",
     protect: false,
     component: () => <Channel />,
   },

@@ -138,7 +138,6 @@ export default function VideoItem({ video }) {
           //   PaperProps={{ variant: "outlined", square: true }}
         >
           <MenuList className={classes.menuList}>
-            <MenuItem>Not interested</MenuItem>
             <MenuItem>Save to Watch later</MenuItem>
             <MenuItem onClick={closeMenu}>Cancel</MenuItem>
           </MenuList>

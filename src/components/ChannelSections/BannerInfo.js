@@ -10,8 +10,10 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import IconButton from "@material-ui/core/IconButton";
 import SettingsIcon from "@material-ui/icons/Settings";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { NavLink, useLocation } from "react-router-dom";
+
+import { toggleSubscribe } from "../../slices/userSlice";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -28,6 +30,7 @@ const useStyles = makeStyles((theme) => ({
     position: "absolute",
     left: 0,
     top: -31.5,
+    fontSize: 28,
   },
   media: {
     height: 0,
@@ -97,16 +100,19 @@ export default function BannerInfo() {
   const location = useLocation();
   const [openModal, setOpenModal] = useState(false);
   const [openSignInDialog, setOpenSignInDialog] = useState(false);
+  const dispatch = useDispatch();
+
   const { isAuthenticated } = useSelector((state) => state.auth);
-
-  const url =
-    "https://znews-photo.zadn.vn/w660/Uploaded/ihvjohb/2019_12_08/52684425_762234710836343_8290759092989853696_o.jpg";
-
-  const avatar =
-    "https://i.pinimg.com/originals/21/06/9a/21069ac0c4b8c6134f66c4a5e75d7441.jpg";
-
-  const isSub = true;
-  const isMe = true;
+  const {
+    _id,
+    displayName,
+    avatar,
+    cover,
+    isMe,
+    isSubscribed,
+    subscribersCount,
+  } = useSelector((state) => state.user);
+  const letterAvatar = displayName.charAt(0).toUpperCase();
 
   const handleOpenModal = () => {
     setOpenModal(true);
@@ -124,14 +130,25 @@ export default function BannerInfo() {
     setOpenSignInDialog(false);
   };
 
+  const handleSubscribe = () => {
+    dispatch(toggleSubscribe(_id));
+  };
+
+  const handleUnsubscribe = () => {
+    dispatch(toggleSubscribe(_id));
+    setOpenModal(false);
+  };
+
   return (
     <>
-      <img alt="banner" src={url} className={classes.img} />
+      <img alt="banner" src={cover} className={classes.img} />
       <div className={classes.root}>
-        <Avatar alt="avatar" src={avatar} className={classes.large} />
+        <Avatar alt="avatar" src={avatar} className={classes.large}>
+          {letterAvatar}
+        </Avatar>
         <div className={classes.right}>
           <Typography className={classes.user} variant="h6">
-            User Name
+            {displayName}
           </Typography>
           <div className={classes.info}>
             {!isAuthenticated ? (
@@ -143,11 +160,12 @@ export default function BannerInfo() {
               >
                 Subscribe
               </Button>
-            ) : isMe ? null : !isSub ? (
+            ) : isMe ? null : !isSubscribed ? (
               <Button
                 startIcon={<YouTubeIcon />}
                 color="secondary"
                 className={classes.btn}
+                onClick={handleSubscribe}
               >
                 Subscribe
               </Button>
@@ -161,7 +179,7 @@ export default function BannerInfo() {
               color="textSecondary"
               className={classes.sub}
             >
-              2 subscribers
+              {subscribersCount} subscribers
             </Typography>
           </div>
         </div>
@@ -169,7 +187,7 @@ export default function BannerInfo() {
           <IconButton
             className={classes.setting}
             component={NavLink}
-            to="/profile/fds"
+            to={`/profile/${_id}`}
           >
             <SettingsIcon />
           </IconButton>
@@ -180,14 +198,14 @@ export default function BannerInfo() {
         <Dialog open={openModal} onClose={handleCloseModal}>
           <DialogContent className={classes.content2}>
             <DialogContentText className={classes.contentText2} variant="body2">
-              Unsubscribe from Tony Stark ABC Dua Leo?
+              Unsubscribe from {displayName}?
             </DialogContentText>
           </DialogContent>
           <DialogActions classes={{ root: classes.action2 }}>
             <Button className={classes.button} onClick={handleCloseModal}>
               Cancel
             </Button>
-            <Button onClick={handleCloseModal} color="secondary">
+            <Button onClick={handleUnsubscribe} color="secondary">
               Unsubscribe
             </Button>
           </DialogActions>

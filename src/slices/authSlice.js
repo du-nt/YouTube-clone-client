@@ -29,6 +29,12 @@ const auth = createSlice({
     changePhotoSuccess: (state, { payload }) => {
       state.user.avatar = payload;
     },
+    changeCoverSuccess: (state, { payload }) => {
+      state.user.cover = payload;
+    },
+    editSuccess: (state, { payload }) => {
+      state.user.displayName = payload.displayName;
+    },
   },
 });
 
@@ -136,36 +142,29 @@ export const getCurrentUser = (setLoading) => async (dispatch) => {
   }
 };
 
-export const editUser = (values, toast, { setErrors, resetForm }) => async (
+export const editUser = (values, resetForm, handleCloseForm) => async (
   dispatch
 ) => {
   try {
-    const { data } = await axios.post("/users/editUser", values);
-    dispatch(setCurrentUser(data));
+    await axios.post("/users/editUser", values);
+    dispatch(editSuccess(values));
     resetForm();
-    toast.success("Profile saved", {
-      position: "top-right",
-      autoClose: 2000,
-    });
-  } catch (error) {
-    setErrors(error.response.data);
-  }
+    handleCloseForm();
+  } catch (error) {}
 };
 
-export const changePhoto = (data, toast) => async (dispatch) => {
+export const changePhoto = (data) => async (dispatch) => {
   try {
     const res = await axios.post("/users/changePhoto", data, config);
     dispatch(changePhotoSuccess(res.data.avatar));
-    toast.success("Profile photo changed", {
-      position: "top-right",
-      autoClose: 2000,
-    });
-  } catch (error) {
-    toast.error("Error!", {
-      position: "top-right",
-      autoClose: 2000,
-    });
-  }
+  } catch (error) {}
+};
+
+export const changeCover = (data) => async (dispatch) => {
+  try {
+    const res = await axios.post("/users/changeCover", data, config);
+    dispatch(changeCoverSuccess(res.data.cover));
+  } catch (error) {}
 };
 
 export const removePhoto = (toast) => async (dispatch) => {
@@ -185,6 +184,12 @@ export const removePhoto = (toast) => async (dispatch) => {
 };
 
 const { reducer, actions } = auth;
-export const { logoutSuccess, setCurrentUser, changePhotoSuccess } = actions;
+export const {
+  logoutSuccess,
+  setCurrentUser,
+  changePhotoSuccess,
+  changeCoverSuccess,
+  editSuccess,
+} = actions;
 
 export default reducer;

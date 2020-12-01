@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Switch, Route } from "react-router-dom";
 import { useDispatch } from "react-redux";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import Register from "./components/Auths/Register";
 import Login from "./components/Auths/Login";
@@ -23,26 +25,35 @@ export default function App() {
 
   return (
     !loading && (
-      <Switch>
-        <GoHomeIfLogged exact path="/login" component={Login} />
-        <GoHomeIfLogged exact path="/register" component={Register} />
-        <GoHomeIfLogged
-          exact
-          path="/forgotpassword"
-          component={ForgotPassword}
+      <>
+        <ToastContainer
+          style={{ marginBottom: "50px" }}
+          toastClassName="container_toast"
+          position="bottom-left"
+          hideProgressBar
+          newestOnTop
         />
-        <GoHomeIfLogged
-          exact
-          path="/password/reset/:userId/:token"
-          component={ResetPassword}
-        />
-        <AdminRoute path="/admin/upload" component={AdminUpload} />
+        <Switch>
+          <GoHomeIfLogged exact path="/login" component={Login} />
+          <GoHomeIfLogged exact path="/register" component={Register} />
+          <GoHomeIfLogged
+            exact
+            path="/forgotpassword"
+            component={ForgotPassword}
+          />
+          <GoHomeIfLogged
+            exact
+            path="/password/reset/:userId/:token"
+            component={ResetPassword}
+          />
+          <AdminRoute path="/admin/upload" component={AdminUpload} />
 
-        {routes.map((route, index) => (
-          <CustomizedRoute key={index} {...route} />
-        ))}
-        <Route component={NotFound} />
-      </Switch>
+          {routes.map((route, index) => (
+            <CustomizedRoute key={index} {...route} />
+          ))}
+          <Route component={NotFound} />
+        </Switch>
+      </>
     )
   );
 }

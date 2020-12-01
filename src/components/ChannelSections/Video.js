@@ -9,8 +9,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Dialog from "@material-ui/core/Dialog";
 import { NavLink } from "react-router-dom";
 
-const url =
-  "https://vcdn-ngoisao.vnecdn.net/2019/03/12/y-thien-do-long-ky-8903-1552359368.jpg";
+import moment from "moment";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -59,9 +58,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function MediaItem() {
+export default function Video({ video }) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
+  const { _id, title, duration, thumbnail, views, createdAt } = video;
+  const time = moment(createdAt).fromNow();
 
   const handleOpen = () => {
     setOpen(true);
@@ -77,26 +78,22 @@ export default function MediaItem() {
         <Grid item xs={6}>
           <CardMedia
             component={NavLink}
-            to="/"
+            to={`/watch/${_id}`}
             className={classes.media}
-            image={url}
+            image={thumbnail}
             title="poster"
           >
-            <div className={classes.duration}>21:36</div>
+            <div className={classes.duration}>{duration}</div>
           </CardMedia>
         </Grid>
         <Grid item xs={6}>
           <Link component={NavLink} to="/" underline="none" color="inherit">
             <div className={classes.info}>
               <Typography className={classes.title} variant="subtitle1">
-                Đây là group trao đổi kinh nghiệm thực tế khi làm việc: khó
-                khăn, công nghệ mới, tuyển dụng và nhiều thứ khác
-              </Typography>
-              <Typography variant="body2" className={classes.channel}>
-                Dua Leo
+                {title}
               </Typography>
               <Typography variant="caption" className={classes.gray}>
-                100K views
+                {views} views &#8226; {time}
               </Typography>
             </div>
           </Link>

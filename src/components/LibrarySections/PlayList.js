@@ -3,23 +3,13 @@ import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import { Link, Typography } from "@material-ui/core";
 import { NavLink } from "react-router-dom";
+import CardMedia from "@material-ui/core/CardMedia";
 import PlaylistPlayIcon from "@material-ui/icons/PlaylistPlay";
-
-const url =
-  "https://vcdn-ngoisao.vnecdn.net/2019/03/12/y-thien-do-long-ky-8903-1552359368.jpg";
+import { useSelector } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     margin: theme.spacing(1, 3, 0, 3),
-  },
-  cover: {
-    position: "relative",
-    height: "100%",
-  },
-  img: {
-    width: "100%",
-    height: "100%",
-    objectFit: "cover",
   },
   info: {
     paddingLeft: theme.spacing(1),
@@ -30,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     wordBreak: "break-word",
-    lineHeight: "normal",
+    lineHeight: 1.4,
     display: "-webkit-box",
     WebkitBoxOrient: "vertical",
     WebkitLineClamp: "2",
@@ -59,38 +49,47 @@ const useStyles = makeStyles((theme) => ({
   count: {
     lineHeight: "normal",
   },
+  media: {
+    height: 0,
+    paddingTop: "56%",
+    position: "relative",
+  },
 }));
 
-export default function PlayList() {
+export default function PlayList({ videosCount, coverImage }) {
   const classes = useStyles();
+  const { user } = useSelector((state) => state.auth);
 
   return (
     <div className={classes.root}>
       <Grid container>
-        <Grid item xs={5}>
-          <Link component={NavLink} to="/">
-            <div className={classes.cover}>
-              <img alt="poster" src={url} className={classes.img} />
-              <div className={classes.duration}>
-                <Typography className={classes.count} variant="subtitle1">
-                  3
-                </Typography>
-                <PlaylistPlayIcon className={classes.icon} />
-              </div>
+        <Grid item xs={6}>
+          <CardMedia
+            component={NavLink}
+            to={`/`}
+            className={classes.media}
+            image={coverImage}
+            title="poster"
+          >
+            <div className={classes.duration}>
+              <Typography className={classes.count} variant="subtitle1">
+                {videosCount}
+              </Typography>
+              <PlaylistPlayIcon className={classes.icon} />
             </div>
-          </Link>
+          </CardMedia>
         </Grid>
-        <Grid item xs={7}>
+        <Grid item xs={6}>
           <Link component={NavLink} to="/" underline="none" color="inherit">
             <div className={classes.info}>
               <Typography className={classes.title} variant="subtitle1">
-                Playlist title
+                Liked videos
               </Typography>
               <Typography variant="body2" className={classes.channel}>
-                Dua Leo
+                {user.displayName}
               </Typography>
-              <Typography variant="caption" className={classes.gray}>
-                100 videos
+              <Typography variant="body2" className={classes.gray}>
+                {videosCount ? videosCount : "No"} videos
               </Typography>
             </div>
           </Link>
@@ -99,3 +98,9 @@ export default function PlayList() {
     </div>
   );
 }
+
+PlayList.defaultProps = {
+  videosCount: 0,
+  coverImage:
+    "https://www.bap-politischebildung.de/wp-content/plugins/borlabs-cookie/images/bct-no-thumbnail.png",
+};

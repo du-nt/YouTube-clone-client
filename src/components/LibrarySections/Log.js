@@ -12,6 +12,8 @@ import LocalOfferIcon from "@material-ui/icons/LocalOffer";
 import WatchLaterIcon from "@material-ui/icons/WatchLater";
 
 import PlayList from "./PlayList";
+import { NavLink } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -40,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Log() {
   const classes = useStyles();
-  const playlist = true;
+  const { user } = useSelector((state) => state.auth);
 
   return (
     <div className={classes.root}>
@@ -52,7 +54,11 @@ export default function Log() {
             </ListItemIcon>
             <Typography variant="inherit">History</Typography>
           </MenuItem>
-          <MenuItem className={classes.menuItem}>
+          <MenuItem
+            className={classes.menuItem}
+            component={NavLink}
+            to={`/channel/${user.userName}/videos`}
+          >
             <ListItemIcon>
               <OndemandVideoIcon />
             </ListItemIcon>
@@ -83,17 +89,7 @@ export default function Log() {
         <Typography className={classes.playlists} variant="body2">
           Playlists
         </Typography>
-        {!playlist ? (
-          <Typography className={classes.nothing}>Nothing</Typography>
-        ) : (
-          <>
-            <PlayList />
-            <PlayList />
-            <PlayList />
-            <PlayList />
-            <PlayList />
-          </>
-        )}
+        <PlayList />
       </Paper>
     </div>
   );

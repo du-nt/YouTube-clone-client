@@ -57,6 +57,7 @@ export default function Header({ openSearch, openMenu }) {
   const classes = useStyles();
 
   const { user, isAuthenticated } = useSelector((state) => state.auth);
+  const letterAvatar = user?.displayName.charAt(0).toUpperCase();
 
   const handleOpen = () => {
     openSearch();
@@ -82,7 +83,7 @@ export default function Header({ openSearch, openMenu }) {
           {isAuthenticated ? (
             <IconButton className={classes.account} onClick={handleOpenMenu}>
               <Avatar alt="avatar" src={user.avatar} className={classes.small}>
-                {user.displayName.charAt(0).toUpperCase()}
+                {letterAvatar}
               </Avatar>
             </IconButton>
           ) : (

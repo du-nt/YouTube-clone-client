@@ -90,7 +90,7 @@ export default function BottomTabs() {
         <Tab
           disabled
           classes={{ root: classes.hidden }}
-          value="/channel/:channelId"
+          value="/channel/:channelName"
         />
       </Tabs>
     </Paper>

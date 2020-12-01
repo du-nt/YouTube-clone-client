@@ -1,25 +1,44 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { toast } from "react-toastify";
 import axios from "axios";
 
-// const initialState = {};
-
-// const video = createSlice({
-//   name: "video",
-//   initialState,
-//   reducers: {
-//     setProfile: (state, { payload }) => {
-//       return payload;
-//     },
-//   },
-// });
-
-export const addUrl = (values, resetForm) => async (dispatch) => {
+export const addUrl = (values, resetForm) => async () => {
   try {
-    await axios.post(`/video/adminUpload/`, values);
+    await axios.post(`/video/adminUpload`, values);
     resetForm();
   } catch (error) {}
 };
 
-// const { reducer, actions } = video;
-// export const { setProfile } = actions;
-// export default reducer;
+export const getVideos = (setVideos, setLoading) => async () => {
+  try {
+    const { data } = await axios.get(`/video/recommendedVideos`);
+    setVideos(data);
+    setLoading(false);
+  } catch (error) {
+    toast.error("Errored!", {
+      position: "bottom-left",
+      hideProgressBar: true,
+      autoClose: 5000,
+      closeButton: false,
+    });
+  }
+};
+
+export const getSubscriptionVideos = (
+  setVideos,
+  setSixSubscribedUsers,
+  setLoading
+) => async () => {
+  try {
+    const { data } = await axios.get(`/video/getSubscriptionVideos`);
+    setSixSubscribedUsers(data.sixSubscribedUsers);
+    setVideos(data.videos);
+    setLoading(false);
+  } catch (error) {
+    toast.error("Errored!", {
+      position: "bottom-left",
+      hideProgressBar: true,
+      autoClose: 5000,
+      closeButton: false,
+    });
+  }
+};

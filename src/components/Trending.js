@@ -1,6 +1,6 @@
 import React from "react";
 import { Typography, makeStyles } from "@material-ui/core";
-import TopBar from "../HomeSections/TopBar";
+import TopBar from "./HomeSections/TopBar";
 
 const useStyles = makeStyles((theme) => ({
   root: {

@@ -16,6 +16,8 @@ import BlankHeader from "./BlankHeader";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 
+import { upload } from "../../utils";
+
 const FILE_SIZE = 3000000000;
 const SUPPORTED_FORMATS = ["video/*,.mkv"];
 
@@ -70,9 +72,8 @@ export default function Upload() {
   const fileInput = useRef();
   const [file, setFile] = useState([]);
 
-  const handleChangeFile = (video) => {
-    setFile(video);
-    console.log(video);
+  const handleChangeFile = async (video) => {
+    const data = await upload(video);
   };
 
   const {
