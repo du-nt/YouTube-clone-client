@@ -76,6 +76,14 @@ export const getChannelVideos = (_id, setVideos, setLoading) => async () => {
   } catch (error) {}
 };
 
+export const getUsers = (setLoading, setUsers) => async () => {
+  try {
+    const { data } = await axios.get("/users/channel/subscribedUsers");
+    setUsers(data);
+    setLoading(false);
+  } catch (error) {}
+};
+
 const { reducer, actions } = user;
 export const { setProfile, toggleSubscribeSuccess } = actions;
 export default reducer;

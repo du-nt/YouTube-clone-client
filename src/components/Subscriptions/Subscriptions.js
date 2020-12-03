@@ -53,6 +53,7 @@ export default function Subscriptions() {
         </div>
       ) : videos.length ? (
         <>
+          <SubscribedBar users={sixSubscribedUsers} />
           {videos.map((video, index) => (
             <VideoItem key={index} video={video} />
           ))}

@@ -5,14 +5,11 @@ import Dialog from "@material-ui/core/Dialog";
 import Header from "./Header";
 import Search from "./Search";
 import Overlay from "./Overlay";
-import Menu from "../MenuSections/Menu";
-import LoggedMenu from "../MenuSections/LoggedMenu";
-import { useSelector } from "react-redux";
+import Menu from "./Menu";
 
 export default function TopBar() {
   const [open, setOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
   const openSearch = () => {
     setOpen(true);
@@ -41,12 +38,8 @@ export default function TopBar() {
         {open && <Overlay closeSearch={closeSearch} />}
       </>
       {isOpen && (
-        <Dialog fullScreen open={isOpen}>
-          {isAuthenticated ? (
-            <LoggedMenu closeMenu={closeMenu} />
-          ) : (
-            <Menu closeMenu={closeMenu} />
-          )}
+        <Dialog open={isOpen} onClose={closeMenu}>
+          <Menu closeMenu={closeMenu} />
         </Dialog>
       )}
     </>

@@ -1,8 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { Route, Redirect } from "react-router-dom";
+import { Route, Redirect, useLocation } from "react-router-dom";
 
-import Header from "./components/HeaderSections/Header";
 import BottomTabs from "./components/HomeSections/BottomTabs";
 import Home from "./components/HomeSections/Home";
 import Channel from "./components/ChannelSections/Channel";
@@ -11,7 +10,8 @@ import Upload from "./components/UploadSections/Upload";
 import Library from "./components/LibrarySections/Library";
 import Subscriptions from "./components/Subscriptions/Subscriptions";
 import VideoPlayer from "./components/VideoPlayerSections/VideoPlayer";
-import Trending from "./components/Trending";
+import Trending from "./components/Others/Trending";
+import ChannelList from "./components/ChannelListSections/ChannelList";
 
 export const CustomizedRoute = ({
   component: Component,
@@ -54,6 +54,27 @@ CustomizedRoute.defaultProps = {
   noHeader: false,
 };
 
+export const CustomizedRoute2 = ({ component: Component, ...rest }) => {
+  const useQuery = () => new URLSearchParams(useLocation().search);
+  const query = useQuery().get("search");
+
+  return (
+    <Route
+      {...rest}
+      render={(props) =>
+        query ? (
+          <>
+            <BottomTabs />
+            <Component {...props} query={query} />
+          </>
+        ) : (
+          <Redirect to="/" />
+        )
+      }
+    />
+  );
+};
+
 export const AdminRoute = ({ component: Component, ...rest }) => {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
 
@@ -71,11 +92,7 @@ export const AdminRoute = ({ component: Component, ...rest }) => {
   );
 };
 
-export const GoHomeIfLogged = ({
-  component: Component,
-  hasHeader,
-  ...rest
-}) => {
+export const GoHomeIfLogged = ({ component: Component, ...rest }) => {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const [isRedirect, setIsRedirect] = React.useState(true);
   return (
@@ -85,24 +102,21 @@ export const GoHomeIfLogged = ({
         isAuthenticated && isRedirect ? (
           <Redirect to="/" />
         ) : (
-          <>
-            {hasHeader && <Header />}
-            <Component {...props} setIsRedirect={setIsRedirect} />
-          </>
+          <Component {...props} setIsRedirect={setIsRedirect} />
         )
       }
     />
   );
 };
 
-GoHomeIfLogged.defaultProps = {
-  hasHeader: false,
-};
-
 export const routes = [
   {
     path: "/feed/subscriptions",
     component: () => <Subscriptions />,
+  },
+  {
+    path: "/feed/channels",
+    component: () => <ChannelList />,
   },
   {
     path: "/upload",

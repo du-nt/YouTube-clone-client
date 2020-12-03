@@ -47,7 +47,7 @@ export default function SubscribedBar({ users }) {
           </Avatar>
         ))}
       </div>
-      <IconButton color="primary">
+      <IconButton color="primary" component={NavLink} to="/feed/channels">
         <ChevronRightIcon />
       </IconButton>
     </div>

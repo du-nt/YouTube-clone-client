@@ -7,18 +7,7 @@ import SearchIcon from "@material-ui/icons/Search";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import TextField from "@material-ui/core/TextField";
 import CloseIcon from "@material-ui/icons/Close";
-
-import * as Yup from "yup";
-import { useFormik } from "formik";
 import { useHistory } from "react-router-dom";
-
-const initialValues = {
-  search: "",
-};
-
-const validationSchema = Yup.object().shape({
-  search: Yup.string(),
-});
 
 const useStyles = makeStyles((theme) => ({
   appbar: {
@@ -51,27 +40,33 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Search({ closeSearch }) {
+export default function Search({ search, setSearch, closeSearch }) {
   const classes = useStyles();
   const inputRef = useRef(null);
   const history = useHistory();
 
-  const { values, dirty, handleReset, handleChange, handleSubmit } = useFormik({
-    initialValues,
-    validationSchema,
-    onSubmit: (values) => {
-      history.push(`/results?search=${values.search}`);
-    },
-  });
+  const handleChange = ({ target }) => {
+    setSearch(target.value);
+  };
 
-  useEffect(() => inputRef.current.focus(), []);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (search) {
+      closeSearch();
+      history.push(`/results?search=${search}`);
+    }
+  };
+
+  useEffect(() => {
+    inputRef.current.focus();
+  }, []);
 
   const handleClose = () => {
     closeSearch();
   };
 
   const handleDelete = () => {
-    handleReset();
+    setSearch("");
     inputRef.current.focus();
   };
 
@@ -86,17 +81,14 @@ export default function Search({ closeSearch }) {
           onSubmit={handleSubmit}
         >
           <TextField
-            name="search"
             onChange={handleChange}
-            value={values.search}
+            value={search}
             inputRef={inputRef}
             className={classes.input}
             placeholder="Search YouTube"
           />
         </form>
-        {dirty && (
-          <CloseIcon className={classes.close} onClick={handleDelete} />
-        )}
+        <CloseIcon className={classes.close} onClick={handleDelete} />
         <SearchIcon className={classes.right} onClick={handleSubmit} />
       </Toolbar>
     </AppBar>
