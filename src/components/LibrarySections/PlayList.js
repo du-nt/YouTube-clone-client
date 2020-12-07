@@ -25,6 +25,7 @@ const useStyles = makeStyles((theme) => ({
     WebkitBoxOrient: "vertical",
     WebkitLineClamp: "2",
     overflow: "hidden",
+    fontSize: "1.1rem",
   },
   channel: {
     color: "hsla(0,0%,6.7%, .6 )",

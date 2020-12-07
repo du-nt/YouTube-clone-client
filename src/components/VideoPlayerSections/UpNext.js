@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
@@ -6,6 +6,10 @@ import Switch from "@material-ui/core/Switch";
 import { makeStyles } from "@material-ui/core";
 
 import MediaItem from "./MediaItem";
+import { useDispatch } from "react-redux";
+
+import { getRelatedVideos } from "../../slices/videoSlice";
+import { useParams } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -21,10 +25,21 @@ const useStyles = makeStyles((theme) => ({
   recommend: {
     marginTop: "-8px",
   },
+  text: {
+    marginTop: theme.spacing(2),
+  },
 }));
 
-function UpNext() {
+export default function UpNext() {
   const classes = useStyles();
+  const dispatch = useDispatch();
+  const [loading, setLoading] = useState(true);
+  const [videos, setVideos] = useState([]);
+  const { videoId } = useParams();
+
+  useEffect(() => {
+    dispatch(getRelatedVideos(videoId, setVideos, setLoading));
+  }, [dispatch, videoId]);
 
   return (
     <Paper variant="outlined" square className={classes.paper}>
@@ -38,13 +53,22 @@ function UpNext() {
         />
       </div>
       <div className={classes.recommend}>
-        <MediaItem />
-        <MediaItem />
-        <MediaItem />
-        <MediaItem />
+        {!loading &&
+          (videos.length ? (
+            videos.map((video, index) => (
+              <MediaItem key={index} video={video} />
+            ))
+          ) : (
+            <Typography
+              className={classes.text}
+              color="textSecondary"
+              align="center"
+              variant="body2"
+            >
+              Related videos is not available
+            </Typography>
+          ))}
       </div>
     </Paper>
   );
 }
-
-export default UpNext;

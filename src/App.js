@@ -33,13 +33,7 @@ export default function App() {
   return (
     !loading && (
       <>
-        <ToastContainer
-          style={{ marginBottom: "50px" }}
-          toastClassName="container_toast"
-          position="bottom-left"
-          hideProgressBar
-          newestOnTop
-        />
+        <ToastContainer position="bottom-left" hideProgressBar newestOnTop />
         <Switch>
           <GoHomeIfLogged exact path="/login" component={Login} />
           <GoHomeIfLogged exact path="/register" component={Register} />

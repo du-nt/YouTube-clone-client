@@ -1,9 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
-axios.defaults.baseURL = "/api/";
-// axios.defaults.baseURL = "";
-// axios.defaults.withCredentials = true;
+// axios.defaults.baseURL = "/api/";
+axios.defaults.baseURL = "";
+axios.defaults.withCredentials = true;
 
 const config = {
   header: { "content-type": "multipart/form-data" },

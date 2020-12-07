@@ -32,6 +32,7 @@ const useStyles = makeStyles((theme) => ({
     WebkitBoxOrient: "vertical",
     WebkitLineClamp: "2",
     overflow: "hidden",
+    fontSize: "1.1rem",
   },
   channel: {
     color: "hsla(0,0%,6.7%, .6 )",
@@ -87,12 +88,17 @@ export default function Video({ video }) {
           </CardMedia>
         </Grid>
         <Grid item xs={6}>
-          <Link component={NavLink} to="/" underline="none" color="inherit">
+          <Link
+            component={NavLink}
+            to={`/watch/${_id}`}
+            underline="none"
+            color="inherit"
+          >
             <div className={classes.info}>
               <Typography className={classes.title} variant="subtitle1">
                 {title}
               </Typography>
-              <Typography variant="caption" className={classes.gray}>
+              <Typography variant="body2" className={classes.gray}>
                 {views} views &#8226; {time}
               </Typography>
             </div>

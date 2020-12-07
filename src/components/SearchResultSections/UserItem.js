@@ -2,20 +2,22 @@ import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import { Link, Typography } from "@material-ui/core";
-import CardMedia from "@material-ui/core/CardMedia";
 import { NavLink } from "react-router-dom";
+import Avatar from "@material-ui/core/Avatar";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     marginTop: 12,
-    padding: theme.spacing(0, 1.5),
+    padding: theme.spacing(0, 6, 0, 2),
+    display: "flex",
+    alignItems: "center",
   },
   info: {
     padding: theme.spacing(0, 1),
     height: "100%",
-  },
-  gray: {
-    color: "hsla(0,0%,6.7%, .6 )",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
   },
   title: {
     wordBreak: "break-word",
@@ -26,61 +28,59 @@ const useStyles = makeStyles((theme) => ({
     overflow: "hidden",
     fontSize: "1.1rem",
   },
-  channel: {
+  large: {
+    width: theme.spacing(10),
+    height: theme.spacing(10),
+    backgroundColor: "#00579c",
+    textDecoration: "none",
+    fontSize: 30,
+  },
+  x: {
+    textDecoration: "none",
+  },
+  gray: {
     color: "hsla(0,0%,6.7%, .6 )",
-    lineHeight: "100%",
-  },
-  duration: {
-    position: "absolute",
-    right: 5,
-    bottom: 5,
-    backgroundColor: "hsla(0,0%,6.7%, .8 )",
-    color: "#eee",
-    padding: "1px 4px",
-    fontSize: 13,
-    borderRadius: 2,
-  },
-  media: {
-    height: 0,
-    paddingTop: "53%",
-    position: "relative",
   },
 }));
 
-export default function MediaItem({ video }) {
+export default function UserItem({ user }) {
   const classes = useStyles();
-  const { _id, thumbnail, duration, title, author, views } = video;
+
+  const { avatar, displayName, userName, subscribersCount, videosCount } = user;
+  const letterAvatar = displayName.charAt(0).toUpperCase();
 
   return (
     <div className={classes.root}>
       <Grid container>
         <Grid item xs={6}>
-          <CardMedia
+          <Grid
+            container
+            justify="center"
             component={NavLink}
-            to={`/watch/${_id}`}
-            className={classes.media}
-            image={thumbnail}
-            title="poster"
+            to={`/channel/${userName}`}
+            className={classes.x}
           >
-            <div className={classes.duration}>{duration}</div>
-          </CardMedia>
+            <Avatar alt="avatar" src={avatar} className={classes.large}>
+              {letterAvatar}
+            </Avatar>
+          </Grid>
         </Grid>
         <Grid item xs={6}>
           <Link
             component={NavLink}
-            to={`/watch/${_id}`}
+            to={`/channel/${userName}`}
             underline="none"
             color="inherit"
           >
             <div className={classes.info}>
               <Typography className={classes.title} variant="subtitle1">
-                {title}
-              </Typography>
-              <Typography variant="body2" className={classes.channel}>
-                {author.displayName}
+                {displayName}
               </Typography>
               <Typography variant="body2" className={classes.gray}>
-                {views} views
+                {videosCount} videos
+              </Typography>
+              <Typography variant="body2" className={classes.gray}>
+                {subscribersCount} subscribers
               </Typography>
             </div>
           </Link>

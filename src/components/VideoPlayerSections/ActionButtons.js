@@ -8,7 +8,9 @@ import FlagIcon from "@material-ui/icons/Flag";
 import Button from "@material-ui/core/Button";
 
 import SignInDialog from "./SignInDialog";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+
+import { like, dislike } from "../../slices/videoSlice";
 
 const useStyles = makeStyles((theme) => ({
   btnGroup: {
@@ -26,6 +28,15 @@ const useStyles = makeStyles((theme) => ({
     textTransform: "capitalize",
     fontSize: 12,
     color: "#707070",
+  },
+  active: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    textTransform: "capitalize",
+    fontSize: 12,
+    color: "#065fd4",
   },
   startIcon: {
     margin: 0,
@@ -45,10 +56,15 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ActionButtons() {
   const classes = useStyles();
+  const dispatch = useDispatch();
   const [openSignInDialog, setOpenSignInDialog] = useState(false);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+
   const { isAuthenticated } = useSelector((state) => state.auth);
+  const { _id, likesCount, dislikesCount, isLiked, isDisliked } = useSelector(
+    (state) => state.video
+  );
 
   const hanleOpenSignInDialog0 = () => {
     setTitle("Like this video?");
@@ -80,30 +96,38 @@ export default function ActionButtons() {
     setContent("");
   };
 
+  const handleLike = () => {
+    dispatch(like(_id));
+  };
+
+  const handleDislike = () => {
+    dispatch(dislike(_id));
+  };
+
   return (
     <>
       <div className={classes.btnGroup}>
         <Button
           classes={{
-            label: classes.label,
+            label: isLiked ? classes.active : classes.label,
             startIcon: classes.startIcon,
             iconSizeMedium: classes.iconBtn,
           }}
           startIcon={<ThumbUpAltIcon />}
-          onClick={!isAuthenticated ? hanleOpenSignInDialog0 : null}
+          onClick={!isAuthenticated ? hanleOpenSignInDialog0 : handleLike}
         >
-          3
+          {likesCount}
         </Button>
         <Button
           classes={{
-            label: classes.label,
+            label: isDisliked ? classes.active : classes.label,
             startIcon: classes.startIcon,
             iconSizeMedium: classes.iconBtn,
           }}
           startIcon={<ThumbDownAltIcon />}
-          onClick={!isAuthenticated ? hanleOpenSignInDialog1 : null}
+          onClick={!isAuthenticated ? hanleOpenSignInDialog1 : handleDislike}
         >
-          3
+          {dislikesCount}
         </Button>
         <Button
           classes={{

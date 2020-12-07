@@ -1,6 +1,7 @@
 import React from "react";
 import { Button, Typography, makeStyles } from "@material-ui/core";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
+import CardMedia from "@material-ui/core/CardMedia";
 import { NavLink, useLocation } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
@@ -33,6 +34,10 @@ const useStyles = makeStyles((theme) => ({
   body: {
     margin: theme.spacing(1, 0, 3, 0),
   },
+  media: {
+    height: 0,
+    paddingTop: "56.25%", // 16:9
+  },
 }));
 
 export default function NotLog() {
@@ -45,12 +50,12 @@ export default function NotLog() {
         <AccountCircleIcon className={classes.icon} />
         <Typography>Sign in</Typography>
       </div>
+      <CardMedia
+        className={classes.media}
+        image="https://m.youtube.com/static/sign_in_promo.png"
+        title="sign"
+      />
       <div className={classes.second}>
-        <img
-          alt="sign"
-          className={classes.img}
-          src="https://m.youtube.com/static/sign_in_promo.png"
-        />
         <Typography variant="h5">You're not signed in</Typography>
         <Typography
           variant="body2"

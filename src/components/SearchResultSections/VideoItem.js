@@ -1,14 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
-import { Link, Typography } from "@material-ui/core";
+import { IconButton, Link, Typography } from "@material-ui/core";
 import CardMedia from "@material-ui/core/CardMedia";
+import MoreVertIcon from "@material-ui/icons/MoreVert";
+import MenuList from "@material-ui/core/MenuList";
+import MenuItem from "@material-ui/core/MenuItem";
+import Dialog from "@material-ui/core/Dialog";
 import { NavLink } from "react-router-dom";
+
+import moment from "moment";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     marginTop: 12,
-    padding: theme.spacing(0, 1.5),
+    paddingLeft: theme.spacing(2),
+    display: "flex",
+    alignItems: "flex-start",
   },
   info: {
     padding: theme.spacing(0, 1),
@@ -42,14 +50,28 @@ const useStyles = makeStyles((theme) => ({
   },
   media: {
     height: 0,
-    paddingTop: "53%",
+    paddingTop: "58%",
     position: "relative",
+  },
+  menuList: {
+    padding: 0,
+    width: 255,
   },
 }));
 
-export default function MediaItem({ video }) {
+export default function Video({ video }) {
   const classes = useStyles();
-  const { _id, thumbnail, duration, title, author, views } = video;
+  const [open, setOpen] = useState(false);
+  const { _id, title, duration, thumbnail, views, createdAt, author } = video;
+  const time = moment(createdAt).fromNow();
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   return (
     <div className={classes.root}>
@@ -76,16 +98,29 @@ export default function MediaItem({ video }) {
               <Typography className={classes.title} variant="subtitle1">
                 {title}
               </Typography>
-              <Typography variant="body2" className={classes.channel}>
+              <Typography className={classes.gray} variant="body2">
                 {author.displayName}
               </Typography>
               <Typography variant="body2" className={classes.gray}>
-                {views} views
+                {views} views &#8226; {time}
               </Typography>
             </div>
           </Link>
         </Grid>
       </Grid>
+
+      <IconButton onClick={handleOpen}>
+        <MoreVertIcon />
+      </IconButton>
+
+      {open && (
+        <Dialog open={open} onClose={handleClose}>
+          <MenuList className={classes.menuList}>
+            <MenuItem>Save to Watch later</MenuItem>
+            <MenuItem onClick={handleClose}>Cancel</MenuItem>
+          </MenuList>
+        </Dialog>
+      )}
     </div>
   );
 }

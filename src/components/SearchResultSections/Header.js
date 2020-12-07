@@ -51,7 +51,14 @@ const useStyles = makeStyles((theme) => ({
     cursor: "pointer",
   },
   text: {
+    flex: 1,
+    marginRight: theme.spacing(1),
     color: "#111",
+    display: "-webkit-box",
+    WebkitBoxOrient: "vertical",
+    WebkitLineClamp: "1",
+    overflow: "hidden",
+    wordBreak: "break-word",
   },
 }));
 

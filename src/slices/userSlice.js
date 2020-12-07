@@ -42,30 +42,24 @@ export const toggleSubscribe = (_id) => async (dispatch, getState) => {
   try {
     const { isSubscribed } = getState().user;
     const msg = isSubscribed ? "Subscription removed" : "Subscription added";
-    await axios.get(`/users/${_id}/toggleSubscribe`);
-    dispatch(toggleSubscribeSuccess());
     toast.dark(msg, {
-      position: "bottom-left",
-      hideProgressBar: true,
       autoClose: 2000,
       closeButton: false,
+      className: "xx",
     });
+    dispatch(toggleSubscribeSuccess());
+    await axios.get(`/users/${_id}/toggleSubscribe`);
   } catch (error) {}
 };
 
-export const search = (value, setDisplay, setUsers) => async () => {
+export const search = (query, setVideos, setUsers, setLoading) => async () => {
   try {
-    const search = value.trim();
-    if (search) {
-      const { data } = await axios.get(`/users/search?userName=${search}`);
-      setUsers(data);
-      setDisplay(true);
-    } else {
-      setDisplay(false);
-    }
-  } catch (error) {
-    setDisplay(false);
-  }
+    const search = query.trim();
+    const { data } = await axios.get(`/users/search?q=${search}`);
+    setUsers(data.users);
+    setVideos(data.videos);
+    setLoading(false);
+  } catch (error) {}
 };
 
 export const getChannelVideos = (_id, setVideos, setLoading) => async () => {

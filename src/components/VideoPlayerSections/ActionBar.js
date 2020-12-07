@@ -18,7 +18,11 @@ import ActionButtons from "./ActionButtons";
 import CommentsDialog from "./CommentsDialog";
 import SignInDialog from "./SignInDialog";
 
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+
+import moment from "moment";
+
+import { toggleSubscribe } from "../../slices/videoSlice";
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -128,7 +132,7 @@ const useStyles = makeStyles((theme) => ({
     width: 28,
     height: 28,
     alignSelf: "center",
-    backgroundColor: "#00579c",
+    backgroundColor: "#556c7d",
   },
   smallInput: {
     flex: 1,
@@ -142,17 +146,28 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ActionBar({ playerHeight }) {
+export default function ActionBar({ playerHeight }) {
   const [open, setOpen] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [openComments, setOpenComments] = useState(false);
   const [openSignInDialog, setOpenSignInDialog] = useState(false);
   const [focus, setFocus] = useState(false);
   const classes = useStyles();
-  const { isAuthenticated } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
 
-  const isSub = true;
-  const isMe = false;
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
+  const {
+    title,
+    views,
+    createdAt,
+    description,
+    author,
+    subscribersCount,
+    isMe,
+    isSubscribed,
+  } = useSelector((state) => state.video);
+  const time = moment(createdAt).format("ll");
+  const letterAvatar = author.displayName.charAt(0).toUpperCase();
 
   const handleOpen = () => {
     setOpen((prev) => !prev);
@@ -187,17 +202,24 @@ function ActionBar({ playerHeight }) {
     setOpenSignInDialog(false);
   };
 
+  const handleSubscribe = () => {
+    dispatch(toggleSubscribe(author._id));
+  };
+
+  const handleUnsubscribe = () => {
+    dispatch(toggleSubscribe(author._id));
+    setOpenModal(false);
+  };
+
   return (
     <div>
       <div className={classes.title} onClick={handleOpen}>
         <div>
           <Typography className={classes.text} variant="h6">
-            Các bro cho mình hỏi, mình đã connect thành công vs Mongo, với model
-            như này, nhưng khi User.findOne thì tìm ko đc, mình test với
-            postman, vấn đề ở đâu ạ
+            {title}
           </Typography>
           <Typography variant="caption" className={classes.view}>
-            222K view
+            {views} views
           </Typography>
         </div>
         <ExpandMoreIcon className={classes.moreicon} />
@@ -211,14 +233,16 @@ function ActionBar({ playerHeight }) {
           color="inherit"
           underline="none"
           component={NavLink}
-          to="/channel/dfd"
+          to={`/channel/${author.userName}`}
           className={classes.channel}
         >
-          <Avatar className={classes.small} />
+          <Avatar className={classes.small} alt="avatar" src={author.avatar}>
+            {letterAvatar}
+          </Avatar>
           <div className={classes.user}>
-            <Typography variant="body2">userName</Typography>
+            <Typography variant="body2">{author.displayName}</Typography>
             <Typography variant="caption" className={classes.sub}>
-              3K subscribers
+              {subscribersCount} subscribers
             </Typography>
           </div>
         </Link>
@@ -227,11 +251,13 @@ function ActionBar({ playerHeight }) {
             Subscribe
           </Button>
         ) : isMe ? (
-          <IconButton component={NavLink} to="/profile/dfdfs">
+          <IconButton component={NavLink} to={`/profile/${user._id}`}>
             <SettingsIcon />
           </IconButton>
-        ) : !isSub ? (
-          <Button color="secondary">Subscribe</Button>
+        ) : !isSubscribed ? (
+          <Button color="secondary" onClick={handleSubscribe}>
+            Subscribe
+          </Button>
         ) : (
           <Button onClick={handleOpenModal} className={classes.btn}>
             Subscribed
@@ -268,25 +294,24 @@ function ActionBar({ playerHeight }) {
 
       {open && (
         <div className={classes.discription}>
-          <Typography variant="body2">
-            Nếu muốn Windows tự lấy màu dựa theo hình nền trên desktop thì ta
-            click vào dòng Automatically pick an accent color from my
-            background.
-          </Typography>
+          <Typography variant="body2">Published on {time}</Typography>
+          {description && (
+            <Typography variant="body2">{description}</Typography>
+          )}
         </div>
       )}
       {openModal && (
         <Dialog open={openModal} onClose={handleCloseModal}>
           <DialogContent className={classes.content}>
             <DialogContentText className={classes.contentText} variant="body2">
-              Unsubscribe from Tony Stark ABC Dua Leo?
+              Unsubscribe from {author.displayName}?
             </DialogContentText>
           </DialogContent>
           <DialogActions classes={{ root: classes.action }}>
             <Button className={classes.btn} onClick={handleCloseModal}>
               Cancel
             </Button>
-            <Button onClick={handleCloseModal} color="secondary">
+            <Button onClick={handleUnsubscribe} color="secondary">
               Unsubscribe
             </Button>
           </DialogActions>
@@ -311,5 +336,3 @@ function ActionBar({ playerHeight }) {
     </div>
   );
 }
-
-export default ActionBar;
