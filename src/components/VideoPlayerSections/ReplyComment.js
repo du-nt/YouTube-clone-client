@@ -58,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ReplyComment() {
+function ReplyComment({ handleRelpy }) {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -69,6 +69,12 @@ function ReplyComment() {
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleOpenReplyForm = () => {
+    setAnchorEl(null);
+    const user = "Nhu Cut";
+    handleRelpy(user);
   };
 
   return (
@@ -113,6 +119,9 @@ function ReplyComment() {
         onClose={handleClose}
         classes={{ list: classes.menus }}
       >
+        <MenuItem className={classes.menuItem} onClick={handleOpenReplyForm}>
+          Reply
+        </MenuItem>
         <MenuItem className={classes.menuItem} onClick={handleClose}>
           Report
         </MenuItem>

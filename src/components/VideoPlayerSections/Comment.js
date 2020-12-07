@@ -9,9 +9,12 @@ import MoreVertIcon from "@material-ui/icons/MoreVert";
 import IconButton from "@material-ui/core/IconButton";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
+import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
+import ArrowDropUpIcon from "@material-ui/icons/ArrowDropUp";
 import { makeStyles } from "@material-ui/core/styles";
 
 import ReplyComments from "./ReplyComments";
+import ReplyForm from "./ReplyForm";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -67,10 +70,11 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Comment() {
   const classes = useStyles();
+  const [openForm, setOpenForm] = useState(false);
   const [showComment, setShowComment] = useState(false);
-  const [showReplyForm, setShowReplyForm] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+  const [comment, setComment] = useState("");
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -84,14 +88,32 @@ export default function Comment() {
     setShowComment(true);
   };
 
-  const handleOpenReply = () => {
-    setShowReplyForm(true);
-    setShowComment(true);
+  const handleHideComment = () => {
+    setShowComment(false);
   };
 
-  const handleOpenReplyComments = async () => {
-    await handleClose();
+  const handleOpenReply = () => {
+    setComment("");
+    setShowComment(true);
+    setOpenForm(true);
+  };
+
+  const handleCloseReply = () => {
+    setOpenForm(false);
+  };
+
+  const handleOpenReplyComments = () => {
+    setAnchorEl(null);
     handleOpenReply();
+  };
+
+  const handleRelpy = (user) => {
+    setComment(`@${user} `);
+    setOpenForm(true);
+  };
+
+  const handleChange = ({ target }) => {
+    setComment(target.value);
   };
 
   return (
@@ -132,17 +154,27 @@ export default function Comment() {
             <MoreVertIcon fontSize="small" />
           </IconButton>
         </div>
+
         {showComment ? (
-          <ReplyComments showReplyForm={showReplyForm} />
+          <Button
+            onClick={handleHideComment}
+            className={classes.btn}
+            color="primary"
+            startIcon={<ArrowDropUpIcon />}
+          >
+            Hide replies
+          </Button>
         ) : (
           <Button
             onClick={handleShowComment}
             className={classes.btn}
             color="primary"
+            startIcon={<ArrowDropDownIcon />}
           >
             Show more replies
           </Button>
         )}
+        {showComment && <ReplyComments handleRelpy={handleRelpy} />}
 
         <Menu
           anchorEl={anchorEl}
@@ -169,6 +201,15 @@ export default function Comment() {
             Report
           </MenuItem>
         </Menu>
+
+        {openForm && (
+          <ReplyForm
+            open={openForm}
+            comment={comment}
+            handleChange={handleChange}
+            handleCloseReply={handleCloseReply}
+          />
+        )}
       </div>
     </div>
   );

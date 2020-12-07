@@ -1,14 +1,14 @@
 import React from "react";
 
 import ReplyComment from "./ReplyComment";
-import AddReplyComment from "./AddReplyComment";
 
-export default function ReplyComments({ showReplyForm }) {
+export default function ReplyComments({ handleRelpy }) {
   return (
     <div>
-      {showReplyForm && <AddReplyComment />}
-      <ReplyComment />
-      <ReplyComment />
+      <ReplyComment handleRelpy={handleRelpy} />
+      <ReplyComment handleRelpy={handleRelpy} />
+      <ReplyComment handleRelpy={handleRelpy} />
+      <ReplyComment handleRelpy={handleRelpy} />
     </div>
   );
 }
