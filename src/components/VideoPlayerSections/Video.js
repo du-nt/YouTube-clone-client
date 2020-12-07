@@ -39,6 +39,9 @@ export default function Video() {
         onStart={handleView}
         config={{
           file: {
+            attributes: {
+              crossOrigin: "true",
+            },
             tracks: [
               {
                 kind: "subtitles",
