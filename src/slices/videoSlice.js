@@ -138,19 +138,42 @@ export const getRelatedVideos = (
   }
 };
 
-export const like = (_id) => async (dispatch) => {
+export const like = (_id) => async (dispatch, getState) => {
   try {
+    const { isLiked } = getState().video;
+    const msg = isLiked ? "Removed from Liked videos" : "Added to Liked videos";
+    toast.dark(msg, {
+      autoClose: 2000,
+      closeButton: false,
+      className: "yy",
+    });
+
     dispatch(likeSuccess());
     await axios.get(`/video/like/${_id}`);
   } catch (error) {}
 };
 
-export const dislike = (_id) => async (dispatch) => {
+export const dislike = (_id) => async (dispatch, getState) => {
   try {
+    const { isDisliked } = getState().video;
+    const msg = isDisliked ? "Disliked removed" : "You dislike this video";
+    toast.dark(msg, {
+      autoClose: 2000,
+      closeButton: false,
+      className: "yy",
+    });
+
     dispatch(dislikeSuccess());
     await axios.get(`/video/dislike/${_id}`);
   } catch (error) {}
 };
+
+export const upView = (_id) => {
+    try {
+        await axios.get(`/video/upView/${_id}`);
+    } catch (error) {
+    }
+}
 
 const { reducer, actions } = video;
 export const {

@@ -1,7 +1,9 @@
 import React from "react";
 import ReactPlayer from "react-player";
 import { makeStyles } from "@material-ui/core/styles";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+
+import { upView } from "../../slices/videoSlice";
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {
@@ -17,10 +19,11 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Video() {
   const classes = useStyles();
-  const { url, subtitle } = useSelector((state) => state.video);
+  const dispatch = useDispatch();
+  const { _id, url, subtitle } = useSelector((state) => state.video);
 
   const handleView = () => {
-    console.log("object");
+    dispatch(upView(_id));
   };
 
   return (
