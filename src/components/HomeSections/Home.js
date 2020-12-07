@@ -39,8 +39,7 @@ export default function Home() {
           <CircularProgress />
         </div>
       ) : videos.length ? (
-        // videos.map((video, index) => <VideoItem key={index} video={video} />)
-        <div>home</div>
+        videos.map((video, index) => <VideoItem key={index} video={video} />)
       ) : (
         <Typography color="textSecondary" className={classes.root}>
           Nothing to watch
