@@ -39,8 +39,7 @@ export default function Video() {
             tracks: [
               {
                 kind: "subtitles",
-                src:
-                  "https://res.cloudinary.com/dwtbzg7gs/raw/upload/v1603802041/captions/SubtitleTools.com_Chibi_Maruko-chan__2020.10.25_yy56bq.vtt",
+                src: subtitle,
                 srcLang: "Japanese",
                 default: true,
               },
