@@ -57,7 +57,7 @@ export default function Header({ openSearch, openMenu }) {
   const classes = useStyles();
 
   const { user, isAuthenticated } = useSelector((state) => state.auth);
-  const letterAvatar = user?.displayName.charAt(0).toUpperCase();
+  const letterAvatar = user && user?.displayName.charAt(0).toUpperCase();
 
   const handleOpen = () => {
     openSearch();
