@@ -82,7 +82,7 @@ export default function Header({ openSearch, openMenu }) {
           {isAuthenticated ? (
             <IconButton className={classes.account} onClick={handleOpenMenu}>
               <Avatar alt="avatar" src={user.avatar} className={classes.small}>
-                {user?.displayName.charAt(0).toUpperCase()}
+                {user?.displayName)}
               </Avatar>
             </IconButton>
           ) : (
