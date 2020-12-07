@@ -83,7 +83,6 @@ export const getVideo = (videoId, setDead, setLoading) => async (
       : `/video/${videoId}`;
     const { data } = await axios.get(url);
     dispatch(setVideo(data));
-    console.log(data);
     setLoading(false);
   } catch (error) {
     setDead(true);
@@ -168,12 +167,11 @@ export const dislike = (_id) => async (dispatch, getState) => {
   } catch (error) {}
 };
 
-export const upView = (_id) => {
-    try {
-        await axios.get(`/video/upView/${_id}`);
-    } catch (error) {
-    }
-}
+export const upView = (_id) => async () => {
+  try {
+    await axios.get(`/video/upView/${_id}`);
+  } catch (error) {}
+};
 
 const { reducer, actions } = video;
 export const {
