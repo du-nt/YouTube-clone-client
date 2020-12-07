@@ -66,7 +66,7 @@ export const login = (
     dispatch(setCurrentUser(data));
     goBack();
   } catch (error) {
-    setErrors(error.response.data);
+    setErrors(error?.response?.data);
   }
 };
 

@@ -2,6 +2,8 @@ import { createSlice } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
 import axios from "axios";
 
+axios.defaults.withCredentials = true;
+
 const initialState = {};
 
 const video = createSlice({
