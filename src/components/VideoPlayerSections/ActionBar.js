@@ -119,6 +119,7 @@ const useStyles = makeStyles((theme) => ({
     overflow: "hidden",
     lineHeight: "normal",
     wordBreak: "break-word",
+    fontSize: "0.85rem",
   },
   commentsCount: {
     marginLeft: 10,
@@ -133,6 +134,7 @@ const useStyles = makeStyles((theme) => ({
     height: 28,
     alignSelf: "center",
     backgroundColor: "#556c7d",
+    fontSize: "1rem",
   },
   smallInput: {
     flex: 1,
@@ -165,9 +167,14 @@ export default function ActionBar({ playerHeight }) {
     subscribersCount,
     isMe,
     isSubscribed,
+    commentsCount,
+    firstComment,
   } = useSelector((state) => state.video);
   const time = moment(createdAt).format("ll");
   const letterAvatar = author.displayName.charAt(0).toUpperCase();
+  const authLetterAvatar = user && user?.displayName.charAt(0).toUpperCase();
+  const letterAvatar2 =
+    firstComment && firstComment?.author?.displayName.charAt(0).toUpperCase();
 
   const handleOpen = () => {
     setOpen((prev) => !prev);
@@ -269,26 +276,50 @@ export default function ActionBar({ playerHeight }) {
         <div className={classes.toppart}>
           <div className={classes.cmm}>
             <Typography variant="body2">Comments</Typography>
-            <Typography variant="body2" className={classes.commentsCount}>
-              189
-            </Typography>
+            {commentsCount > 0 && (
+              <Typography variant="body2" className={classes.commentsCount}>
+                {commentsCount}
+              </Typography>
+            )}
           </div>
           <UnfoldMoreIcon fontSize="small" />
         </div>
         <div className={classes.botpart}>
-          <Avatar className={classes.small3} />
-          {/* <Typography className={classes.firstcomment} variant="caption">
-            Nếu muốn Windows tự lấy màu dựa theo hình nền trên desktop thì ta
-            click vào dòng Automatically pick an accent color from my
-            background.
-          </Typography> */}
-          <Typography
-            onClick={handleFocus}
-            className={classes.smallInput}
-            variant="body2"
-          >
-            Add a public comment...
-          </Typography>
+          {commentsCount > 0 && firstComment ? (
+            <>
+              <Avatar
+                className={classes.small3}
+                alt="avatar"
+                src={firstComment.author.avatar}
+              >
+                {letterAvatar2}
+              </Avatar>
+              <Typography className={classes.firstcomment} variant="caption">
+                {firstComment.text}
+              </Typography>
+            </>
+          ) : (
+            <>
+              {isAuthenticated ? (
+                <Avatar
+                  className={classes.small3}
+                  alt="avatar"
+                  src={user.avatar}
+                >
+                  {authLetterAvatar}
+                </Avatar>
+              ) : (
+                <Avatar className={classes.small3} />
+              )}
+              <Typography
+                onClick={isAuthenticated ? handleFocus : null}
+                className={classes.smallInput}
+                variant="body2"
+              >
+                Add a public comment...
+              </Typography>
+            </>
+          )}
         </div>
       </div>
 

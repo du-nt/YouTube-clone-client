@@ -16,10 +16,13 @@
     "moment": "^2.29.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-mentions": "^4.0.2",
+    "react-player": "^2.7.2",
     "react-redux": "^7.2.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^3.4.3",
     "react-toastify": "^6.1.0",
+    "react-web-share-api": "0.0.2",
     "serve": "^11.3.2",
     "video-react": "^0.14.1",
     "yup": "^0.28.3"

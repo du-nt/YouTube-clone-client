@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core";
 import ThumbUpAltIcon from "@material-ui/icons/ThumbUpAlt";
 import ThumbDownAltIcon from "@material-ui/icons/ThumbDownAlt";
-import ReplyIcon from "@material-ui/icons/Reply";
 import PlaylistAddIcon from "@material-ui/icons/PlaylistAdd";
 import FlagIcon from "@material-ui/icons/Flag";
 import Button from "@material-ui/core/Button";
+import { useDispatch, useSelector } from "react-redux";
 
 import SignInDialog from "./SignInDialog";
-import { useDispatch, useSelector } from "react-redux";
+import ShareButton from "./ShareButton";
 
 import { like, dislike } from "../../slices/videoSlice";
 
@@ -57,42 +57,48 @@ const useStyles = makeStyles((theme) => ({
 export default function ActionButtons() {
   const classes = useStyles();
   const dispatch = useDispatch();
+
   const [openSignInDialog, setOpenSignInDialog] = useState(false);
-  const [title, setTitle] = useState("");
+  const [text, setText] = useState("");
   const [content, setContent] = useState("");
 
   const { isAuthenticated } = useSelector((state) => state.auth);
-  const { _id, likesCount, dislikesCount, isLiked, isDisliked } = useSelector(
-    (state) => state.video
-  );
+  const {
+    _id,
+    title,
+    likesCount,
+    dislikesCount,
+    isLiked,
+    isDisliked,
+  } = useSelector((state) => state.video);
 
   const hanleOpenSignInDialog0 = () => {
-    setTitle("Like this video?");
+    setText("Like this video?");
     setContent("Sign in to make your opinion count.");
     setOpenSignInDialog(true);
   };
 
   const hanleOpenSignInDialog1 = () => {
-    setTitle("Don't like this video?");
+    setText("Don't like this video?");
     setContent("Sign in to make your opinion count.");
     setOpenSignInDialog(true);
   };
 
   const hanleOpenSignInDialog2 = () => {
-    setTitle("Want to watch this again later?");
+    setText("Want to watch this again later?");
     setContent("Sign in to add this video to a playlist.");
     setOpenSignInDialog(true);
   };
 
   const hanleOpenSignInDialog3 = () => {
-    setTitle("Need to report the video?");
+    setText("Need to report the video?");
     setContent("Sign in to report inappropriate content.");
     setOpenSignInDialog(true);
   };
 
   const handleCloseSignInDialog = () => {
     setOpenSignInDialog(false);
-    setTitle("");
+    setText("");
     setContent("");
   };
 
@@ -129,16 +135,15 @@ export default function ActionButtons() {
         >
           {dislikesCount}
         </Button>
-        <Button
-          classes={{
-            label: classes.label,
-            startIcon: classes.startIcon,
-            iconSizeMedium: classes.iconBtn2,
+        <ShareButton
+          config={{
+            params: {
+              title: "My share",
+              text: title,
+              url: window.location.href,
+            },
           }}
-          startIcon={<ReplyIcon />}
-        >
-          Share
-        </Button>
+        />
         <Button
           classes={{
             label: classes.label,
@@ -166,7 +171,7 @@ export default function ActionButtons() {
         <SignInDialog
           openSignInDialog={openSignInDialog}
           handleCloseSignInDialog={handleCloseSignInDialog}
-          title={title}
+          title={text}
           content={content}
         />
       )}

@@ -9,7 +9,7 @@ const video = createSlice({
   initialState,
   reducers: {
     setVideo: (state, { payload }) => {
-      return payload;
+      return { ...payload, comments: [], commentsLoaded: false };
     },
     toggleSubscribeSuccess: (state) => {
       if (state.isSubscribed) {
@@ -46,6 +46,55 @@ const video = createSlice({
         state.dislikesCount += 1;
         state.isDisliked = !state.isDisliked;
       }
+    },
+    addCommentSuccess: (state, { payload }) => {
+      state.commentsCount += 1;
+      state.comments.unshift(payload);
+    },
+    getCommentsSuccess: (state, { payload }) => {
+      state.comments = payload;
+      state.commentsLoaded = true;
+    },
+    deleteCommentSuccess: (state, { payload }) => {
+      return {
+        ...state,
+        commentsCount: state.commentsCount - 1,
+        comments: state.comments.filter((comment) => comment._id !== payload),
+      };
+    },
+    addReplySuccess: (state, { payload }) => {
+      state.comments.map((comment) => {
+        if (comment._id === payload.commentId) {
+          comment.commentsCount = comment.commentsCount + 1;
+          if (comment.replies) {
+            comment.replies = [...comment.replies, payload];
+          } else {
+            comment.replies = [payload];
+            comment.isLoaded = true;
+          }
+        }
+        return comment;
+      });
+    },
+    getRepliesSuccess: (state, { payload }) => {
+      state.comments.map((comment) => {
+        if (comment._id === payload._id) {
+          comment.isLoaded = true;
+          comment.replies = payload.data;
+        }
+        return comment;
+      });
+    },
+    deleteReplySuccess: (state, { payload }) => {
+      state.comments.map((comment) => {
+        if (comment._id === payload.commentId) {
+          comment.commentsCount = comment.commentsCount - 1;
+          comment.replies = comment.replies.filter(
+            (reply) => reply._id !== payload._id
+          );
+        }
+        return comment;
+      });
     },
   },
 });
@@ -173,11 +222,89 @@ export const upView = (_id) => async () => {
   } catch (error) {}
 };
 
+export const addComment = (_id, newComment, resetForm) => async (dispatch) => {
+  try {
+    const { data } = await axios.post("/video/addComment", {
+      _id,
+      text: newComment,
+    });
+    dispatch(addCommentSuccess(data));
+    resetForm();
+
+    toast.dark("Comment added", {
+      autoClose: 2000,
+      closeButton: false,
+      className: "yy",
+    });
+  } catch (error) {}
+};
+
+export const getComments = (_id) => async (dispatch) => {
+  try {
+    const { data } = await axios.get(`/video/getComments/${_id}`);
+    dispatch(getCommentsSuccess(data));
+  } catch (error) {}
+};
+
+export const deleteComment = (_id) => async (dispatch) => {
+  try {
+    await axios.get(`/video/deleteComment/${_id}`);
+    dispatch(deleteCommentSuccess(_id));
+
+    toast.dark("Comment deleted", {
+      autoClose: 2000,
+      closeButton: false,
+      className: "yy",
+    });
+  } catch (error) {}
+};
+
+export const addReply = (replyData) => async (dispatch) => {
+  try {
+    const { data } = await axios.post("/video/addReply", replyData);
+    dispatch(addReplySuccess(data));
+
+    toast.dark("Reply added", {
+      autoClose: 2000,
+      closeButton: false,
+      className: "yy",
+    });
+  } catch (error) {}
+};
+
+export const getReplies = (_id, setLoading) => async (dispatch) => {
+  try {
+    const { data } = await axios.get(`/video/getReplies/${_id}`);
+    dispatch(getRepliesSuccess({ _id, data }));
+    setLoading(false);
+  } catch (error) {}
+};
+
+export const deleteReply = (reply) => async (dispatch) => {
+  try {
+    await axios.get(`/video/deleteReply/${reply._id}`);
+    dispatch(deleteReplySuccess(reply));
+
+    toast.dark("Reply deleted", {
+      autoClose: 2000,
+      closeButton: false,
+      className: "yy",
+    });
+  } catch (error) {}
+};
+
 const { reducer, actions } = video;
 export const {
   setVideo,
   toggleSubscribeSuccess,
   likeSuccess,
   dislikeSuccess,
+  addCommentSuccess,
+  getCommentsSuccess,
+  addReplySuccess,
+  getRepliesSuccess,
+  deleteReplySuccess,
+  deleteCommentSuccess,
 } = actions;
+
 export default reducer;

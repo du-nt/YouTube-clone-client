@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Dialog from "@material-ui/core/Dialog";
 import AppBar from "@material-ui/core/AppBar";
@@ -10,9 +10,13 @@ import TuneIcon from "@material-ui/icons/Tune";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 import Typography from "@material-ui/core/Typography";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 import AddComment from "./AddComment";
 import Comment from "./Comment";
+
+import { getComments } from "../../slices/videoSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -43,6 +47,12 @@ const useStyles = makeStyles((theme) => ({
     padding: 0,
   },
   close: { marginRight: theme.spacing(0.5) },
+  loading: {
+    height: "100%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
 }));
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -56,8 +66,17 @@ export default function CommentsDialog({
   closeComments,
 }) {
   const classes = useStyles(playerHeight);
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
   const openMenu = Boolean(anchorEl);
+  const dispatch = useDispatch();
+
+  const { commentsLoaded, _id, commentsCount, comments } = useSelector(
+    (state) => state.video
+  );
+
+  useEffect(() => {
+    !commentsLoaded && dispatch(getComments(_id));
+  }, [dispatch, commentsLoaded, _id]);
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -106,9 +125,11 @@ export default function CommentsDialog({
             <Typography variant="subtitle1" className={classes.title}>
               Comments
             </Typography>
-            <Typography variant="subtitle1" className={classes.commentsCount}>
-              234
-            </Typography>
+            {commentsCount > 0 && (
+              <Typography variant="subtitle1" className={classes.commentsCount}>
+                {commentsCount}
+              </Typography>
+            )}
           </div>
           <IconButton
             onClick={handleMenu}
@@ -128,10 +149,18 @@ export default function CommentsDialog({
           </IconButton>
         </Toolbar>
       </AppBar>
-
-      <AddComment focus={focus} />
-      <Comment />
-      <Comment />
+      {commentsLoaded ? (
+        <>
+          <AddComment focus={focus} />
+          {comments.map((comment, index) => (
+            <Comment key={index} item={comment} />
+          ))}
+        </>
+      ) : (
+        <div className={classes.loading}>
+          <CircularProgress />
+        </div>
+      )}
 
       {menu}
     </Dialog>
