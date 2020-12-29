@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 // axios.defaults.baseURL = "/api/";
-axios.defaults.baseURL = "https://api-youtubeclone.herokuapp.com/api/";
+axios.defaults.baseURL = process.env.SERVER_URL;
 axios.defaults.withCredentials = true;
 
 const config = {

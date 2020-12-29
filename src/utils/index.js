@@ -9,7 +9,7 @@ export const upload = async (
   resetSubmitted
 ) => {
   axios.defaults.withCredentials = false;
-  const url = "https://api.cloudinary.com/v1_1/dwtbzg7gs/upload";
+  const url = process.env.CLOUD_URL;
   let toastId = null;
   const myNewToastId = "progress";
 
