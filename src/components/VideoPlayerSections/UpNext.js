@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 import { makeStyles } from "@material-ui/core";
+import { useDispatch } from "react-redux";
 
 import MediaItem from "./MediaItem";
-import { useDispatch } from "react-redux";
+import Loading from "./Loading";
 
 import { getRelatedVideos } from "../../slices/videoSlice";
 import { useParams } from "react-router-dom";
@@ -36,9 +37,15 @@ export default function UpNext() {
   const [loading, setLoading] = useState(true);
   const [videos, setVideos] = useState([]);
   const { videoId } = useParams();
-
+  const unmounted = useRef(false);
+ 
   useEffect(() => {
-    dispatch(getRelatedVideos(videoId, setVideos, setLoading));
+    dispatch(
+      getRelatedVideos(videoId, setVideos, setLoading, unmounted.current)
+    );
+    return () => {
+      unmounted.current = true;
+    };
   }, [dispatch, videoId]);
 
   return (
@@ -53,8 +60,8 @@ export default function UpNext() {
         />
       </div>
       <div className={classes.recommend}>
-        {!loading &&
-          (videos.length ? (
+        {!loading ? (
+          videos.length ? (
             videos.map((video, index) => (
               <MediaItem key={index} video={video} />
             ))
@@ -67,7 +74,10 @@ export default function UpNext() {
             >
               Related videos is not available
             </Typography>
-          ))}
+          )
+        ) : (
+          <Loading />
+        )}
       </div>
     </Paper>
   );

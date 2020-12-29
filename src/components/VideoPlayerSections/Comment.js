@@ -12,7 +12,6 @@ import MenuItem from "@material-ui/core/MenuItem";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import ArrowDropUpIcon from "@material-ui/icons/ArrowDropUp";
 import { makeStyles } from "@material-ui/core/styles";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import moment from "moment";
 import { NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -20,8 +19,14 @@ import { useDispatch, useSelector } from "react-redux";
 import ReplyComment from "./ReplyComment";
 import ReplyForm from "./ReplyForm";
 import SignInDialog from "./SignInDialog";
+import Loading2 from "./Loading2";
 
-import { getReplies, deleteComment } from "../../slices/videoSlice";
+import {
+  getReplies,
+  deleteComment,
+  likeComment,
+  dislikeComment,
+} from "../../slices/videoSlice";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -54,10 +59,24 @@ const useStyles = makeStyles((theme) => ({
     position: "relative",
     left: -6,
   },
+  likeActive: {
+    display: "flex",
+    alignItems: "center",
+    marginRight: 18,
+    position: "relative",
+    left: -6,
+    color: "#065fd4",
+  },
   dislike: {
     display: "flex",
     alignItems: "center",
     marginRight: theme.spacing(3),
+  },
+  dislikeActive: {
+    display: "flex",
+    alignItems: "center",
+    marginRight: theme.spacing(3),
+    color: "#065fd4",
   },
   avatar: {
     backgroundColor: "#00579c",
@@ -66,6 +85,10 @@ const useStyles = makeStyles((theme) => ({
   },
   iconButton: {
     padding: 6,
+  },
+  iconButtonActive: {
+    padding: 6,
+    color: "#065fd4",
   },
   menus: {
     padding: 0,
@@ -79,12 +102,6 @@ const useStyles = makeStyles((theme) => ({
     color: "#fff",
     padding: "1px 8px",
     borderRadius: 50,
-  },
-  spin: {
-    margin: theme.spacing(1, 0, 1, 8),
-    height: 88,
-    display: "flex",
-    alignItems: "center",
   },
 }));
 
@@ -107,6 +124,8 @@ export default function Comment({ item }) {
     commentsCount,
     replies,
     isLoaded,
+    isLiked,
+    isDisliked,
   } = item;
   const letterAvatar = author.displayName.charAt(0).toUpperCase();
   const time = moment(createdAt).fromNow();
@@ -142,6 +161,14 @@ export default function Comment({ item }) {
       handleShowComment();
       setOpenForm(true);
     } else setOpenSignInDialog(true);
+  };
+
+  const handleLike = () => {
+    isAuthenticated ? dispatch(likeComment(_id)) : setOpenSignInDialog(true);
+  };
+
+  const handleDislike = () => {
+    isAuthenticated ? dispatch(dislikeComment(_id)) : setOpenSignInDialog(true);
   };
 
   const handleCloseSignInDialog = () => {
@@ -184,16 +211,26 @@ export default function Comment({ item }) {
           {text}
         </Typography>
         <div className={classes.icongroup}>
-          <div className={classes.like}>
-            <IconButton className={classes.iconButton}>
+          <div className={isLiked ? classes.likeActive : classes.like}>
+            <IconButton
+              className={
+                isLiked ? classes.iconButtonActive : classes.iconButton
+              }
+              onClick={handleLike}
+            >
               <ThumbUpAltIcon fontSize="small" />
             </IconButton>
             {likesCount > 0 && (
               <Typography variant="body2">{likesCount}</Typography>
             )}
           </div>
-          <div className={classes.dislike}>
-            <IconButton className={classes.iconButton}>
+          <div className={isDisliked ? classes.dislikeActive : classes.dislike}>
+            <IconButton
+              className={
+                isDisliked ? classes.iconButtonActive : classes.iconButton
+              }
+              onClick={handleDislike}
+            >
               <ThumbDownAltIcon fontSize="small" />
             </IconButton>
             {dislikesCount > 0 && (
@@ -228,9 +265,7 @@ export default function Comment({ item }) {
                 Hide replies
               </Button>
               {loading ? (
-                <div className={classes.spin}>
-                  <CircularProgress />
-                </div>
+                <Loading2 />
               ) : (
                 replies.map((reply, index) => (
                   <ReplyComment key={index} reply={reply} />

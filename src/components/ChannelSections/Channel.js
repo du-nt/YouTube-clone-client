@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
     flex: 1,
   },
   not: {
-    marginTop: theme.spacing(8),
+    marginTop: "30%",
   },
 }));
 

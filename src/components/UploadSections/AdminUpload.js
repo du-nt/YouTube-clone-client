@@ -12,7 +12,7 @@ import useMediaQuery from "@material-ui/core/useMediaQuery";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 
-import BlankHeader from "./BlankHeader";
+import AdminHeader from "./AdminHeader";
 
 import { addUrl } from "../../slices/videoSlice";
 import { useDispatch } from "react-redux";
@@ -70,7 +70,7 @@ export default function AdminUpload() {
 
   return (
     <>
-      <BlankHeader />
+      <AdminHeader />
       <Container maxWidth="sm" className={classes.contain}>
         <Grid container justify="center" alignContent="center">
           <Grid item xs={12} md={8}>

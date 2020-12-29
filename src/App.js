@@ -10,6 +10,7 @@ import ForgotPassword from "./components/Auths/ForgotPassword";
 import ResetPassword from "./components/Auths/ResetPassword";
 import NotFound from "./components/Others/NotFound";
 import AdminUpload from "./components/UploadSections/AdminUpload";
+import Admin from "./components/Admins/Admin";
 import SearchResult from "./components/SearchResultSections/SearchResult";
 
 import { getCurrentUser } from "./slices/authSlice";
@@ -33,7 +34,14 @@ export default function App() {
   return (
     !loading && (
       <>
-        <ToastContainer position="bottom-left" hideProgressBar newestOnTop />
+        <ToastContainer
+          closeButton={false}
+          position="bottom-left"
+          hideProgressBar
+          newestOnTop
+          draggable={false}
+          closeOnClick={false}
+        />
         <Switch>
           <GoHomeIfLogged exact path="/login" component={Login} />
           <GoHomeIfLogged exact path="/register" component={Register} />
@@ -48,6 +56,8 @@ export default function App() {
             component={ResetPassword}
           />
           <AdminRoute path="/admin/upload" component={AdminUpload} />
+
+          <AdminRoute path="/admin/manage" component={Admin} />
 
           <CustomizedRoute2 exact path="/results" component={SearchResult} />
 

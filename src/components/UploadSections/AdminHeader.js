@@ -6,6 +6,7 @@ import Link from "@material-ui/core/Link";
 import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
+import { Button } from "@material-ui/core";
 
 const logoUrl =
   "url(https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg)";
@@ -29,6 +30,9 @@ const useStyles = makeStyles((theme) => ({
     backgroundSize: "100%",
     backgroundPosition: "center",
   },
+  btn: {
+    marginLeft: "auto",
+  },
 }));
 
 export default function BlankHeader() {
@@ -45,6 +49,14 @@ export default function BlankHeader() {
         <Link to="/" component={NavLink}>
           <div className={classes.logo}></div>
         </Link>
+        <Button
+          color="primary"
+          className={classes.btn}
+          component={NavLink}
+          to="/admin/manage/users"
+        >
+          Manage
+        </Button>
       </Toolbar>
     </AppBar>
   );

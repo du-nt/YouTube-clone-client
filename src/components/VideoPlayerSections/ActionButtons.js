@@ -138,7 +138,7 @@ export default function ActionButtons() {
         <ShareButton
           config={{
             params: {
-              title: "My share",
+              title: title,
               text: title,
               url: window.location.href,
             },

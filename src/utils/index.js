@@ -1,47 +1,105 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 
-export const upload = async (files) => {
-  if (files.length) {
-    const formData = new FormData();
+export const upload = async (
+  file,
+  subtitles,
+  source,
+  CloseButton,
+  resetSubmitted
+) => {
+  axios.defaults.withCredentials = false;
+  const url = "https://api.cloudinary.com/v1_1/dwtbzg7gs/upload";
+  let toastId = null;
+  const myNewToastId = "progress";
 
-    files.forEach((file) => {
-      formData.append("file", file);
-      formData.append("api_key", "814524645536838");
-      formData.append("api_secret", "nvYpUt8OPojkyecE6haWHoJ3tvs");
-      formData.append("upload_preset", "ml_default");
-      formData.append("timestamp", (Date.now() / 1000) | 0);
-    });
-    const url = "https://api.cloudinary.com/v1_1/dwtbzg7gs/upload";
+  const formData2 = new FormData();
+  formData2.append("file", file);
+  formData2.append("upload_preset", "video_youtube");
+  formData2.append("folder", "uploadedVideos");
 
-    const toastId = null;
-    const config = {
-      onUploadProgress: (p) => {
-        const progress = p.loaded / p.total;
-        if (toastId === null) {
-          toastId = toast("Upload in Progress", {
-            progress,
-          });
-        } else {
-          toast.update(toastId, {
-            progress,
-          });
-        }
-      },
-    };
+  const config = {
+    onUploadProgress: (p) => {
+      const progress = p.loaded / p.total;
+      const percent = Math.ceil(progress * 100);
 
-    // axios
-    //   .post(url, formData, config2)
+      if (toastId === null) {
+        toastId = toast.info("Upload in progress", {
+          progress,
+          hideProgressBar: false,
+          closeButton: CloseButton,
+          className: "center",
+          toastId: myNewToastId,
+        });
+      } else {
+        progress === 1
+          ? toast.update(myNewToastId, {
+              render: "Finishing, please wait...",
+              progress: undefined,
+              autoClose: false,
+              closeButton: false,
+            })
+          : toast.update(myNewToastId, {
+              render: `Upload in progress ${percent}%`,
+              progress,
+            });
+      }
+    },
+    cancelToken: source.token,
+  };
 
-    fetch(url, {
-      method: "POST",
-      mode: "no-cors",
-      headers: {
-        "content-type": "multipart/form-data",
-      },
-      body: formData,
-    })
-      .then((res) => console.log(res))
-      .catch((err) => console.log(err));
+  if (subtitles.length) {
+    const formData1 = new FormData();
+    formData1.append("file", subtitles[0]);
+    formData1.append("upload_preset", "video_youtube");
+    formData1.append("folder", "caption");
+    formData1.append("resource_type", "raw");
+
+    const upload1 = axios
+      .post(url, formData1)
+      .then(({ data }) => {
+        toast.success("Subtitle uploaded !", {
+          autoClose: 2000,
+          hideProgressBar: true,
+        });
+        return data.secure_url;
+      })
+      .catch((err) => {
+        resetSubmitted();
+      });
+
+    const upload2 = axios
+      .post(url, formData2, config)
+      .then(({ data }) => data.secure_url)
+      .catch((err) => {
+        toast.update(myNewToastId, {
+          render: err.message,
+          type: toast.TYPE.ERROR,
+          hideProgressBar: true,
+          autoClose: 1500,
+          closeButton: false,
+          progress: undefined,
+          className: "center",
+        });
+        resetSubmitted();
+      });
+
+    return Promise.all([upload2, upload1]);
+  } else {
+    return axios
+      .post(url, formData2, config)
+      .then(({ data }) => [data.secure_url])
+      .catch((err) => {
+        toast.update(myNewToastId, {
+          render: err.message,
+          type: toast.TYPE.ERROR,
+          hideProgressBar: true,
+          autoClose: 1500,
+          closeButton: false,
+          progress: undefined,
+          className: "center",
+        });
+        resetSubmitted();
+      });
   }
 };

@@ -35,7 +35,7 @@ export default function Video() {
         height="100%"
         controls
         loop
-        playing
+        // playing
         onStart={handleView}
         config={{
           file: {

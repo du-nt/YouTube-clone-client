@@ -15,7 +15,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import AddComment from "./AddComment";
 import Comment from "./Comment";
 
-import { getComments } from "../../slices/videoSlice";
+import { getComments, topSort, firstSort } from "../../slices/videoSlice";
 import { useDispatch, useSelector } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
@@ -90,6 +90,16 @@ export default function CommentsDialog({
     setAnchorEl(null);
   };
 
+  const handleTopSort = () => {
+    dispatch(topSort());
+    setAnchorEl(null);
+  };
+
+  const handleFirstSort = () => {
+    dispatch(firstSort());
+    setAnchorEl(null);
+  };
+
   const menu = (
     <Menu
       id="menu-appbar"
@@ -106,8 +116,8 @@ export default function CommentsDialog({
       onClose={handleCloseMenu}
       classes={{ list: classes.menus }}
     >
-      <MenuItem onClick={handleCloseMenu}>Top comments</MenuItem>
-      <MenuItem onClick={handleCloseMenu}>Newest first</MenuItem>
+      <MenuItem onClick={handleTopSort}>Top comments</MenuItem>
+      <MenuItem onClick={handleFirstSort}>Newest first</MenuItem>
     </Menu>
   );
 

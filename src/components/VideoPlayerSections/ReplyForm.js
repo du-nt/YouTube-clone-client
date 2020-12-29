@@ -22,9 +22,11 @@ export default function ReplyForm({ _id, open, handleCloseReply }) {
 
   const handleSubmit = () => {
     const text = comment.trim();
-    const replyData = { _id, text };
-    dispatch(addReply(replyData));
-    handleCloseReply();
+    if (text) {
+      const replyData = { _id, text };
+      dispatch(addReply(replyData));
+      handleCloseReply();
+    }
   };
 
   return (

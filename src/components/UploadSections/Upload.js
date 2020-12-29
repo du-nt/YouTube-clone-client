@@ -1,8 +1,6 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 
-import { DropzoneArea } from "material-ui-dropzone";
 import { makeStyles } from "@material-ui/core/styles";
-import { Theaters } from "@material-ui/icons";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
@@ -10,37 +8,36 @@ import Grid from "@material-ui/core/Grid";
 import Container from "@material-ui/core/Container";
 import { useTheme } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
+import { Typography } from "@material-ui/core";
+import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
+
+import axios from "axios";
 
 import BlankHeader from "./BlankHeader";
 
 import * as Yup from "yup";
 import { useFormik } from "formik";
 
+import { uploadToServer } from "../../slices/videoSlice";
 import { upload } from "../../utils";
-
-const FILE_SIZE = 3000000000;
-const SUPPORTED_FORMATS = ["video/*,.mkv"];
 
 const initialValues = {
   title: "",
+  description: "",
 };
 
 const validationSchema = Yup.object().shape({
   title: Yup.string()
     .required("Title is required")
     .max(50, "Title must have max 50 characters"),
+  description: Yup.string(),
 });
-
-const handlePreviewIcon = (fileObject, classes) => {
-  const iconProps = {
-    className: classes.image,
-  };
-  return <Theaters {...iconProps} />;
-};
 
 const useStyles = makeStyles((theme) => ({
   item: {
     flexBasis: "auto",
+    padding: theme.spacing(1),
   },
   contain: {
     [theme.breakpoints.up(1000)]: {
@@ -62,46 +59,137 @@ const useStyles = makeStyles((theme) => ({
   btn: {
     margin: theme.spacing(3, 0, 2),
   },
+  label: {
+    fontWeight: 400,
+  },
+  file: {
+    marginBottom: theme.spacing(1),
+  },
+  close: {
+    display: "flex",
+    alignSelf: "center",
+  },
+}));
+
+const helperTextStyles = makeStyles((theme) => ({
+  root: {
+    position: "absolute",
+    top: "100%",
+    marginTop: 0,
+  },
 }));
 
 export default function Upload() {
   const classes = useStyles();
+  const helperTextClasses = helperTextStyles();
+  const dispatch = useDispatch();
   const theme = useTheme();
   const blurMatch = useMediaQuery(theme.breakpoints.up(780));
+  const videoRef = useRef(null);
+  const subRef = useRef(null);
+  let unmounted = useRef(null);
+  const SUPPORTED_FORMATS = ["video/mp4", "video/avi", "video/mkv"];
 
-  const fileInput = useRef();
-  const [file, setFile] = useState([]);
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
 
-  const handleChangeFile = async (video) => {
-    const data = await upload(video);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const [files, setFiles] = useState([]);
+  const [subtitles, setSubtitles] = useState([]);
+
+  useEffect(() => {
+    unmounted.current = false;
+    return () => (unmounted.current = true);
+  });
+
+  const handleChangeFile = ({ target }) => {
+    if (!SUPPORTED_FORMATS.includes(target.files[0].type)) {
+      toast.error("Unsupported file format", { autoClose: 1500 });
+      setFiles([]);
+      return;
+    }
+    if (target.files[0].size > 100000000) {
+      toast.error("File too large!", { autoClose: 1500 });
+      setFiles([]);
+      return;
+    }
+    setFiles(target.files);
   };
 
+  const handleChangeSubtitle = ({ target }) => {
+    setSubtitles(target.files);
+  };
+
+  const resetFiles = () => {
+    videoRef.current.value = "";
+    subRef.current.value = "";
+  };
+
+  const handleCancel = () => {
+    source.cancel("Upload cancelled !");
+  };
+
+  const handleHide = (toastId) => {
+    toast.update(toastId, {
+      className: "hide",
+    });
+  };
+
+  const CloseButton = () => (
+    <div className={classes.close}>
+      <Button onClick={() => handleHide("progress")} size="small">
+        Hide
+      </Button>
+      <Button
+        onClick={handleCancel}
+        color="secondary"
+        variant="contained"
+        size="small"
+      >
+        Cancel
+      </Button>
+    </div>
+  );
+
   const {
-    isSubmitting,
     values,
     touched,
     errors,
-    isValid,
     handleChange,
     handleBlur,
     handleSubmit,
   } = useFormik({
     initialValues,
     validationSchema,
-    onSubmit: (values, { resetForm }) => {
-      //   const deleteFn = fileInput.current.deleteFile;
-      //   const formData = new FormData();
-      //   const onResetFile = async () => {
-      //     for (let i = 0; i <= files.length; i++) {
-      //       await deleteFn(files, 0);
-      //     }
-      //     setFiles([]);
-      //   };
-      //   files.forEach((file) => {
-      //     formData.append("files", file);
-      //   });
-      //   formData.append("title", values.title);
-      //   dispatch(addPost(formData, { resetForm, onResetFile }));
+    onSubmit: async (values, { resetForm }) => {
+      if (files.length) {
+        setIsSubmitting(true);
+        const resetSubmitted = (resetForm, resetFiles) => {
+          if (!unmounted.current) {
+            setIsSubmitting(false);
+            resetForm && resetForm();
+            resetFiles && resetFiles();
+          }
+        };
+        const data = await upload(
+          files[0],
+          subtitles,
+          source,
+          CloseButton,
+          resetSubmitted
+        );
+        if (data && data[0]) {
+          const newVideo = {
+            ...values,
+            url: data[0],
+            subtitle: data[1],
+          };
+          dispatch(
+            uploadToServer(newVideo, resetForm, resetFiles, resetSubmitted)
+          );
+        }
+      }
     },
   });
 
@@ -113,41 +201,78 @@ export default function Upload() {
           <Grid item xs={12} md={8}>
             <Paper elevation={blurMatch ? 3 : 0} className={classes.paperstyle}>
               <form onSubmit={handleSubmit}>
-                <DropzoneArea
-                  ref={fileInput}
-                  acceptedFiles={SUPPORTED_FORMATS}
-                  filesLimit={1}
-                  dropzoneText="Drag and drop a video here or click"
-                  previewGridClasses={{ item: classes.item }}
-                  previewGridProps={{ container: { spacing: 3 } }}
-                  onChange={handleChangeFile}
-                  maxFileSize={FILE_SIZE}
-                  getPreviewIcon={handlePreviewIcon}
-                />
+                <label htmlFor="video">
+                  <Typography
+                    variant="h6"
+                    component="span"
+                    className={classes.label}
+                  >
+                    Select a video
+                  </Typography>
+                </label>
                 <TextField
+                  id="video"
+                  className={classes.file}
                   fullWidth
                   required
-                  id="outlined-basic"
+                  variant="outlined"
+                  type="file"
+                  inputRef={videoRef}
+                  inputProps={{ accept: "video/*" }}
+                  onChange={handleChangeFile}
+                />
+                <label htmlFor="subtitle">
+                  <Typography
+                    variant="h6"
+                    component="span"
+                    className={classes.label}
+                  >
+                    Select a .vtt subtitle
+                  </Typography>
+                </label>
+                <TextField
+                  className={classes.file}
+                  id="subtitle"
+                  fullWidth
+                  variant="outlined"
+                  type="file"
+                  inputRef={subRef}
+                  inputProps={{ accept: ".vtt" }}
+                  onChange={handleChangeSubtitle}
+                />
+                <TextField
+                  autoComplete="off"
+                  fullWidth
+                  required
+                  id="title"
                   label="Title"
                   variant="outlined"
                   margin="normal"
+                  name="title"
+                  value={values.title}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={touched.title && !!errors.title}
+                  helperText={touched.title ? errors.title : null}
+                  FormHelperTextProps={{ classes: helperTextClasses }}
                 />
                 <TextField
+                  autoComplete="off"
                   fullWidth
-                  id="outlined-basic"
+                  id="description"
                   label="Description"
                   variant="outlined"
                   margin="normal"
                   multiline
                   rows="3"
                   rowsMax={3}
-                />
-                <TextField
-                  fullWidth
-                  id="outlined-basic"
-                  label="Subtitle"
-                  variant="outlined"
-                  margin="normal"
+                  name="description"
+                  value={values.description}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={touched.description && !!errors.description}
+                  helperText={touched.description ? errors.description : null}
+                  FormHelperTextProps={{ classes: helperTextClasses }}
                 />
                 <Button
                   fullWidth
@@ -155,7 +280,7 @@ export default function Upload() {
                   type="submit"
                   variant="contained"
                   color="primary"
-                  disabled={!isValid || !file.length || isSubmitting}
+                  disabled={isSubmitting}
                 >
                   Upload
                 </Button>

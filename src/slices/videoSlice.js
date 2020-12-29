@@ -49,7 +49,7 @@ const video = createSlice({
     },
     addCommentSuccess: (state, { payload }) => {
       state.commentsCount += 1;
-      state.comments.unshift(payload);
+      state.comments.unshift({ ...payload, commentsCount: 0 });
     },
     getCommentsSuccess: (state, { payload }) => {
       state.comments = payload;
@@ -95,6 +95,100 @@ const video = createSlice({
         }
         return comment;
       });
+    },
+    likeCommentSuccess: (state, { payload }) => {
+      state.comments.map((comment) => {
+        if (comment._id === payload) {
+          if (comment.isLiked) {
+            comment.likesCount -= 1;
+            comment.isLiked = !comment.isLiked;
+          } else if (comment.isDisliked) {
+            comment.dislikesCount -= 1;
+            comment.isDisliked = !comment.isDisliked;
+            comment.likesCount += 1;
+            comment.isLiked = !comment.isLiked;
+          } else {
+            comment.likesCount += 1;
+            comment.isLiked = !comment.isLiked;
+          }
+        }
+        return comment;
+      });
+    },
+    dislikeCommentSuccess: (state, { payload }) => {
+      state.comments.map((comment) => {
+        if (comment._id === payload) {
+          if (comment.isDisliked) {
+            comment.dislikesCount -= 1;
+            comment.isDisliked = !comment.isDisliked;
+          } else if (comment.isLiked) {
+            comment.likesCount -= 1;
+            comment.isLiked = !comment.isLiked;
+            comment.dislikesCount += 1;
+            comment.isDisliked = !comment.isDisliked;
+          } else {
+            comment.dislikesCount += 1;
+            comment.isDisliked = !comment.isDisliked;
+          }
+        }
+        return comment;
+      });
+    },
+    likeReplySuccess: (state, { payload }) => {
+      state.comments.map((comment) => {
+        if (comment._id === payload.commentId) {
+          comment.replies.map((reply) => {
+            if (reply._id === payload._id) {
+              if (reply.isLiked) {
+                reply.likesCount -= 1;
+                reply.isLiked = !reply.isLiked;
+              } else if (reply.isDisliked) {
+                reply.dislikesCount -= 1;
+                reply.isDisliked = !reply.isDisliked;
+                reply.likesCount += 1;
+                reply.isLiked = !reply.isLiked;
+              } else {
+                reply.likesCount += 1;
+                reply.isLiked = !reply.isLiked;
+              }
+            }
+            return reply;
+          });
+        }
+        return comment;
+      });
+    },
+    dislikeReplySuccess: (state, { payload }) => {
+      state.comments.map((comment) => {
+        if (comment._id === payload.commentId) {
+          comment.replies.map((reply) => {
+            if (reply._id === payload._id) {
+              if (reply.isDisliked) {
+                reply.dislikesCount -= 1;
+                reply.isDisliked = !reply.isDisliked;
+              } else if (reply.isLiked) {
+                reply.likesCount -= 1;
+                reply.isLiked = !reply.isLiked;
+                reply.dislikesCount += 1;
+                reply.isDisliked = !reply.isDisliked;
+              } else {
+                reply.dislikesCount += 1;
+                reply.isDisliked = !reply.isDisliked;
+              }
+            }
+            return reply;
+          });
+        }
+        return comment;
+      });
+    },
+    topSort: (state) => {
+      state.comments.sort((a, b) => b.likesCount - a.likesCount);
+    },
+    firstSort: (state) => {
+      state.comments.sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+      );
     },
   },
 });
@@ -168,19 +262,22 @@ export const toggleSubscribe = (_id) => async (dispatch, getState) => {
       className: "yy",
     });
     dispatch(toggleSubscribeSuccess());
-    await axios.get(`/users/${_id}/toggleSubscribe`);
+    axios.get(`/users/${_id}/toggleSubscribe`);
   } catch (error) {}
 };
 
 export const getRelatedVideos = (
   videoId,
   setVideos,
-  setLoading
+  setLoading,
+  unmounted
 ) => async () => {
   try {
     const { data } = await axios.post("/video/relatedVideos", { _id: videoId });
-    setVideos(data);
-    setLoading(false);
+    if (!unmounted) {
+      setVideos(data);
+      setLoading(false);
+    }
   } catch (error) {
     setLoading(false);
   }
@@ -197,7 +294,7 @@ export const like = (_id) => async (dispatch, getState) => {
     });
 
     dispatch(likeSuccess());
-    await axios.get(`/video/like/${_id}`);
+    axios.get(`/video/like/${_id}`);
   } catch (error) {}
 };
 
@@ -212,13 +309,13 @@ export const dislike = (_id) => async (dispatch, getState) => {
     });
 
     dispatch(dislikeSuccess());
-    await axios.get(`/video/dislike/${_id}`);
+    axios.get(`/video/dislike/${_id}`);
   } catch (error) {}
 };
 
 export const upView = (_id) => async () => {
   try {
-    await axios.get(`/video/upView/${_id}`);
+    axios.get(`/video/upView/${_id}`);
   } catch (error) {}
 };
 
@@ -239,9 +336,13 @@ export const addComment = (_id, newComment, resetForm) => async (dispatch) => {
   } catch (error) {}
 };
 
-export const getComments = (_id) => async (dispatch) => {
+export const getComments = (_id) => async (dispatch, getState) => {
   try {
-    const { data } = await axios.get(`/video/getComments/${_id}`);
+    const { user } = getState().auth;
+    const url = user
+      ? `/video/getComments/${_id}?lgId=${user._id}`
+      : `/video/getComments/${_id}`;
+    const { data } = await axios.get(url);
     dispatch(getCommentsSuccess(data));
   } catch (error) {}
 };
@@ -272,9 +373,13 @@ export const addReply = (replyData) => async (dispatch) => {
   } catch (error) {}
 };
 
-export const getReplies = (_id, setLoading) => async (dispatch) => {
+export const getReplies = (_id, setLoading) => async (dispatch, getState) => {
   try {
-    const { data } = await axios.get(`/video/getReplies/${_id}`);
+    const { user } = getState().auth;
+    const url = user
+      ? `/video/getReplies/${_id}?lgId=${user._id}`
+      : `/video/getReplies/${_id}`;
+    const { data } = await axios.get(url);
     dispatch(getRepliesSuccess({ _id, data }));
     setLoading(false);
   } catch (error) {}
@@ -293,6 +398,102 @@ export const deleteReply = (reply) => async (dispatch) => {
   } catch (error) {}
 };
 
+export const likeComment = (_id) => async (dispatch) => {
+  try {
+    dispatch(likeCommentSuccess(_id));
+    axios.get(`/video/likeComment/${_id}`);
+  } catch (error) {}
+};
+
+export const dislikeComment = (_id) => async (dispatch) => {
+  try {
+    dispatch(dislikeCommentSuccess(_id));
+    axios.get(`/video/dislikeComment/${_id}`);
+  } catch (error) {}
+};
+
+export const likeReply = (_id, commentId) => async (dispatch) => {
+  try {
+    dispatch(likeReplySuccess({ _id, commentId }));
+    axios.get(`/video/likeReply/${_id}`);
+  } catch (error) {}
+};
+
+export const dislikeReply = (_id, commentId) => async (dispatch) => {
+  try {
+    dispatch(dislikeReplySuccess({ _id, commentId }));
+    axios.get(`/video/dislikeReply/${_id}`);
+  } catch (error) {}
+};
+
+// export const upload = (formData, { resetForm, onResetFile }) => async () => {
+//   try {
+//     let toastId = null;
+//     const config = {
+//       header: { "content-type": "multipart/form-data" },
+//       onUploadProgress: (p) => {
+//         const progress = p.loaded / p.total;
+//         console.log(progress);
+//         if (toastId === null) {
+//           toastId = toast("Upload in Progress", {
+//             progress: progress,
+//             autoClose: false,
+//             closeButton: false,
+//             closeOnClick: false,
+//             draggable: false,
+//           });
+//         } else {
+//           toast.update(toastId, {
+//             progress: progress,
+//           });
+//         }
+//       },
+//     };
+//     const { data } = await axios.post("/video/upload", formData, config);
+
+//     toast.done(toastId);
+//     console.log(data);
+
+//     resetForm();
+//     onResetFile();
+//   } catch (error) {
+//     console.log(error.message);
+//   }
+// };
+
+export const uploadToServer = (
+  newVideo,
+  resetForm,
+  resetFiles,
+  resetSubmitted
+) => async () => {
+  try {
+    await axios.post("/video/upload", newVideo);
+
+    toast.update("progress", {
+      type: toast.TYPE.SUCCESS,
+      render: "Upload succeeded !",
+      autoClose: 1500,
+      hideProgressBar: true,
+      closeButton: false,
+      progress: undefined,
+      className: "center",
+    });
+    resetSubmitted(resetForm, resetFiles);
+  } catch (err) {
+    toast.update("progress", {
+      render: err.message,
+      type: toast.TYPE.ERROR,
+      hideProgressBar: true,
+      autoClose: 1500,
+      closeButton: false,
+      progress: undefined,
+      className: "center",
+    });
+    resetSubmitted();
+  }
+};
+
 const { reducer, actions } = video;
 export const {
   setVideo,
@@ -305,6 +506,12 @@ export const {
   getRepliesSuccess,
   deleteReplySuccess,
   deleteCommentSuccess,
+  likeCommentSuccess,
+  dislikeCommentSuccess,
+  likeReplySuccess,
+  dislikeReplySuccess,
+  topSort,
+  firstSort,
 } = actions;
 
 export default reducer;

@@ -54,6 +54,7 @@ export default function Home() {
       const height = divRef.current.offsetHeight + 1;
       setPlayerHeight(height);
     }
+    return () => setPlayerHeight(null);
   }, [loading]);
 
   if (dead)

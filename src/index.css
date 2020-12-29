@@ -39,3 +39,12 @@ video::cue {
 .yy {
   background-color: #4c4c4c !important;
 }
+.iconShare {
+  margin: 10px;
+}
+.center {
+  display: flex;
+}
+.hide {
+  display: none !important;
+}

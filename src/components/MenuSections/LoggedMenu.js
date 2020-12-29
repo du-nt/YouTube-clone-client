@@ -131,6 +131,11 @@ export default function LoggedMenu({ closeMenu }) {
     history.push("/admin/upload");
   };
 
+  const goToManage = () => {
+    setAnchorEl(null);
+    history.push("/admin/manage/users");
+  };
+
   return (
     <div className={classes.root}>
       <Paper variant="outlined" square>
@@ -269,6 +274,7 @@ export default function LoggedMenu({ closeMenu }) {
       >
         <MenuItem onClick={goUpload}>Upload a video</MenuItem>
         <MenuItem onClick={goAdminUpload}>Add video's url</MenuItem>
+        <MenuItem onClick={goToManage}>Manage</MenuItem>
       </Menu>
     </div>
   );

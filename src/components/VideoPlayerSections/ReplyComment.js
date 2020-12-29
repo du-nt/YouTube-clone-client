@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Avatar from "@material-ui/core/Avatar";
 import Typography from "@material-ui/core/Typography";
 import ThumbUpAltIcon from "@material-ui/icons/ThumbUpAlt";
@@ -19,7 +19,12 @@ import { useDispatch, useSelector } from "react-redux";
 
 import SignInDialog from "./SignInDialog";
 
-import { deleteReply, addReply } from "../../slices/videoSlice";
+import {
+  deleteReply,
+  addReply,
+  likeReply,
+  dislikeReply,
+} from "../../slices/videoSlice";
 import { Link } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
@@ -50,13 +55,31 @@ const useStyles = makeStyles((theme) => ({
     position: "relative",
     left: -6,
   },
+  likeActive: {
+    display: "flex",
+    alignItems: "center",
+    marginRight: 10,
+    position: "relative",
+    left: -6,
+    color: "#065fd4",
+  },
   dislike: {
     display: "flex",
     alignItems: "center",
     marginRight: theme.spacing(2),
   },
+  dislikeActive: {
+    display: "flex",
+    alignItems: "center",
+    marginRight: theme.spacing(2),
+    color: "#065fd4",
+  },
   iconButton: {
     padding: 6,
+  },
+  iconButtonActive: {
+    padding: 6,
+    color: "#065fd4",
   },
   more: {
     marginLeft: "auto",
@@ -78,30 +101,73 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 50,
   },
   mentions: {
-    backgroundColor: "#000",
-    color: "red",
-  },
-  input: {
-    width: "100%",
-    marginTop: 8,
-    marginBottom: 4,
-    border: 0,
-    display: "inline-flex",
-    padding: 0,
-    position: "relative",
+    backgroundColor: "#b8ccf5",
+    borderRadius: "2px",
+    padding: "2px 2px",
+    marginLeft: "-4px",
   },
 }));
+
+const mentionsStyle = {
+  control: {
+    border: "2px solid #3f51b5",
+    borderRadius: "4px",
+    marginTop: 8,
+    marginBottom: 4,
+    boxSizing: "border-box",
+    width: 195,
+    height: 40,
+    display: "flex",
+    alignItems: "center",
+  },
+  highlighter: {
+    padding: 9,
+  },
+  input: {
+    padding: 9,
+    minHeight: 3,
+    outline: 0,
+    border: 0,
+    height: "100%",
+  },
+};
+
+const mentionsDefaultStyle = {
+  control: {
+    border: "1px solid rgb(196 196 196)",
+    borderRadius: "4px",
+    marginTop: 8,
+    marginBottom: 4,
+    boxSizing: "border-box",
+    height: 40,
+    width: 195,
+    display: "flex",
+    alignItems: "center",
+  },
+  highlighter: {
+    padding: 9,
+  },
+  input: {
+    padding: 9,
+    minHeight: 3,
+    outline: 0,
+    border: 0,
+    height: "100%",
+  },
+};
 
 function ReplyComment({ reply }) {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const dispatch = useDispatch();
-  const inputRef = React.useRef(null);
+  const inputRef = useRef(null);
+  const [changeBorder, setChangeBorder] = useState(false);
   const [openForm, setOpenForm] = useState(false);
   const [openSignInDialog, setOpenSignInDialog] = useState(false);
 
   const {
+    _id,
     author,
     text,
     createdAt,
@@ -109,6 +175,8 @@ function ReplyComment({ reply }) {
     dislikesCount,
     commentId,
     responseTo,
+    isLiked,
+    isDisliked,
   } = reply;
   const time = moment(createdAt).fromNow();
   const letterAvatar = author.displayName.charAt(0).toUpperCase();
@@ -118,6 +186,18 @@ function ReplyComment({ reply }) {
   const [comment, setComment] = useState("");
   const [replyText, setReplyText] = useState("");
   const [tag, setTag] = useState([]);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (inputRef.current && !inputRef.current.contains(event.target)) {
+        setChangeBorder(true);
+      } else setChangeBorder(false);
+    }
+    document.addEventListener("mouseup", handleClickOutside);
+    return () => {
+      document.removeEventListener("mouseup", handleClickOutside);
+    };
+  }, [inputRef]);
 
   const handleChange = (event, newValue, newPlainTextValue, mentions) => {
     setComment(event.target.value);
@@ -134,8 +214,10 @@ function ReplyComment({ reply }) {
       content = replyText.trim();
       replyData = { _id: commentId, text: content };
     }
-    dispatch(addReply(replyData));
-    setOpenForm(false);
+    if (content) {
+      dispatch(addReply(replyData));
+      setOpenForm(false);
+    }
   };
 
   const handleMenu = (event) => {
@@ -150,9 +232,21 @@ function ReplyComment({ reply }) {
     setAnchorEl(null);
     if (isAuthenticated) {
       user._id !== author._id &&
-        setComment(`@[${author.displayName}](${author._id})`);
+        setComment(`@[${author.displayName}](${author._id}) `);
       setOpenForm(true);
     } else setOpenSignInDialog(true);
+  };
+
+  const handleLike = () => {
+    isAuthenticated
+      ? dispatch(likeReply(_id, commentId))
+      : setOpenSignInDialog(true);
+  };
+
+  const handleDislike = () => {
+    isAuthenticated
+      ? dispatch(dislikeReply(_id, commentId))
+      : setOpenSignInDialog(true);
   };
 
   const handleCloseSignInDialog = () => {
@@ -201,16 +295,28 @@ function ReplyComment({ reply }) {
             <Typography component="span">{text}</Typography>
           </Typography>
           <div className={classes.icongroup}>
-            <div className={classes.like}>
-              <IconButton className={classes.iconButton}>
+            <div className={isLiked ? classes.likeActive : classes.like}>
+              <IconButton
+                className={
+                  isLiked ? classes.iconButtonActive : classes.iconButton
+                }
+                onClick={handleLike}
+              >
                 <ThumbUpAltIcon fontSize="small" />
               </IconButton>
               {likesCount > 0 && (
                 <Typography variant="body2">{likesCount}</Typography>
               )}
             </div>
-            <div className={classes.dislike}>
-              <IconButton className={classes.iconButton}>
+            <div
+              className={isDisliked ? classes.dislikeActive : classes.dislike}
+            >
+              <IconButton
+                className={
+                  isDisliked ? classes.iconButtonActive : classes.iconButton
+                }
+                onClick={handleDislike}
+              >
                 <ThumbDownAltIcon fontSize="small" />
               </IconButton>
               {dislikesCount > 0 && (
@@ -263,14 +369,15 @@ function ReplyComment({ reply }) {
               value={comment}
               onChange={handleChange}
               inputRef={inputRef}
-              //   className={classes.input}
+              spellCheck={false}
+              style={changeBorder ? mentionsDefaultStyle : mentionsStyle}
             >
               <Mention
                 markup="@[__display__](__id__)"
                 data={[]}
                 appendSpaceOnAdd={true}
-                displayTransform={(id, display) => `@${display} `}
-                // className={classes.mentions}
+                displayTransform={(id, display) => `@${display}`}
+                className={classes.mentions}
               />
             </MentionsInput>
           </DialogContent>
