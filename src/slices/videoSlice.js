@@ -468,6 +468,7 @@ export const uploadToServer = (
   resetSubmitted
 ) => async () => {
   try {
+    axios.defaults.withCredentials = false;
     await axios.post("/video/upload", newVideo);
 
     toast.update("progress", {
