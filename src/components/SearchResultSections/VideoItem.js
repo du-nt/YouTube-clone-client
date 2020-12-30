@@ -84,7 +84,7 @@ export default function Video({ video }) {
             image={thumbnail}
             title="poster"
           >
-            <div className={classes.duration}>{duration}</div>
+            <Typography className={classes.duration}>{duration}</Typography>
           </CardMedia>
         </Grid>
         <Grid item xs={6}>

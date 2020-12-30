@@ -101,7 +101,7 @@ export default function VideoItem({ video }) {
         image={thumbnail}
         title="item"
       >
-        <div className={classes.time}>{duration}</div>
+        <Typography className={classes.time}>{duration}</Typography>
       </CardMedia>
       <div className={classes.channel}>
         <Avatar
