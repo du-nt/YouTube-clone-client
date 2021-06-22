@@ -38,87 +38,75 @@ const auth = createSlice({
   },
 });
 
-export const register = (
-  values,
-  toLogin,
-  { setErrors, resetForm }
-) => async () => {
-  try {
-    await axios.post("/auth/register", values);
-    resetForm();
-    toLogin();
-  } catch (error) {
-    setErrors(error.response.data);
-  }
-};
+export const register =
+  (values, toLogin, { setErrors, resetForm }) =>
+  async () => {
+    try {
+      await axios.post("/auth/register", values);
+      resetForm();
+      toLogin();
+    } catch (error) {
+      setErrors(error.response.data);
+    }
+  };
 
-export const login = (
-  values,
-  goBack,
-  setIsRedirect,
-  { setErrors, resetForm }
-) => async (dispatch) => {
-  try {
-    await axios.post("/auth/login", values);
-    const { data } = await axios.get("/auth");
-    resetForm();
-    setIsRedirect(false);
-    dispatch(setCurrentUser(data));
-    goBack();
-  } catch (error) {
-    setErrors(error?.response?.data);
-  }
-};
+export const login =
+  (values, goBack, setIsRedirect, { setErrors, resetForm }) =>
+  async (dispatch) => {
+    try {
+      await axios.post("/auth/login", values);
+      const { data } = await axios.get("/auth");
+      resetForm();
+      setIsRedirect(false);
+      dispatch(setCurrentUser(data));
+      goBack();
+    } catch (error) {
+      setErrors(error?.response?.data);
+    }
+  };
 
-export const changePassword = (
-  values,
-  toast,
-  { setErrors, resetForm }
-) => async () => {
-  try {
-    await axios.post("/auth/changePassword", values);
-    resetForm();
-    toast.success("Password changed", {
-      position: "top-right",
-      autoClose: 2000,
-    });
-  } catch (error) {
-    setErrors(error.response.data);
-    toast.error("Error!", {
-      position: "top-right",
-      autoClose: 2000,
-    });
-  }
-};
+export const changePassword =
+  (values, toast, { setErrors, resetForm }) =>
+  async () => {
+    try {
+      await axios.post("/auth/changePassword", values);
+      resetForm();
+      toast.success("Password changed", {
+        position: "top-right",
+        autoClose: 2000,
+      });
+    } catch (error) {
+      setErrors(error.response.data);
+      toast.error("Error!", {
+        position: "top-right",
+        autoClose: 2000,
+      });
+    }
+  };
 
-export const forgotPassword = (
-  values,
-  { setErrors, resetForm },
-  setMailSent
-) => async () => {
-  try {
-    await axios.get(`/auth/resetPassword/user/${values.email}`);
-    resetForm();
-    setMailSent(true);
-  } catch (error) {
-    setErrors({ email: error.response.data.error });
-  }
-};
+export const forgotPassword =
+  (values, { setErrors, resetForm }, setMailSent) =>
+  async () => {
+    try {
+      await axios.get(`/auth/resetPassword/user/${values.email}`);
+      resetForm();
+      setMailSent(true);
+    } catch (error) {
+      setErrors({ email: error.response.data.error });
+    }
+  };
 
-export const resetPassword = (
-  values,
-  { userId, token },
-  { setErrors, resetForm },
-  setConfirmed
-) => async () => {
-  try {
-    await axios.post(`/auth/receiveNewPassword/${userId}/${token}`, values);
-    resetForm();
-    setConfirmed(true);
-  } catch (error) {
-    setErrors({ email: error.response.data });
-  }
-};
+export const resetPassword =
+  (values, { userId, token }, { setErrors, resetForm }, setConfirmed) =>
+  async () => {
+    try {
+      await axios.post(`/auth/receiveNewPassword/${userId}/${token}`, values);
+      resetForm();
+      setConfirmed(true);
+    } catch (error) {
+      setErrors({ email: error.response.data });
+    }
+  };
 
 export const logout = (history, closeMenu) => async (dispatch) => {
   try {
@@ -142,16 +130,15 @@ export const getCurrentUser = (setLoading) => async (dispatch) => {
   }
 };
 
-export const editUser = (values, resetForm, handleCloseForm) => async (
-  dispatch
-) => {
-  try {
-    await axios.post("/users/editUser", values);
-    dispatch(editSuccess(values));
-    resetForm();
-    handleCloseForm();
-  } catch (error) {}
-};
+export const editUser =
+  (values, resetForm, handleCloseForm) => async (dispatch) => {
+    try {
+      await axios.post("/users/editUser", values);
+      dispatch(editSuccess(values));
+      resetForm();
+      handleCloseForm();
+    } catch (error) {}
+  };
 
 export const changePhoto = (data) => async (dispatch) => {
   try {
