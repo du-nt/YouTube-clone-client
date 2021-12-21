@@ -62,6 +62,7 @@ export const login =
       goBack();
     } catch (error) {
       setErrors(error?.response?.data);
+      console.log(error.response)
     }
   };
 
