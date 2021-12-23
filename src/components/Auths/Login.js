@@ -20,6 +20,9 @@ import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import { useTheme } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
+import FacebookIcon from '@material-ui/icons/Facebook';
+import SecurityIcon from '@material-ui/icons/Security';
+import Divider from '@material-ui/core/Divider';
 
 import { login } from "../../slices/authSlice";
 
@@ -66,8 +69,28 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.secondary.main,
   },
   submit: {
-    margin: theme.spacing(3, 0, 2),
+    margin: theme.spacing(3, 0, 1),
   },
+  socialButton: {
+    margin: theme.spacing(1, 0),
+  },
+  or: {
+    color: 'rgba(0, 0, 0, 0.26)',
+    margin: theme.spacing(0, 2),
+  },
+  divider: {
+    width: '100%',
+  },
+  orWrapper: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: theme.spacing(2, 0),
+  },
+  sicialGroup: {
+    marginTop: theme.spacing(2),
+    padding: 0
+  }
 }));
 export default function Login({ setIsRedirect }) {
   const dispatch = useDispatch();
@@ -78,7 +101,9 @@ export default function Login({ setIsRedirect }) {
   const classes = useStyles();
   const theme = useTheme();
   const blurMatch = useMediaQuery(theme.breakpoints.up(780));
+  const serverUrl = process.env.NODE_ENV === 'production' ? process.env.REACT_APP_PROD_SERVER_URL : process.env.REACT_APP_DEV_SERVER_URL;
 
+  console.log(process.env)
   const {
     values,
     errors,
@@ -180,34 +205,68 @@ export default function Login({ setIsRedirect }) {
               >
                 Sign In
               </Button>
-              <Grid container>
-                <Grid item xs>
-                  <Link
-                    component={NavLink}
-                    to="/forgotpassword"
-                    variant="body2"
-                  >
-                    Forgot password?
+              <div className={classes.orWrapper}>
+                <div className={classes.divider}>
+                  <Divider />
+                </div>
+                <Typography className={classes.or} component="i" align="center" >or</Typography>
+                <div className={classes.divider}>
+                  <Divider />
+                </div>
+              </div>
+              <Button
+                type="submit"
+                fullWidth
+                variant="outlined"
+                color="secondary"
+                className={classes.socialButton}
+                startIcon={<SecurityIcon />}
+                href={from === '/' ? `${serverUrl}auth/google` : `${serverUrl}auth/google?returnTo=${from}`}
+              >
+                Sign in with Google
+              </Button>
+              <Button
+                type="submit"
+                fullWidth
+                variant="outlined"
+                color="primary"
+                className={classes.socialButton}
+                startIcon={<FacebookIcon />}
+                href={from === '/' ? `${serverUrl}auth/facebook` : `${serverUrl}auth/facebook?returnTo=${from}`}
+              >
+                Continiue with Facebook
+              </Button>
+              <Container className={classes.sicialGroup}>
+                <Grid container>
+                  <Grid item xs>
+                    <Link
+                      component={NavLink}
+                      to="/forgotpassword"
+                      variant="body2"
+                    >
+                      Forgot password?
+                    </Link>
+                  </Grid>
+                  <Grid item>
+                    <Link
+                      component={NavLink}
+                      to={{
+                        pathname: "/register",
+                        state: { from },
+                      }}
+                      variant="body2"
+                    >
+                      Don't have an account? Sign Up
+                    </Link>
+                  </Grid>
+                </Grid>
+
+                <Grid container justify="flex-end">
+                  <Link component={NavLink} to="/" variant="body2">
+                    Back to home
                   </Link>
                 </Grid>
-                <Grid item>
-                  <Link
-                    component={NavLink}
-                    to={{
-                      pathname: "/register",
-                      state: { from },
-                    }}
-                    variant="body2"
-                  >
-                    Don't have an account? Sign Up
-                  </Link>
-                </Grid>
-              </Grid>
-              <Grid container justify="flex-end">
-                <Link component={NavLink} to="/" variant="body2">
-                  Back to home
-                </Link>
-              </Grid>
+              </Container>
             </form>
           </Paper>
         </Grid>

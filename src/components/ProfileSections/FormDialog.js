@@ -33,7 +33,7 @@ const validationSchema = Yup.object().shape({
   displayName: Yup.string()
     .required()
     .min(8, "Name must have min 8 characters")
-    .max(15, "Name must have max 15 characters"),
+    .max(25, "Name must have max 25 characters"),
 });
 
 export default function FormDialog({ open, handleCloseForm }) {

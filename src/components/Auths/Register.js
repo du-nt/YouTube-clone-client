@@ -26,7 +26,6 @@ import { useFormik } from "formik";
 
 const initialValues = {
   displayName: "",
-  userName: "",
   email: "",
   password: "",
   password2: "",
@@ -34,10 +33,6 @@ const initialValues = {
 
 const validationSchema = Yup.object().shape({
   email: Yup.string().email("Email not valid").required("Email is required"),
-  userName: Yup.string()
-    .required("Username is required")
-    .min(8, "Username must have min 8 characters")
-    .max(30, "Username must have max 30 characters"),
   displayName: Yup.string()
     .required("Display name is required")
     .min(8, "Display name must have min 8 characters")
@@ -140,21 +135,6 @@ export default function Refister() {
               </Typography>
             </Grid>
             <form noValidate autoComplete="on" onSubmit={handleSubmit}>
-              <TextField
-                error={touched.userName && !!errors.userName}
-                autoComplete="userName"
-                name="userName"
-                required
-                fullWidth
-                id="userName"
-                label="Username"
-                // autoFocus
-                onBlur={handleBlur}
-                margin="normal"
-                onChange={handleChange}
-                value={values.userName}
-                helperText={touched.userName ? errors.userName : null}
-              />
               <TextField
                 error={touched.displayName && !!errors.displayName}
                 autoComplete="displayName"

@@ -65,7 +65,10 @@ const useStyles = makeStyles((theme) => ({
   },
   showPassWordIcon: {
     position: "relative",
-    left: "10px",
+    left: "54px",
+    [theme.breakpoints.up("md")]: {
+      left: "80px",
+    },
   },
   submit: {
     margin: theme.spacing(3, 0, 2),
@@ -135,49 +138,55 @@ export default function ResetPassword() {
               </Typography>
             </Grid>
             <form noValidate autoComplete="on" onSubmit={handleSubmit}>
-              <TextField
-                error={touched.newPassword && !!errors.newPassword}
-                required
-                fullWidth
-                name="newPassword"
-                label="New password"
-                type={showNewPassword ? "text" : "password"}
-                id="newPassword"
-                autoComplete="current-password"
-                margin="normal"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.newPassword}
-                helperText={touched.newPassword ? errors.newPassword : null}
-              />
+              <Grid container spacing={0}>
+                <Grid item xs={10} sm={5}>
+                  <TextField
+                    error={touched.newPassword && !!errors.newPassword}
+                    required
+                    fullWidth
+                    name="newPassword"
+                    label="New password"
+                    type={showNewPassword ? "text" : "password"}
+                    id="newPassword"
+                    autoComplete="current-password"
+                    margin="normal"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    value={values.newPassword}
+                    helperText={touched.newPassword ? errors.newPassword : null}
+                  />
+                </Grid>
+                <Grid item xs={10} sm={5}>
+                  <TextField
+                    error={touched.newPassword2 && !!errors.newPassword2}
+                    required
+                    fullWidth
+                    name="newPassword2"
+                    label="Confirm new password"
+                    id="newPassword2"
+                    type={showNewPassword ? "text" : "password"}
+                    autoComplete="current-password2"
+                    margin="normal"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    value={values.newPassword2}
+                    helperText={touched.newPassword2 ? errors.newPassword2 : null}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            className={classes.showPassWordIcon}
+                            onClick={handleClickShowNewPassword}
+                          >
+                            {showNewPassword ? <Visibility /> : <VisibilityOff />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                </Grid>
+              </Grid>
 
-              <TextField
-                error={touched.newPassword2 && !!errors.newPassword2}
-                required
-                fullWidth
-                name="newPassword2"
-                label="Confirm new password"
-                id="newPassword2"
-                type={showNewPassword ? "text" : "password"}
-                autoComplete="current-password2"
-                margin="normal"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.newPassword2}
-                helperText={touched.newPassword2 ? errors.newPassword2 : null}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        className={classes.showPassWordIcon}
-                        onClick={handleClickShowNewPassword}
-                      >
-                        {showNewPassword ? <Visibility /> : <VisibilityOff />}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-              />
               <Button
                 disabled={!(isValid && dirty)}
                 type="submit"
@@ -197,9 +206,6 @@ export default function ResetPassword() {
 
   const success = (
     <Container maxWidth="sm" className={classes.contain}>
-      <Grid container justify="center" alignContent="center">
-        <NavLink to="/">home</NavLink>
-      </Grid>
       <Grid container justify="center" alignContent="center">
         <Grid item xs={12} md={8}>
           <Paper elevation={0} className={classes.paperstyle}>

@@ -85,6 +85,9 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     alignItems: "center",
   },
+  link1: {
+    fontWeight: "500",
+  },
   icon: {
     marginLeft: 10,
     alignSelf: "baseline",
@@ -102,7 +105,7 @@ export default function LoggedMenu({ closeMenu }) {
   const open = Boolean(anchorEl);
 
   const { user } = useSelector((state) => state.auth);
-  const { _id, avatar, displayName, email, userName, adminRole } = user;
+  const { _id, avatar, displayName, email, isAdmin } = user;
   const letterAvatar = displayName.charAt(0).toUpperCase();
 
   const handleLogOut = () => {
@@ -156,7 +159,7 @@ export default function LoggedMenu({ closeMenu }) {
         <Avatar
           onClick={() => closeMenu()}
           component={NavLink}
-          to={`/channel/${userName}`}
+          to={`/channel/${_id}`}
           alt="avatar"
           src={avatar}
           className={classes.large}
@@ -172,6 +175,7 @@ export default function LoggedMenu({ closeMenu }) {
               onClick={() => closeMenu()}
               component={NavLink}
               to={`/profile/${_id}`}
+              className={classes.link1}
             >
               {displayName}
             </Link>
@@ -188,7 +192,7 @@ export default function LoggedMenu({ closeMenu }) {
           <MenuItem
             className={classes.menuItem}
             component={NavLink}
-            to={`/channel/${userName}`}
+            to={`/channel/${_id}`}
           >
             <ListItemIcon>
               <AccountBoxIcon />
@@ -254,7 +258,7 @@ export default function LoggedMenu({ closeMenu }) {
       <Fab
         color="secondary"
         className={classes.upload}
-        onClick={adminRole ? handleMenu : goToUpload}
+        onClick={isAdmin ? handleMenu : goToUpload}
       >
         <ArrowUpwardIcon />
       </Fab>

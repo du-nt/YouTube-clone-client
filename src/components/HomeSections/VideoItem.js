@@ -106,7 +106,7 @@ export default function VideoItem({ video }) {
       <div className={classes.channel}>
         <Avatar
           component={NavLink}
-          to={`/channel/${author.userName}`}
+          to={`/channel/${author._id}`}
           className={classes.avatar}
           alt="avatar"
           src={author.avatar}
@@ -135,7 +135,7 @@ export default function VideoItem({ video }) {
         <Dialog
           open={isOpen}
           onClose={closeMenu}
-          //   PaperProps={{ variant: "outlined", square: true }}
+        //   PaperProps={{ variant: "outlined", square: true }}
         >
           <MenuList className={classes.menuList}>
             <MenuItem>Not interested</MenuItem>

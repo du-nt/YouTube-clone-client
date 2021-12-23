@@ -57,7 +57,7 @@ export default function Log() {
           <MenuItem
             className={classes.menuItem}
             component={NavLink}
-            to={`/channel/${user.userName}/videos`}
+            to={`/channel/${user._id}/videos`}
           >
             <ListItemIcon>
               <OndemandVideoIcon />

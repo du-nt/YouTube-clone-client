@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import { useDispatch } from "react-redux";
 
 import TopBar from "./TopBar";
 import VideoItem from "./VideoItem";
-import { useDispatch } from "react-redux";
+import Desktop from "./Desktop";
 
 import { getVideos } from "../../slices/videoSlice";
 
@@ -32,19 +33,20 @@ export default function Home() {
   }, [dispatch]);
 
   return (
-    <div className={classes.rootClass}>
-      <TopBar />
-      {loading ? (
-        <div className={classes.root}>
-          <CircularProgress />
-        </div>
-      ) : videos.length ? (
-        videos.map((video, index) => <VideoItem key={index} video={video} />)
-      ) : (
-        <Typography color="textSecondary" className={classes.root}>
-          Nothing to watch
-        </Typography>
-      )}
-    </div>
+    // <div className={classes.rootClass}>
+    //   <TopBar />
+    //   {loading ? (
+    //     <div className={classes.root}>
+    //       <CircularProgress />
+    //     </div>
+    //   ) : videos.length ? (
+    //     videos.map((video, index) => <VideoItem key={index} video={video} />)
+    //   ) : (
+    //     <Typography color="textSecondary" className={classes.root}>
+    //       Nothing to watch
+    //     </Typography>
+    //   )}
+    // </div>
+    <Desktop />
   );
 }

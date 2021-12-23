@@ -82,7 +82,7 @@ export const AdminRoute = ({ component: Component, ...rest }) => {
     <Route
       {...rest}
       render={(props) =>
-        isAuthenticated && user.adminRole ? (
+        isAuthenticated && user.isAdmin ? (
           <Component {...props} />
         ) : (
           <Redirect to="/" />

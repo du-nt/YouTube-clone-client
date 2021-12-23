@@ -22,14 +22,14 @@ const useStyles = makeStyles((theme) => ({
 
 export default function User({ user }) {
   const classes = useStyles();
-  const { avatar, userName, displayName } = user.userTo;
+  const { _id, avatar, displayName } = user.userTo;
   const letterAvatar = displayName.charAt(0).toUpperCase();
 
   return (
     <Link
       underline="none"
       component={NavLink}
-      to={`/channel/${userName}`}
+      to={`/channel/${_id}`}
       className={classes.root}
     >
       <Avatar alt="avatar" src={avatar} className={classes.large}>

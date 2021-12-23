@@ -106,7 +106,7 @@ export default function VideoItem({ video }) {
       <div className={classes.channel}>
         <Avatar
           component={NavLink}
-          to={`/channel/${author.userName}`}
+          to={`/channel/${author._id}`}
           className={classes.avatar}
           alt="avatar"
           src={author.avatar}

@@ -240,7 +240,7 @@ export default function ActionBar({ playerHeight }) {
           color="inherit"
           underline="none"
           component={NavLink}
-          to={`/channel/${author.userName}`}
+          to={`/channel/${author._id}`}
           className={classes.channel}
         >
           <Avatar className={classes.small} alt="avatar" src={author.avatar}>
