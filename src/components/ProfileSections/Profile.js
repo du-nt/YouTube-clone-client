@@ -12,6 +12,8 @@ import { Typography } from "@material-ui/core";
 import BlankHeader from "./BlankHeader";
 import FormDialog from "./FormDialog";
 import { useSelector, useDispatch } from "react-redux";
+import { useMediaQuery } from "@material-ui/core";
+import Grid from "@material-ui/core/Grid";
 
 import { changeCover, changePhoto } from "../../slices/authSlice";
 
@@ -21,6 +23,18 @@ const useStyles = makeStyles((theme) => ({
     maxHeight: 100,
     objectFit: "cover",
     objectPosition: "center",
+    [theme.breakpoints.up("sm")]: {
+      maxHeight: 180,
+    },
+    [theme.breakpoints.up("md")]: {
+      maxHeight: 220,
+    },
+    [theme.breakpoints.up("lg")]: {
+      maxHeight: 250,
+    },
+    [theme.breakpoints.up("xl")]: {
+      maxHeight: 350,
+    }
   },
   parent: {
     position: "relative",
@@ -93,6 +107,7 @@ export default function Profile() {
     (state) => state.auth.user
   );
   const dispatch = useDispatch();
+  const matches = useMediaQuery('(min-width:960px)')
 
   const handleOpen = () => {
     setOpen(true);
@@ -120,7 +135,7 @@ export default function Profile() {
 
   return (
     <>
-      <BlankHeader />
+      {!matches && <BlankHeader />}
       <div className={classes.parent}>
         <img alt="cover" src={cover} className={classes.img} />
         <input
@@ -151,53 +166,56 @@ export default function Profile() {
           </div>
         </label>
       </div>
+      <Grid container justify="center">
+        <Grid item xs={12} sm={12} md={11} lg={10} xl={7}>
+          <div className={classes.body}>
+            <Typography color="textSecondary" variant="body2">
+              Name
+            </Typography>
+            <div className={classes.div}>
+              <Typography variant="h6">{displayName}</Typography>
+              <IconButton onClick={handleOpen}>
+                <EditIcon />
+              </IconButton>
+            </div>
+            <Typography color="textSecondary" variant="body2">
+              Description
+            </Typography>
+            <div className={classes.div}>
+              <Typography variant="subtitle1">Nothing</Typography>
+              <IconButton>
+                <EditIcon />
+              </IconButton>
+            </div>
+          </div>
+          <Divider />
+          <div className={classes.part2}>
+            <Typography variant="subtitle1" className={classes.bold}>
+              Privacy
+            </Typography>
+            <div className={classes.div2}>
+              <Typography>Keep all my subscriptions private</Typography>
+              <Switch color="primary" />
+            </div>
 
-      <div className={classes.body}>
-        <Typography color="textSecondary" variant="body2">
-          Name
-        </Typography>
-        <div className={classes.div}>
-          <Typography variant="h6">{displayName}</Typography>
-          <IconButton onClick={handleOpen}>
-            <EditIcon />
-          </IconButton>
-        </div>
-        <Typography color="textSecondary" variant="body2">
-          Description
-        </Typography>
-        <div className={classes.div}>
-          <Typography variant="subtitle1">Nothing</Typography>
-          <IconButton>
-            <EditIcon />
-          </IconButton>
-        </div>
-      </div>
-      <Divider />
-      <div className={classes.part2}>
-        <Typography variant="subtitle1" className={classes.bold}>
-          Privacy
-        </Typography>
-        <div className={classes.div2}>
-          <Typography>Keep all my subscriptions private</Typography>
-          <Switch color="primary" />
-        </div>
-
-        <div className={classes.div2}>
-          <Typography>Keep all my saved playlists private</Typography>
-          <Switch color="primary" />
-        </div>
-      </div>
-      <Divider />
-      <div className={classes.subText}>
-        <Typography display="inline" variant="body2">
-          Your name and profile picture are linked to your Google Account. Any
-          changes will show on your account and channel, and may take a few
-          minutes to apply. Make sure your picture follows
-          <Typography color="primary" component="span" variant="body2">
-            <span> </span>Community guidelines. Learn more
-          </Typography>
-        </Typography>
-      </div>
+            <div className={classes.div2}>
+              <Typography>Keep all my saved playlists private</Typography>
+              <Switch color="primary" />
+            </div>
+          </div>
+          <Divider />
+          <div className={classes.subText}>
+            <Typography display="inline" variant="body2">
+              Your name and profile picture are linked to your Google Account. Any
+              changes will show on your account and channel, and may take a few
+              minutes to apply. Make sure your picture follows
+              <Typography color="primary" component="span" variant="body2">
+                <span> </span>Community guidelines. Learn more
+              </Typography>
+            </Typography>
+          </div>
+        </Grid>
+      </Grid>
 
       {open && <FormDialog open={open} handleCloseForm={handleClose} />}
     </>

@@ -267,7 +267,7 @@ function ReplyComment({ reply }) {
       <div className={classes.root}>
         <Avatar
           component={NavLink}
-          to={`/channel/${author.userName}`}
+          to={`/channel/${author._id}`}
           className={classes.avatar}
           alt="avatar"
           src={author.avatar}
@@ -286,7 +286,7 @@ function ReplyComment({ reply }) {
               <Link
                 underline="none"
                 component={NavLink}
-                to={`/channel/${responseTo.userName}`}
+                to={`/channel/${responseTo._id}`}
               >
                 @{responseTo.displayName}
               </Link>

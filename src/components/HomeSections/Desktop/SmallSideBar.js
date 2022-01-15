@@ -13,6 +13,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import { Typography } from '@material-ui/core';
 import { NavLink } from 'react-router-dom';
+import { useRouteMatch } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
     list: {
@@ -25,35 +26,36 @@ const useStyles = makeStyles((theme) => ({
     },
     title: {
         fontSize: '0.6rem',
+    },
+    active: {
+        color: '#262626'
     }
 }))
 
 export default function SmallSideBar() {
     const classes = useStyles();
+    const { path } = useRouteMatch();
 
     const list = [
         {
             title: "Home",
-            icon: <HomeOutlinedIcon />,
-            to: "/"
-
+            icon: path === '/' ? <HomeIcon className={classes.active} /> : <HomeOutlinedIcon />,
+            to: "/",
         },
         {
             title: "Explore",
-            icon: <ExploreOutlinedIcon />,
-            to: "/feed/trending"
-
+            icon: path === '/feed/trending' ? <ExploreIcon className={classes.active} /> : <ExploreOutlinedIcon />,
+            to: "/feed/trending",
         },
         {
             title: "Subscriptions",
-            icon: <SubscriptionsOutlinedIcon />,
-            to: "/feed/subscriptions"
-
+            icon: path === "/feed/subscriptions" ? <SubscriptionsIcon className={classes.active} /> : <SubscriptionsOutlinedIcon />,
+            to: "/feed/subscriptions",
         },
         {
             title: "Library",
-            icon: <VideoLibraryOutlinedIcon />,
-            to: "/feed/library"
+            icon: path === "/feed/library" ? <VideoLibraryIcon className={classes.active} /> : <VideoLibraryOutlinedIcon />,
+            to: "/feed/library",
         }
     ]
 

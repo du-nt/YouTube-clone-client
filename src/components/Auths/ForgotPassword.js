@@ -31,20 +31,19 @@ const validationSchema = Yup.object().shape({
 
 const useStyles = makeStyles((theme) => ({
   contain: {
-    [theme.breakpoints.up(1000)]: {
-      maxWidth: "1280px",
-      position: "relative",
-      top: "210px",
+    [theme.breakpoints.up('md')]: {
+      maxWidth: "1000px",
+      marginTop: "200px",
     },
   },
   paperstyle: {
     marginTop: theme.spacing(8),
-    padding: theme.spacing(0, 2),
-    [theme.breakpoints.up(780)]: {
-      padding: theme.spacing(8),
+    padding: theme.spacing(8, 2),
+    [theme.breakpoints.up('sm')]: {
+      padding: theme.spacing(8, 6),
     },
-    [theme.breakpoints.up(1300)]: {
-      padding: theme.spacing(8, 14),
+    [theme.breakpoints.up('md')]: {
+      padding: theme.spacing(8, 10),
     },
   },
   caption: {
@@ -73,7 +72,7 @@ export default function ForgotPassword() {
   }, []);
   const classes = useStyles();
   const theme = useTheme();
-  const blurMatch = useMediaQuery(theme.breakpoints.up(780));
+  const blurMatch = useMediaQuery(theme.breakpoints.up('md'));
   const {
     values,
     errors,

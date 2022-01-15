@@ -40,10 +40,9 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(1),
   },
   contain: {
-    [theme.breakpoints.up(1000)]: {
-      maxWidth: "1280px",
-      position: "relative",
-      top: "210px",
+    [theme.breakpoints.up('md')]: {
+      maxWidth: "1000px",
+      marginTop: "200px",
     },
   },
   paperstyle: {
@@ -84,7 +83,7 @@ export default function Upload() {
   const helperTextClasses = helperTextStyles();
   const dispatch = useDispatch();
   const theme = useTheme();
-  const blurMatch = useMediaQuery(theme.breakpoints.up(780));
+  const blurMatch = useMediaQuery(theme.breakpoints.up('md'));
   const videoRef = useRef(null);
   const subRef = useRef(null);
   let unmounted = useRef(null);
@@ -195,7 +194,7 @@ export default function Upload() {
 
   return (
     <>
-      <BlankHeader />
+      {!blurMatch && <BlankHeader />}
       <Container maxWidth="sm" className={classes.contain}>
         <Grid container justify="center" alignContent="center">
           <Grid item xs={12} md={8}>

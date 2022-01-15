@@ -1,28 +1,24 @@
 import React from "react";
-
-import { makeStyles } from "@material-ui/core/styles";
+import { useMediaQuery } from "@material-ui/core";
 import { useSelector } from "react-redux";
 
 import TopBar from "../HomeSections/TopBar";
 import NotLog from "./NotLog";
 import Log from "./Log";
-
-const useStyles = makeStyles({
-  root: {
-    display: "flex",
-    flexDirection: "column",
-    height: "100vh",
-  },
-});
+import Trending from '../Others/Trending'
+import NotLogDesktop from "./NotLogDesktop";
 
 export default function Library() {
-  const classes = useStyles();
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  const matches = useMediaQuery('(min-width:960px)')
 
   return (
-    <div className={classes.root}>
-      <TopBar />
-      {isAuthenticated ? <Log /> : <NotLog />}
-    </div>
+    <>
+      {!matches && <TopBar />}
+      {matches ?
+        isAuthenticated ? <Trending /> : <NotLogDesktop />
+        :
+        isAuthenticated ? <Log /> : <NotLog />}
+    </>
   );
 }

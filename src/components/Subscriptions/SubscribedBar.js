@@ -41,7 +41,7 @@ export default function SubscribedBar({ users }) {
             alt="avatar"
             src={user.avatar}
             component={NavLink}
-            to={`/channel/${user.userName}`}
+            to={`/channel/${user._id}`}
           >
             {user.displayName.charAt(0).toUpperCase()}
           </Avatar>

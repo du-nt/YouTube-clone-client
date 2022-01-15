@@ -7,7 +7,7 @@ import { NavLink, useLocation } from "react-router-dom";
 const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: "#e7e7e7",
-    flex: 1,
+    height: '93vh'
   },
   fist: {
     backgroundColor: "#eee",

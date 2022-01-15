@@ -2,8 +2,11 @@ import React, { useState } from 'react'
 import { makeStyles } from "@material-ui/core/styles";
 import IconButton from '@material-ui/core/IconButton';
 import NotificationsIcon from '@material-ui/icons/Notifications';
+import NotificationsOutlinedIcon from '@material-ui/icons/NotificationsOutlined';
 import VideoCallIcon from '@material-ui/icons/VideoCall';
-import AppsOutlinedIcon from '@material-ui/icons/AppsOutlined';
+import VideoCallOutlinedIcon from '@material-ui/icons/VideoCallOutlined';
+import ViewComfyIcon from '@material-ui/icons/ViewComfy';
+import ViewComfyOutlinedIcon from '@material-ui/icons/ViewComfyOutlined';
 import Avatar from "@material-ui/core/Avatar";
 import Tooltip from '@material-ui/core/Tooltip';
 import { Typography } from "@material-ui/core";
@@ -18,7 +21,6 @@ import HeadsetIcon from '@material-ui/icons/Headset';
 import YouTubeIcon from '@material-ui/icons/YouTube';
 import MovieFilterIcon from '@material-ui/icons/MovieFilter';
 import { Divider } from '@material-ui/core';
-import NotificationsNoneIcon from '@material-ui/icons/NotificationsNone';
 import SettingsOutlinedIcon from '@material-ui/icons/SettingsOutlined';
 import Link from '@material-ui/core/Link';
 import { NavLink } from 'react-router-dom';
@@ -32,12 +34,14 @@ import LanguageOutlinedIcon from '@material-ui/icons/LanguageOutlined';
 import VerifiedUserOutlinedIcon from '@material-ui/icons/VerifiedUserOutlined';
 import HelpOutlineOutlinedIcon from '@material-ui/icons/HelpOutlineOutlined';
 import KeyboardArrowRightOutlinedIcon from '@material-ui/icons/KeyboardArrowRightOutlined';
+import SvgIcon from '@material-ui/core/SvgIcon';
 
 import { useDispatch } from "react-redux";
 
 import { logout } from "../../../slices/authSlice";
 
 import Popup from "./Popup";
+import { useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
     menu: {
@@ -50,7 +54,9 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: "#fff",
     },
     notificationsHeader: {
-        flexDirection: 'row-reverse'
+        flexDirection: 'row-reverse',
+        paddingBottom: theme.spacing(0.5),
+        paddingTop: theme.spacing(0.5),
     },
     notifications: {
         display: 'flex',
@@ -116,6 +122,13 @@ export default function AuthMenus({ user }) {
     const openNotifications = Boolean(notificationsAnchorEl);
     const openAccount = Boolean(accountAnchorEl);
 
+    const history = useHistory();
+
+    const handleClick = () => {
+        setAccountAnchorEl(null)
+        history.push(`/channel/${user._id}`)
+    }
+
     const handleLogOut = () => {
         dispatch(logout());
         setAccountAnchorEl(null);
@@ -169,17 +182,17 @@ export default function AuthMenus({ user }) {
     const menus = [
         {
             title: "Create",
-            icon: <VideoCallIcon />,
+            icon: openCreate ? <VideoCallIcon /> : <VideoCallOutlinedIcon />,
             onClick: handleToggleCreate
         },
         {
             title: "Youtube apps",
-            icon: <AppsOutlinedIcon />,
+            icon: openApps ? <ViewComfyIcon /> : <ViewComfyOutlinedIcon />,
             onClick: handleToggleApps
         },
         {
             title: "Notifications",
-            icon: <NotificationsIcon />,
+            icon: openNotifications ? <NotificationsIcon /> : <NotificationsOutlinedIcon />,
             onClick: handleToggleNotifications
         },
         {
@@ -220,6 +233,7 @@ export default function AuthMenus({ user }) {
         {
             title: "Your channel",
             icon: <AccountBoxOutlinedIcon />,
+            onClick: handleClick
         },
         {
             title: "Purchases and membership",
@@ -267,6 +281,17 @@ export default function AuthMenus({ user }) {
         },
     ]
 
+
+    const NotificationsNoneIcon = () => (
+        <SvgIcon className={classes.notificationsIcon}>
+            <path
+                d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"
+                stroke="white"
+                strokeWidth={0.8}
+            />
+        </SvgIcon>
+    );
+
     return (
         <>
             {menus.map(({ icon, title, onClick }, index) =>
@@ -282,7 +307,7 @@ export default function AuthMenus({ user }) {
                 handleClose={handleCloseCreate}
             >
                 <List>
-                    <ListItem button   >
+                    <ListItem button component={NavLink} to='/upload' >
                         <ListItemIcon ><PlayCircleOutlineIcon /></ListItemIcon>
                         <ListItemText primary='Upload video' />
                     </ListItem>
@@ -312,12 +337,16 @@ export default function AuthMenus({ user }) {
                 handleClose={handleCloseNotifications}
             >
                 <ListItem className={classes.notificationsHeader}>
-                    <ListItemIcon className={classes.setttingsIcon} ><SettingsOutlinedIcon /></ListItemIcon>
+                    <ListItemIcon className={classes.setttingsIcon} >
+                        <IconButton >
+                            <SettingsOutlinedIcon />
+                        </IconButton>
+                    </ListItemIcon>
                     <ListItemText primary='Notifications' />
                 </ListItem>
                 <Divider />
                 <div className={classes.notifications}>
-                    <NotificationsNoneIcon className={classes.notificationsIcon} />
+                    <NotificationsNoneIcon />
                     <Typography variant="h6" color="textSecondary">Your notifications live here</Typography>
                     <Typography className={classes.secondText} variant="body1" color="textSecondary">Subscribe to your favourite channels to receive notifications about their latest videos.</Typography>
                 </div>

@@ -2,34 +2,37 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { Route, Redirect, useLocation } from "react-router-dom";
 
-import BottomTabs from "./components/HomeSections/BottomTabs";
 import Home from "./components/HomeSections/Home";
 import Channel from "./components/ChannelSections/Channel";
 import Profile from "./components/ProfileSections/Profile";
 import Upload from "./components/UploadSections/Upload";
 import Library from "./components/LibrarySections/Library";
-import Subscriptions from "./components/Subscriptions/Subscriptions";
+import Subscriptions from "./components/Subscriptions";
 import VideoPlayer from "./components/VideoPlayerSections/VideoPlayer";
 import Trending from "./components/Others/Trending";
 import ChannelList from "./components/ChannelListSections/ChannelList";
+import Layout from "./components/Layout"
 
 export const CustomizedRoute = ({
   component: Component,
   protect,
   noHeader,
+  isNoPadding,
   ...rest
 }) => {
   const { isAuthenticated } = useSelector((state) => state.auth);
+
   return (
     <Route
       {...rest}
       render={(props) =>
         protect ? (
           isAuthenticated ? (
-            <>
-              {!noHeader && <BottomTabs />}
+
+            <Layout noHeader={noHeader} isNoPadding={isNoPadding}>
               <Component {...props} />
-            </>
+            </Layout>
+
           ) : (
             <Redirect
               to={{
@@ -40,8 +43,9 @@ export const CustomizedRoute = ({
           )
         ) : (
           <>
-            {!noHeader && <BottomTabs />}
-            <Component {...props} />
+            <Layout noHeader={noHeader} isNoPadding={isNoPadding}>
+              <Component {...props} />
+            </Layout>
           </>
         )
       }
@@ -52,6 +56,7 @@ export const CustomizedRoute = ({
 CustomizedRoute.defaultProps = {
   protect: true,
   noHeader: false,
+  isNoPadding: false,
 };
 
 export const CustomizedRoute2 = ({ component: Component, ...rest }) => {
@@ -63,10 +68,10 @@ export const CustomizedRoute2 = ({ component: Component, ...rest }) => {
       {...rest}
       render={(props) =>
         query ? (
-          <>
-            <BottomTabs />
+          <Layout>
             <Component {...props} query={query} />
-          </>
+          </Layout>
+
         ) : (
           <Redirect to="/" />
         )
@@ -113,6 +118,7 @@ export const routes = [
   {
     path: "/feed/subscriptions",
     component: () => <Subscriptions />,
+    protect: false,
   },
   {
     path: "/feed/channels",
@@ -127,6 +133,7 @@ export const routes = [
     path: "/profile/:userId",
     noHeader: true,
     component: () => <Profile />,
+    isNoPadding: true
   },
   {
     path: "/",
@@ -138,6 +145,7 @@ export const routes = [
     path: "/channel/:channelName",
     protect: false,
     component: () => <Channel />,
+    isNoPadding: true
   },
   {
     path: "/feed/trending",

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import webShare from "react-web-share-api";
 import ReplyIcon from "@material-ui/icons/Reply";
 import Button from "@material-ui/core/Button";
-import { makeStyles, withStyles } from "@material-ui/core";
+import { makeStyles, useMediaQuery, withStyles } from "@material-ui/core";
 import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
 import MuiDialogTitle from "@material-ui/core/DialogTitle";
@@ -10,6 +10,8 @@ import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import Typography from "@material-ui/core/Typography";
 import { toast } from "react-toastify";
+import ReplyOutlinedIcon from '@material-ui/icons/ReplyOutlined';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import {
   FacebookShareButton,
@@ -84,6 +86,16 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(1, 1.5),
     margin: theme.spacing(1, 0),
   },
+  iconBtn: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: theme.spacing(1),
+    cursor: "pointer",
+  },
+  share: {
+    transform: 'rotateY(180deg)',
+  },
 }));
 
 const DialogTitle = withStyles(styles)((props) => {
@@ -107,6 +119,7 @@ const DialogTitle = withStyles(styles)((props) => {
 function ShareButton({ share, isSupported }) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
+  const matches = useMediaQuery("(min-width:960px)");
 
   const { title } = useSelector((state) => state.video);
   const shareUrl = window.location.href;
@@ -131,17 +144,30 @@ function ShareButton({ share, isSupported }) {
 
   return (
     <>
-      <Button
-        classes={{
-          label: classes.label,
-          startIcon: classes.startIcon,
-          iconSizeMedium: classes.iconBtn2,
-        }}
-        onClick={isSupported ? share : handleClickOpen}
-        startIcon={<ReplyIcon />}
-      >
-        Share
-      </Button>
+      {matches ?
+        <Tooltip title="Share">
+          <div
+            className={classes.iconBtn}
+            onClick={isSupported ? share : handleClickOpen}
+          >
+            <IconButton aria-label="delete">
+              <ReplyOutlinedIcon className={classes.share} />
+            </IconButton>
+            <Typography>Share</Typography>
+          </div>
+        </Tooltip>
+        : <Button
+          classes={{
+            label: classes.label,
+            startIcon: classes.startIcon,
+            iconSizeMedium: classes.iconBtn2,
+          }}
+          onClick={isSupported ? share : handleClickOpen}
+          startIcon={<ReplyIcon />}
+        >
+          Share
+        </Button>
+      }
 
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle onClose={handleClose}>Share</DialogTitle>

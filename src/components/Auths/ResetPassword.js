@@ -43,32 +43,31 @@ const validationSchema = Yup.object().shape({
 
 const useStyles = makeStyles((theme) => ({
   contain: {
-    [theme.breakpoints.up(1000)]: {
-      maxWidth: "1280px",
-      position: "relative",
-      top: "210px",
+    [theme.breakpoints.up('md')]: {
+      maxWidth: "1000px",
+      marginTop: "200px",
     },
   },
   paperstyle: {
     marginTop: theme.spacing(8),
-    padding: theme.spacing(0, 2),
-    [theme.breakpoints.up(780)]: {
-      padding: theme.spacing(8),
+    padding: theme.spacing(8, 2),
+    [theme.breakpoints.up('sm')]: {
+      padding: theme.spacing(8, 6),
     },
-    [theme.breakpoints.up(1300)]: {
-      padding: theme.spacing(8, 14),
+    [theme.breakpoints.up('md')]: {
+      padding: theme.spacing(8, 10),
     },
   },
   avatar: {
     margin: theme.spacing(1),
     backgroundColor: theme.palette.secondary.main,
   },
+  inputAdornment: {
+    marginLeft: -48,
+  },
   showPassWordIcon: {
     position: "relative",
-    left: "54px",
-    [theme.breakpoints.up("md")]: {
-      left: "80px",
-    },
+    left: theme.spacing(8)
   },
   submit: {
     margin: theme.spacing(3, 0, 2),
@@ -94,7 +93,7 @@ export default function ResetPassword() {
   const [showNewPassword, setShowNewPassword] = React.useState(false);
   const classes = useStyles();
   const theme = useTheme();
-  const blurMatch = useMediaQuery(theme.breakpoints.up(780));
+  const blurMatch = useMediaQuery(theme.breakpoints.up('md'));
   const {
     values,
     errors,
@@ -138,8 +137,8 @@ export default function ResetPassword() {
               </Typography>
             </Grid>
             <form noValidate autoComplete="on" onSubmit={handleSubmit}>
-              <Grid container spacing={0}>
-                <Grid item xs={10} sm={5}>
+              <Grid container direction='column' >
+                <Grid item xs={10} >
                   <TextField
                     error={touched.newPassword && !!errors.newPassword}
                     required
@@ -156,7 +155,7 @@ export default function ResetPassword() {
                     helperText={touched.newPassword ? errors.newPassword : null}
                   />
                 </Grid>
-                <Grid item xs={10} sm={5}>
+                <Grid item xs={10} >
                   <TextField
                     error={touched.newPassword2 && !!errors.newPassword2}
                     required
@@ -173,7 +172,7 @@ export default function ResetPassword() {
                     helperText={touched.newPassword2 ? errors.newPassword2 : null}
                     InputProps={{
                       endAdornment: (
-                        <InputAdornment position="end">
+                        <InputAdornment position="end" className={classes.inputAdornment}>
                           <IconButton
                             className={classes.showPassWordIcon}
                             onClick={handleClickShowNewPassword}

@@ -3,31 +3,33 @@ import React, { useState } from "react";
 import Avatar from "@material-ui/core/Avatar";
 import { makeStyles } from "@material-ui/core/styles";
 import { Button, Typography } from "@material-ui/core";
-import YouTubeIcon from "@material-ui/icons/YouTube";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
+import IconButton from "@material-ui/core/IconButton";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink, useLocation } from "react-router-dom";
+import { NotificationsNoneOutlined } from '@material-ui/icons';
+import Grid from "@material-ui/core/Grid";
 import Tooltip from '@material-ui/core/Tooltip';
+import Popup from '../HomeSections/Desktop/Popup';
+import Divider from '@material-ui/core/Divider';
 
+import { toggleSubscribe } from "../../slices/videoSlice";
 import { toggleSubscribeSuccess } from "../../slices/userSlice";
 import { addSubscribedUsers } from "../../slices/authSlice";
-import { toggleSubscribe } from "../../slices/videoSlice";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
     justifyContent: "space-between",
-    alignItems: "center"
+    alignItems: "center",
+    padding: theme.spacing(2, 0),
   },
   left: {
     display: "flex",
     alignItems: "center",
-    padding: theme.spacing(2, 0, 0, 2),
-    marginLeft: theme.spacing(2),
-    position: "relative",
   },
   desktop: {
     width: theme.spacing(8),
@@ -36,13 +38,10 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 28,
   },
   large: {
-    width: theme.spacing(7),
-    height: theme.spacing(7),
+    width: theme.spacing(10),
+    height: theme.spacing(10),
     backgroundColor: "#00579c",
-    position: "absolute",
-    left: 0,
-    top: -31.5,
-    fontSize: 28,
+    fontSize: 30,
   },
   media: {
     height: 0,
@@ -54,7 +53,6 @@ const useStyles = makeStyles((theme) => ({
   },
   right: {
     marginLeft: 12,
-    marginTop: 12,
   },
   sub: {
     padding: theme.spacing(0.5, 0),
@@ -64,8 +62,7 @@ const useStyles = makeStyles((theme) => ({
     lineHeight: 1,
   },
   btn: {
-    position: "relative",
-    left: -5,
+    marginRight: theme.spacing(0.5)
   },
   img: {
     maxHeight: 100,
@@ -93,9 +90,6 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "1.1rem",
     padding: theme.spacing(2, 3, 0, 3),
   },
-  action: {
-    paddingTop: 0,
-  },
   button: {
     color: "hsla(0,0%,6.7%, .6 )",
   },
@@ -114,16 +108,13 @@ const useStyles = makeStyles((theme) => ({
   contentText2: {
     margin: 0,
   },
-  setting: {
-    marginRight: theme.spacing(1),
-  },
 }));
 
 export default function BannerInfo() {
   const classes = useStyles();
   const location = useLocation();
   const [openModal, setOpenModal] = useState(false);
-  const [openSignInDialog, setOpenSignInDialog] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
   const dispatch = useDispatch();
 
   const { isAuthenticated, user } = useSelector((state) => state.auth);
@@ -140,20 +131,20 @@ export default function BannerInfo() {
 
   const letterAvatar = displayName.charAt(0).toUpperCase();
 
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   const handleOpenModal = () => {
     setOpenModal(true);
   };
 
   const handleCloseModal = () => {
     setOpenModal(false);
-  };
-
-  const hanleOpenSignInDialog = () => {
-    setOpenSignInDialog(true);
-  };
-
-  const handleCloseSignInDialog = () => {
-    setOpenSignInDialog(false);
   };
 
   const handleSubscribe = () => {
@@ -180,63 +171,62 @@ export default function BannerInfo() {
   return (
     <>
       <img alt="banner" src={cover} className={classes.img} />
-      <div className={classes.root}>
-        <div className={classes.left}>
-          <Avatar alt="avatar" src={avatar} className={classes.large}>
-            {letterAvatar}
-          </Avatar>
-          <div className={classes.right}>
-            <Tooltip title={displayName} placement="top">
-              <Typography className={classes.user} variant="h6">
-                {displayName}
-              </Typography>
-            </Tooltip>
-            <div className={classes.info}>
-              {!isAuthenticated ? (
-                <Button
-                  startIcon={<YouTubeIcon />}
-                  color="secondary"
-                  className={classes.btn}
-                  onClick={hanleOpenSignInDialog}
+      <Grid container justify="center">
+        <Grid item xs={12} sm={12} md={11} lg={10} xl={7}>
+          <div className={classes.root}>
+            <div className={classes.left}>
+              <Avatar alt="avatar" src={avatar} className={classes.large}>
+                {letterAvatar}
+              </Avatar>
+              <div className={classes.right}>
+                <Tooltip title={displayName} placement="top">
+                  <Typography className={classes.user} variant="h6">
+                    {displayName}
+                  </Typography>
+                </Tooltip>
+                <Typography
+                  variant="body2"
+                  color="textSecondary"
+                  className={classes.sub}
                 >
-                  Subscribe
-                </Button>
-              ) : (isMe) ? null : !isSubscribed ? (
-                <Button
-                  startIcon={<YouTubeIcon />}
-                  color="secondary"
-                  className={classes.btn}
-                  onClick={handleSubscribe}
-                >
-                  Subscribe
-                </Button>
-              ) : (
-                <Button className={classes.button2} onClick={handleOpenModal}>
-                  Subscribed
-                </Button>
-              )}
-              <Typography
-                variant="body2"
-                color="textSecondary"
-                className={classes.sub}
-              >
-                {subscribersCount} subscribers
-              </Typography>
+                  {subscribersCount} subscribers
+                </Typography>
+              </div>
             </div>
+
+            {!isAuthenticated ?
+              <Button onClick={handleClick} variant="contained" color="secondary">
+                Subscribe
+              </Button>
+              : isMe ?
+                <Button
+                  variant="contained"
+                  color="primary"
+                  component={NavLink}
+                  to={`/profile/${_id}`}
+                >
+                  Customise Channel
+                </Button>
+                : isSubscribed ?
+                  <div>
+                    <Button
+                      variant="contained"
+                      className={classes.btn}
+                      onClick={handleOpenModal}
+                    >Subscribed
+                    </Button>
+                    <IconButton>
+                      <NotificationsNoneOutlined />
+                    </IconButton>
+                  </div>
+                  :
+                  <Button onClick={handleSubscribe} variant="contained" color="secondary">
+                    Subscribe
+                  </Button>
+            }
           </div>
-        </div>
-        {isMe &&
-          <Button
-            variant="contained"
-            color="primary"
-            component={NavLink}
-            to={`/profile/${_id}`}
-            className={classes.setting}
-          >
-            Customise Channel
-          </Button>
-        }
-      </div>
+        </Grid>
+      </Grid>
 
       {openModal && (
         <Dialog open={openModal} onClose={handleCloseModal}>
@@ -256,33 +246,30 @@ export default function BannerInfo() {
         </Dialog>
       )}
 
-      {openSignInDialog && (
-        <Dialog open={openSignInDialog} onClose={handleCloseSignInDialog}>
-          <Typography className={classes.title}>
-            Want to subscribe to this channel?
-          </Typography>
-          <DialogContent>
-            <DialogContentText className={classes.contentText} variant="body2">
-              Sign in to subscribe to this channel.
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions classes={{ root: classes.action }}>
-            <Button
-              className={classes.button}
-              onClick={handleCloseSignInDialog}
-            >
-              Cancel
-            </Button>
-            <Button
-              component={NavLink}
-              to={{ pathname: "/login", state: { from: location.pathname } }}
-              color="secondary"
-            >
-              Sign in
-            </Button>
-          </DialogActions>
-        </Dialog>
-      )}
+      <Popup open={Boolean(anchorEl)}
+        anchorEl={anchorEl}
+        handleClose={handleClose}
+      >
+        <Typography className={classes.title}>
+          Want to subscribe to this channel?
+        </Typography>
+        <DialogContent>
+          <DialogContentText className={classes.contentText} variant="body2">
+            Sign in to subscribe to this channel.
+          </DialogContentText>
+        </DialogContent>
+        <Divider />
+        <DialogActions >
+          <Button
+            component={NavLink}
+            to={{ pathname: "/login", state: { from: location.pathname } }}
+            color="primary"
+          >
+            Sign in
+          </Button>
+        </DialogActions>
+      </Popup>
+
     </>
   );
 }

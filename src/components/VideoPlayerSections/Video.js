@@ -40,27 +40,27 @@ export default function Video() {
         config={
           subtitle
             ? {
-                file: {
-                  attributes: {
-                    crossOrigin: "true",
-                  },
-                  tracks: [
-                    {
-                      kind: "subtitles",
-                      src: subtitle,
-                      srcLang: "Japanese",
-                      default: true,
-                    },
-                  ],
+              file: {
+                attributes: {
+                  crossOrigin: "true",
                 },
-              }
+                tracks: [
+                  {
+                    kind: "subtitles",
+                    src: subtitle,
+                    srcLang: "Japanese",
+                    default: true,
+                  },
+                ],
+              },
+            }
             : {
-                file: {
-                  attributes: {
-                    crossOrigin: "true",
-                  },
+              file: {
+                attributes: {
+                  crossOrigin: "true",
                 },
-              }
+              },
+            }
         }
       />
     </div>

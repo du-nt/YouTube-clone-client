@@ -109,7 +109,7 @@ export default function LoggedMenu({ closeMenu }) {
   const letterAvatar = displayName.charAt(0).toUpperCase();
 
   const handleLogOut = () => {
-    dispatch(logout(history, closeMenu));
+    dispatch(logout(closeMenu));
   };
 
   const handleMenu = (event) => {

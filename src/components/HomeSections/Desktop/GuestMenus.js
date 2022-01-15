@@ -6,7 +6,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Button from '@material-ui/core/Button';
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -42,6 +42,8 @@ export default function GuestMenus() {
 
     const openApps = Boolean(appsAnchorEl);
     const openSettings = Boolean(settingsAnchorEl);
+
+    const location = useLocation();
 
     const handleToggleApps = (event) => {
         setAppsAnchorEl(appsAnchorEl ? null : event.currentTarget);
@@ -138,9 +140,9 @@ export default function GuestMenus() {
             )}
             <Button
                 component={NavLink}
-                to="/login"
+                to={{ pathname: "/login", state: { from: location.pathname } }}
                 variant="outlined"
-                color="secondary"
+                color="primary"
                 className={classes.menu}
                 startIcon={<AccountCircleOutlinedIcon />}
             >

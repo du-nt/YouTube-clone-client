@@ -1,9 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
-axios.defaults.baseURL = process.env.NODE_ENV === 'production' ? process.env.REACT_APP_PROD_API_URL : process.env.REACT_APP_DEV_API_URL;
-// axios.defaults.baseURL = process.env.REACT_APP_DEV_API_URL
-// axios.defaults.baseURL = process.env.REACT_APP_PROD_API_URL;
+axios.defaults.baseURL = 'https://api-youtubeclone.herokuapp.com/api/';
+
 axios.defaults.withCredentials = true;
 
 const config = {
@@ -36,6 +35,19 @@ const auth = createSlice({
     editSuccess: (state, { payload }) => {
       state.user.displayName = payload.displayName;
     },
+    filterSubscribedUsers: (state, { payload }) => {
+      const subscribedUsers = state.user.subscribedUsers.filter((user) => user.userTo._id !== payload);
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          subscribedUsers,
+        }
+      }
+    },
+    addSubscribedUsers: (state, { payload }) => {
+      state.user.subscribedUsers.push(payload);
+    }
   },
 });
 
@@ -108,7 +120,7 @@ export const resetPassword =
       }
     };
 
-export const logout = (history, closeMenu) => async (dispatch) => {
+export const logout = (closeMenu, history) => async (dispatch) => {
   try {
     await axios.get("/auth/logout");
     closeMenu && closeMenu();
@@ -161,6 +173,8 @@ export const {
   changePhotoSuccess,
   changeCoverSuccess,
   editSuccess,
+  filterSubscribedUsers,
+  addSubscribedUsers
 } = actions;
 
 export default reducer;

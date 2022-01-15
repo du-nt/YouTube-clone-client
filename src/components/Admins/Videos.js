@@ -100,6 +100,7 @@ export default function Videos() {
         <IconButton color="secondary" onClick={() => handleDelete(_id)}>
           <CloseIcon />
         </IconButton>
+        
       </div>
     ))
   ) : (

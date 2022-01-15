@@ -69,16 +69,15 @@ export default function BottomTabs() {
           component={NavLink}
           to="/feed/trending"
         />
-        {isAuthenticated && (
-          <Tab
-            value="/feed/subscriptions"
-            classes={{ root: classes.tab, wrapper: classes.icon }}
-            icon={<SubscriptionsIcon />}
-            label="Subscriptions"
-            component={NavLink}
-            to="/feed/subscriptions"
-          />
-        )}
+        <Tab
+          disabled={!isAuthenticated}
+          value="/feed/subscriptions"
+          classes={{ root: isAuthenticated ? classes.tab : classes.hidden, wrapper: classes.icon }}
+          icon={<SubscriptionsIcon />}
+          label="Subscriptions"
+          component={NavLink}
+          to="/feed/subscriptions"
+        />
         <Tab
           value="/feed/library"
           classes={{ root: classes.tab, wrapper: classes.icon }}
@@ -97,7 +96,11 @@ export default function BottomTabs() {
           classes={{ root: classes.hidden }}
           value="/feed/channels"
         />
-        <Tab disabled classes={{ root: classes.hidden }} value="/results" />
+        <Tab
+          disabled
+          classes={{ root: classes.hidden }}
+          value="/results"
+        />
       </Tabs>
     </Paper>
   );

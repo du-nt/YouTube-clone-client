@@ -41,28 +41,27 @@ const validationSchema = Yup.object().shape({
 
 const useStyles = makeStyles((theme) => ({
   contain: {
-    [theme.breakpoints.up(1000)]: {
-      maxWidth: "1280px",
-      position: "relative",
-      top: "210px",
+    [theme.breakpoints.up('md')]: {
+      maxWidth: "1000px",
+      marginTop: "200px",
     },
   },
   paperstyle: {
     marginTop: theme.spacing(8),
-    padding: theme.spacing(0, 2),
-    [theme.breakpoints.up(780)]: {
-      padding: theme.spacing(8),
+    padding: theme.spacing(8, 2),
+    [theme.breakpoints.up('sm')]: {
+      padding: theme.spacing(8, 6),
     },
-    [theme.breakpoints.up(1300)]: {
-      padding: theme.spacing(8, 14),
+    [theme.breakpoints.up('md')]: {
+      padding: theme.spacing(8, 10),
     },
+  },
+  inputAdornment: {
+    marginLeft: -48,
   },
   showPassWordIcon: {
     position: "relative",
-    left: "54px",
-    [theme.breakpoints.up("md")]: {
-      left: "80px",
-    },
+    left: theme.spacing(8)
   },
   avatar: {
     margin: theme.spacing(1),
@@ -100,10 +99,9 @@ export default function Login({ setIsRedirect }) {
   const [showPassword, setShowPassword] = React.useState(false);
   const classes = useStyles();
   const theme = useTheme();
-  const blurMatch = useMediaQuery(theme.breakpoints.up(780));
-  const serverUrl = process.env.NODE_ENV === 'production' ? process.env.REACT_APP_PROD_SERVER_URL : process.env.REACT_APP_DEV_SERVER_URL;
+  const blurMatch = useMediaQuery(theme.breakpoints.up('md'));
+  const serverUrl = 'https://api-youtubeclone.herokuapp.com/';
 
-  console.log(process.env)
   const {
     values,
     errors,
@@ -179,7 +177,7 @@ export default function Login({ setIsRedirect }) {
                   helperText={touched.password ? errors.password : null}
                   InputProps={{
                     endAdornment: (
-                      <InputAdornment position="end">
+                      <InputAdornment position="end" className={classes.inputAdornment}>
                         <IconButton
                           className={classes.showPassWordIcon}
                           onClick={handleClickShowPassword}

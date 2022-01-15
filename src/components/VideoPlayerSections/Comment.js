@@ -145,6 +145,7 @@ export default function Comment({ item }) {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
   const handleShowComment = () => {
     if (!showComment) {
       setShowComment(true);
@@ -193,7 +194,7 @@ export default function Comment({ item }) {
     <div className={classes.root}>
       <Avatar
         component={NavLink}
-        to={`/channel/${author.userName}`}
+        to={`/channel/${author._id}`}
         className={classes.avatar}
         alt="avatar"
         src={author.avatar}

@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { toast } from "react-toastify";
 
 const initialState = {};
 
@@ -38,20 +37,6 @@ export const getProfile = (channelName, setLoading, setDead) => async (
   }
 };
 
-export const toggleSubscribe = (_id) => async (dispatch, getState) => {
-  try {
-    const { isSubscribed } = getState().user;
-    const msg = isSubscribed ? "Subscription removed" : "Subscription added";
-    toast.dark(msg, {
-      autoClose: 2000,
-      closeButton: false,
-      className: "xx",
-    });
-    dispatch(toggleSubscribeSuccess());
-    await axios.get(`/users/${_id}/toggleSubscribe`);
-  } catch (error) {}
-};
-
 export const search = (query, setVideos, setUsers, setLoading) => async () => {
   try {
     const search = query.trim();
@@ -59,7 +44,7 @@ export const search = (query, setVideos, setUsers, setLoading) => async () => {
     setUsers(data.users);
     setVideos(data.videos);
     setLoading(false);
-  } catch (error) {}
+  } catch (error) { }
 };
 
 export const getChannelVideos = (_id, setVideos, setLoading) => async () => {
@@ -67,7 +52,7 @@ export const getChannelVideos = (_id, setVideos, setLoading) => async () => {
     const { data } = await axios.get(`/users/${_id}/videos`);
     setVideos(data);
     setLoading(false);
-  } catch (error) {}
+  } catch (error) { }
 };
 
 export const getUsers = (setLoading, setUsers) => async () => {
@@ -75,7 +60,7 @@ export const getUsers = (setLoading, setUsers) => async () => {
     const { data } = await axios.get("/users/channel/subscribedUsers");
     setUsers(data);
     setLoading(false);
-  } catch (error) {}
+  } catch (error) { }
 };
 
 const { reducer, actions } = user;

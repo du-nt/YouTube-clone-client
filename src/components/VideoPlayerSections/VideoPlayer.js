@@ -2,16 +2,20 @@ import React, { useRef, useEffect, useState } from "react";
 
 import { makeStyles } from "@material-ui/core/styles";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 import TopBar from "./TopBar";
 import Video from "./Video";
 import ActionBar from "./ActionBar";
 import UpNext from "./UpNext";
+import DesktopActionButtons from './DesktopActionButtons'
+import Comments from "./Comments";
 
 import { getVideo } from "../../slices/videoSlice";
 import { useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { Typography } from "@material-ui/core";
+import Grid from '@material-ui/core/Grid'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -44,6 +48,9 @@ export default function Home() {
 
   const { videoId } = useParams();
 
+  const matches = useMediaQuery('(min-width:960px)');
+  const match1500 = useMediaQuery('(min-width:1500px)');
+
   useEffect(() => {
     setLoading(true);
     dispatch(getVideo(videoId, setDead, setLoading));
@@ -55,12 +62,12 @@ export default function Home() {
       setPlayerHeight(height);
     }
     return () => setPlayerHeight(null);
-  }, [loading]);
+  }, [loading, matches]);
 
   if (dead)
     return (
       <>
-        <TopBar />
+        {!matches && <TopBar />}
         <Typography
           color="textSecondary"
           align="center"
@@ -74,7 +81,7 @@ export default function Home() {
   if (loading)
     return (
       <>
-        <TopBar />
+        {!matches && <TopBar />}
         <div className={classes.loading}>
           <CircularProgress />
         </div>
@@ -83,16 +90,37 @@ export default function Home() {
 
   return (
     <>
-      <div ref={divRef} className={classes.sticky}>
-        <TopBar />
-        {!loading && <Video />}
-      </div>
-      {!loading && (
+      {matches ?
+        <div ref={divRef}>
+          <Grid container justify="center" >
+            <Grid item md={12} lg={11} xl={8}>
+              <Grid container justify="center" spacing={3}>
+                <Grid item xs={match1500 ? 9 : 8}>
+                  <Video />
+                  <DesktopActionButtons />
+                  <Comments />
+                </Grid>
+                <Grid item xs={match1500 ? 3 : 4}>
+                  <UpNext />
+                </Grid>
+              </Grid>
+            </Grid>
+          </Grid>
+
+        </div> :
         <>
-          <ActionBar playerHeight={playerHeight} />
-          <UpNext />
+          <div ref={divRef} className={classes.sticky}>
+            <TopBar />
+            {!loading && <Video />}
+          </div>
+          {!loading && (
+            <>
+              <ActionBar playerHeight={playerHeight} />
+              <UpNext />
+            </>
+          )}
         </>
-      )}
+      }
     </>
   );
 }

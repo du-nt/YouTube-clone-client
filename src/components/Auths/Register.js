@@ -48,39 +48,38 @@ const validationSchema = Yup.object().shape({
 
 const useStyles = makeStyles((theme) => ({
   contain: {
-    [theme.breakpoints.up(1000)]: {
-      maxWidth: "1280px",
-      position: "relative",
-      top: "210px",
+    [theme.breakpoints.up('md')]: {
+      maxWidth: "1000px",
+      marginTop: "200px",
     },
   },
   paperstyle: {
     marginTop: theme.spacing(8),
-    padding: theme.spacing(0, 2),
-    [theme.breakpoints.up(780)]: {
-      padding: theme.spacing(8),
+    padding: theme.spacing(8, 2),
+    [theme.breakpoints.up('sm')]: {
+      padding: theme.spacing(8, 6),
     },
-    [theme.breakpoints.up(1300)]: {
-      padding: theme.spacing(8, 14),
+    [theme.breakpoints.up('md')]: {
+      padding: theme.spacing(8, 10),
     },
   },
   avatar: {
     margin: theme.spacing(1),
     backgroundColor: theme.palette.secondary.main,
   },
+  inputAdornment: {
+    marginLeft: -48,
+  },
   showPassWordIcon: {
     position: "relative",
-    left: "54px",
-    [theme.breakpoints.up("md")]: {
-      left: "80px",
-    },
+    left: theme.spacing(8)
   },
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
 }));
 
-export default function Refister() {
+export default function Register() {
   const [showPassword, setShowPassword] = React.useState(false);
   const dispatch = useDispatch();
   const history = useHistory();
@@ -90,8 +89,8 @@ export default function Refister() {
   };
   const classes = useStyles();
   const theme = useTheme();
-  const match = useMediaQuery(theme.breakpoints.up(599));
-  const blurMatch = useMediaQuery(theme.breakpoints.up(780));
+  const match = useMediaQuery(theme.breakpoints.up('sm'));
+  const blurMatch = useMediaQuery(theme.breakpoints.up('md'));
   const {
     values,
     errors,
@@ -164,7 +163,7 @@ export default function Refister() {
                 value={values.email}
                 helperText={touched.email ? errors.email : null}
               />
-              <Grid container spacing={match ? 3 : 0}>
+              <Grid container spacing={match ? 3 : 0} direction={match ? 'row' : 'column'} >
                 <Grid item xs={10} sm={5}>
                   <TextField
                     error={touched.password && !!errors.password}
@@ -199,7 +198,7 @@ export default function Refister() {
                     helperText={touched.password2 ? errors.password2 : null}
                     InputProps={{
                       endAdornment: (
-                        <InputAdornment position="end">
+                        <InputAdornment position="end" className={classes.inputAdornment}>
                           <IconButton
                             className={classes.showPassWordIcon}
                             onClick={handleClickShowPassword}

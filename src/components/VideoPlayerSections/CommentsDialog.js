@@ -46,7 +46,9 @@ const useStyles = makeStyles((theme) => ({
   menus: {
     padding: 0,
   },
-  close: { marginRight: theme.spacing(0.5) },
+  close: {
+    marginRight: theme.spacing(0.5)
+  },
   loading: {
     height: "100%",
     display: "flex",

@@ -5,9 +5,11 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 import { makeStyles } from "@material-ui/core";
 import { useDispatch } from "react-redux";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 import MediaItem from "./MediaItem";
 import Loading from "./Loading";
+import DesktopItem from "./DesktopItem";
 
 import { getRelatedVideos } from "../../slices/videoSlice";
 import { useParams } from "react-router-dom";
@@ -38,7 +40,8 @@ export default function UpNext() {
   const [videos, setVideos] = useState([]);
   const { videoId } = useParams();
   const unmounted = useRef(false);
- 
+  const matches = useMediaQuery("(min-width:960px)");
+
   useEffect(() => {
     dispatch(
       getRelatedVideos(videoId, setVideos, setLoading, unmounted.current)
@@ -49,36 +52,52 @@ export default function UpNext() {
   }, [dispatch, videoId]);
 
   return (
-    <Paper variant="outlined" square className={classes.paper}>
-      <div className={classes.header}>
-        <Typography variant="body2">Up next</Typography>
-        <FormControlLabel
-          value="start"
-          control={<Switch color="primary" />}
-          label={<Typography variant="body2">Autoplay</Typography>}
-          labelPlacement="start"
-        />
-      </div>
-      <div className={classes.recommend}>
-        {!loading ? (
-          videos.length ? (
-            videos.map((video, index) => (
-              <MediaItem key={index} video={video} />
-            ))
+    !matches ?
+      <Paper variant="outlined" square className={classes.paper}>
+        <div className={classes.header}>
+          <Typography variant="body2">Up next</Typography>
+          <FormControlLabel
+            value="start"
+            control={<Switch color="primary" />}
+            label={<Typography variant="body2">Autoplay</Typography>}
+            labelPlacement="start"
+          />
+        </div>
+        <div className={classes.recommend}>
+          {!loading ? (
+            videos.length ? (
+              videos.map((video, index) => (
+                <MediaItem key={index} video={video} />
+              ))
+            ) : (
+              <Typography
+                className={classes.text}
+                color="textSecondary"
+                align="center"
+                variant="body2"
+              >
+                Related videos is not available
+              </Typography>
+            )
           ) : (
-            <Typography
-              className={classes.text}
-              color="textSecondary"
-              align="center"
-              variant="body2"
-            >
-              Related videos is not available
-            </Typography>
-          )
-        ) : (
-          <Loading />
-        )}
-      </div>
-    </Paper>
+            <Loading />
+          )}
+        </div>
+      </Paper>
+      :
+      videos.length ? (
+        videos.map((video, index) => (
+          <DesktopItem key={index} video={video} />
+        ))
+      ) : (
+        <Typography
+          className={classes.text}
+          color="textSecondary"
+          align="center"
+          variant="body2"
+        >
+          Related videos is not available
+        </Typography>
+      )
   );
 }

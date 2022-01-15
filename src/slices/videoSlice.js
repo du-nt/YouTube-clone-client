@@ -2,6 +2,8 @@ import { createSlice } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
 import axios from "axios";
 
+import { filterSubscribedUsers } from "./authSlice";
+
 const initialState = {};
 
 const video = createSlice({
@@ -76,6 +78,18 @@ const video = createSlice({
         return comment;
       });
     },
+    addTempReplySuccess: (state, { payload }) => {
+      state.comments.map((comment) => {
+        if (comment._id === payload.commentId) {
+          if (comment.temReplies) {
+            comment.temReplies = [...comment.temReplies, payload];
+          } else {
+            comment.temReplies = [payload];
+          }
+        }
+        return comment;
+      });
+    },
     getRepliesSuccess: (state, { payload }) => {
       state.comments.map((comment) => {
         if (comment._id === payload._id) {
@@ -90,6 +104,16 @@ const video = createSlice({
         if (comment._id === payload.commentId) {
           comment.commentsCount = comment.commentsCount - 1;
           comment.replies = comment.replies.filter(
+            (reply) => reply._id !== payload._id
+          );
+        }
+        return comment;
+      });
+    },
+    deleteTempReplySuccess: (state, { payload }) => {
+      state.comments.map((comment) => {
+        if (comment._id === payload.commentId) {
+          comment.temReplies = comment.temReplies.filter(
             (reply) => reply._id !== payload._id
           );
         }
@@ -158,10 +182,58 @@ const video = createSlice({
         return comment;
       });
     },
+    likeTempReplySuccess: (state, { payload }) => {
+      state.comments.map((comment) => {
+        if (comment._id === payload.commentId) {
+          comment.temReplies.map((reply) => {
+            if (reply._id === payload._id) {
+              if (reply.isLiked) {
+                reply.likesCount -= 1;
+                reply.isLiked = !reply.isLiked;
+              } else if (reply.isDisliked) {
+                reply.dislikesCount -= 1;
+                reply.isDisliked = !reply.isDisliked;
+                reply.likesCount += 1;
+                reply.isLiked = !reply.isLiked;
+              } else {
+                reply.likesCount += 1;
+                reply.isLiked = !reply.isLiked;
+              }
+            }
+            return reply;
+          });
+        }
+        return comment;
+      });
+    },
     dislikeReplySuccess: (state, { payload }) => {
       state.comments.map((comment) => {
         if (comment._id === payload.commentId) {
           comment.replies.map((reply) => {
+            if (reply._id === payload._id) {
+              if (reply.isDisliked) {
+                reply.dislikesCount -= 1;
+                reply.isDisliked = !reply.isDisliked;
+              } else if (reply.isLiked) {
+                reply.likesCount -= 1;
+                reply.isLiked = !reply.isLiked;
+                reply.dislikesCount += 1;
+                reply.isDisliked = !reply.isDisliked;
+              } else {
+                reply.dislikesCount += 1;
+                reply.isDisliked = !reply.isDisliked;
+              }
+            }
+            return reply;
+          });
+        }
+        return comment;
+      });
+    },
+    dislikeTempReplySuccess: (state, { payload }) => {
+      state.comments.map((comment) => {
+        if (comment._id === payload.commentId) {
+          comment.temReplies.map((reply) => {
             if (reply._id === payload._id) {
               if (reply.isDisliked) {
                 reply.dislikesCount -= 1;
@@ -197,7 +269,7 @@ export const addUrl = (values, resetForm) => async () => {
   try {
     await axios.post(`/video/adminUpload`, values);
     resetForm();
-  } catch (error) {}
+  } catch (error) { }
 };
 
 export const getVideos = (setVideos, setLoading) => async () => {
@@ -254,7 +326,8 @@ export const getSubscriptionVideos = (
 
 export const toggleSubscribe = (_id) => async (dispatch, getState) => {
   try {
-    const { isSubscribed } = getState().video;
+    const { user } = getState().auth;
+    const isSubscribed = user.subscribedUsers.some(subscribedUser => subscribedUser.userTo._id === _id)
     const msg = isSubscribed ? "Subscription removed" : "Subscription added";
     toast.dark(msg, {
       autoClose: 2000,
@@ -262,8 +335,9 @@ export const toggleSubscribe = (_id) => async (dispatch, getState) => {
       className: "yy",
     });
     dispatch(toggleSubscribeSuccess());
+    isSubscribed && dispatch(filterSubscribedUsers(_id));
     axios.get(`/users/${_id}/toggleSubscribe`);
-  } catch (error) {}
+  } catch (error) { }
 };
 
 export const getRelatedVideos = (
@@ -295,7 +369,7 @@ export const like = (_id) => async (dispatch, getState) => {
 
     dispatch(likeSuccess());
     axios.get(`/video/like/${_id}`);
-  } catch (error) {}
+  } catch (error) { }
 };
 
 export const dislike = (_id) => async (dispatch, getState) => {
@@ -310,13 +384,13 @@ export const dislike = (_id) => async (dispatch, getState) => {
 
     dispatch(dislikeSuccess());
     axios.get(`/video/dislike/${_id}`);
-  } catch (error) {}
+  } catch (error) { }
 };
 
 export const upView = (_id) => async () => {
   try {
     axios.get(`/video/upView/${_id}`);
-  } catch (error) {}
+  } catch (error) { }
 };
 
 export const addComment = (_id, newComment, resetForm) => async (dispatch) => {
@@ -333,7 +407,7 @@ export const addComment = (_id, newComment, resetForm) => async (dispatch) => {
       closeButton: false,
       className: "yy",
     });
-  } catch (error) {}
+  } catch (error) { }
 };
 
 export const getComments = (_id) => async (dispatch, getState) => {
@@ -344,7 +418,7 @@ export const getComments = (_id) => async (dispatch, getState) => {
       : `/video/getComments/${_id}`;
     const { data } = await axios.get(url);
     dispatch(getCommentsSuccess(data));
-  } catch (error) {}
+  } catch (error) { }
 };
 
 export const deleteComment = (_id) => async (dispatch) => {
@@ -357,20 +431,35 @@ export const deleteComment = (_id) => async (dispatch) => {
       closeButton: false,
       className: "yy",
     });
-  } catch (error) {}
+  } catch (error) { }
 };
 
-export const addReply = (replyData) => async (dispatch) => {
+export const addReply = (replyData, resetForm) => async (dispatch) => {
   try {
     const { data } = await axios.post("/video/addReply", replyData);
     dispatch(addReplySuccess(data));
+    resetForm && resetForm();
 
     toast.dark("Reply added", {
       autoClose: 2000,
       closeButton: false,
       className: "yy",
     });
-  } catch (error) {}
+  } catch (error) { }
+};
+
+export const addTempReply = (replyData, resetForm) => async (dispatch) => {
+  try {
+    const { data } = await axios.post("/video/addReply", replyData);
+    dispatch(addTempReplySuccess(data));
+    resetForm && resetForm();
+
+    toast.dark("Reply added", {
+      autoClose: 2000,
+      closeButton: false,
+      className: "yy",
+    });
+  } catch (error) { }
 };
 
 export const getReplies = (_id, setLoading) => async (dispatch, getState) => {
@@ -382,7 +471,7 @@ export const getReplies = (_id, setLoading) => async (dispatch, getState) => {
     const { data } = await axios.get(url);
     dispatch(getRepliesSuccess({ _id, data }));
     setLoading(false);
-  } catch (error) {}
+  } catch (error) { }
 };
 
 export const deleteReply = (reply) => async (dispatch) => {
@@ -395,35 +484,62 @@ export const deleteReply = (reply) => async (dispatch) => {
       closeButton: false,
       className: "yy",
     });
-  } catch (error) {}
+  } catch (error) { }
+};
+
+export const deleteTempReply = (reply) => async (dispatch) => {
+  try {
+    await axios.get(`/video/deleteReply/${reply._id}`);
+    dispatch(deleteTempReplySuccess(reply));
+
+    toast.dark("Reply deleted", {
+      autoClose: 2000,
+      closeButton: false,
+      className: "yy",
+    });
+  } catch (error) { }
 };
 
 export const likeComment = (_id) => async (dispatch) => {
   try {
     dispatch(likeCommentSuccess(_id));
     axios.get(`/video/likeComment/${_id}`);
-  } catch (error) {}
+  } catch (error) { }
 };
 
 export const dislikeComment = (_id) => async (dispatch) => {
   try {
     dispatch(dislikeCommentSuccess(_id));
     axios.get(`/video/dislikeComment/${_id}`);
-  } catch (error) {}
+  } catch (error) { }
 };
 
 export const likeReply = (_id, commentId) => async (dispatch) => {
   try {
     dispatch(likeReplySuccess({ _id, commentId }));
     axios.get(`/video/likeReply/${_id}`);
-  } catch (error) {}
+  } catch (error) { }
 };
 
 export const dislikeReply = (_id, commentId) => async (dispatch) => {
   try {
     dispatch(dislikeReplySuccess({ _id, commentId }));
     axios.get(`/video/dislikeReply/${_id}`);
-  } catch (error) {}
+  } catch (error) { }
+};
+
+export const likeTempReply = (_id, commentId) => async (dispatch) => {
+  try {
+    dispatch(likeTempReplySuccess({ _id, commentId }));
+    axios.get(`/video/likeReply/${_id}`);
+  } catch (error) { }
+};
+
+export const dislikeTempReply = (_id, commentId) => async (dispatch) => {
+  try {
+    dispatch(dislikeTempReplySuccess({ _id, commentId }));
+    axios.get(`/video/dislikeReply/${_id}`);
+  } catch (error) { }
 };
 
 // export const upload = (formData, { resetForm, onResetFile }) => async () => {
@@ -513,6 +629,10 @@ export const {
   dislikeReplySuccess,
   topSort,
   firstSort,
+  addTempReplySuccess,
+  likeTempReplySuccess,
+  dislikeTempReplySuccess,
+  deleteTempReplySuccess
 } = actions;
 
 export default reducer;

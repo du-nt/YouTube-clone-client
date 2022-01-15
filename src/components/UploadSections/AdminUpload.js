@@ -33,10 +33,9 @@ const validationSchema = Yup.object().shape({
 
 const useStyles = makeStyles((theme) => ({
   contain: {
-    [theme.breakpoints.up(1000)]: {
-      maxWidth: "1280px",
-      position: "relative",
-      top: "210px",
+    [theme.breakpoints.up('md')]: {
+      maxWidth: "1000px",
+      marginTop: "200px",
     },
   },
   paperstyle: {
@@ -58,7 +57,7 @@ export default function AdminUpload() {
   const classes = useStyles();
   const theme = useTheme();
   const dispatch = useDispatch();
-  const blurMatch = useMediaQuery(theme.breakpoints.up(780));
+  const blurMatch = useMediaQuery(theme.breakpoints.up('md'));
 
   const { values, isValid, dirty, handleChange, handleSubmit } = useFormik({
     initialValues,

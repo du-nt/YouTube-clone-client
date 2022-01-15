@@ -4,16 +4,10 @@ import { Link, Typography } from "@material-ui/core";
 import { NavLink } from "react-router-dom";
 import Grid from "@material-ui/core/Grid";
 import Avatar from "@material-ui/core/Avatar";
+import { useMediaQuery } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    marginTop: 12,
-    padding: theme.spacing(0, 6, 0, 2),
-    display: "flex",
-    alignItems: "center",
-  },
   info: {
-    padding: theme.spacing(0, 1),
     height: "100%",
     display: "flex",
     flexDirection: "column",
@@ -24,9 +18,8 @@ const useStyles = makeStyles((theme) => ({
     lineHeight: "normal",
     display: "-webkit-box",
     WebkitBoxOrient: "vertical",
-    WebkitLineClamp: "2",
+    WebkitLineClamp: "1",
     overflow: "hidden",
-    fontSize: "1.1rem",
   },
   large: {
     width: theme.spacing(10),
@@ -46,46 +39,46 @@ const useStyles = makeStyles((theme) => ({
 export default function UserItem({ user }) {
   const classes = useStyles();
 
-  const { avatar, displayName, userName, subscribersCount, videosCount } = user;
+  const { avatar, displayName, _id, subscribersCount, videosCount } = user;
   const letterAvatar = displayName.charAt(0).toUpperCase();
 
+  const match600 = useMediaQuery('(min-width:600px)');
+
   return (
-    <div className={classes.root}>
-      <Grid container>
-        <Grid item xs={6}>
-          <Grid
-            container
-            justify="center"
-            component={NavLink}
-            to={`/channel/${userName}`}
-            className={classes.x}
-          >
-            <Avatar alt="avatar" src={avatar} className={classes.large}>
-              {letterAvatar}
-            </Avatar>
-          </Grid>
-        </Grid>
-        <Grid item xs={6}>
-          <Link
-            component={NavLink}
-            to={`/channel/${userName}`}
-            underline="none"
-            color="inherit"
-          >
-            <div className={classes.info}>
-              <Typography className={classes.title} variant="subtitle1">
-                {displayName}
-              </Typography>
-              <Typography variant="body2" className={classes.gray}>
-                {videosCount} videos
-              </Typography>
-              <Typography variant="body2" className={classes.gray}>
-                {subscribersCount} subscribers
-              </Typography>
-            </div>
-          </Link>
+    <Grid container spacing={2}>
+      <Grid item xs={match600 ? 4 : 5}>
+        <Grid
+          container
+          justify="center"
+          component={NavLink}
+          to={`/channel/${_id}`}
+          className={classes.x}
+        >
+          <Avatar alt="avatar" src={avatar} className={classes.large}>
+            {letterAvatar}
+          </Avatar>
         </Grid>
       </Grid>
-    </div>
+      <Grid item xs={match600 ? 8 : 7}>
+        <Link
+          component={NavLink}
+          to={`/channel/${_id}`}
+          underline="none"
+          color="inherit"
+        >
+          <div className={classes.info}>
+            <Typography className={classes.title} variant="subtitle1">
+              {displayName}
+            </Typography>
+            <Typography variant="body2" className={classes.gray}>
+              {videosCount} videos
+            </Typography>
+            <Typography variant="body2" className={classes.gray}>
+              {subscribersCount} subscribers
+            </Typography>
+          </div>
+        </Link>
+      </Grid>
+    </Grid>
   );
 }

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
-import { IconButton, Link, Typography } from "@material-ui/core";
+import { IconButton, Link, Typography, useMediaQuery } from "@material-ui/core";
 import CardMedia from "@material-ui/core/CardMedia";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import MenuList from "@material-ui/core/MenuList";
@@ -64,6 +64,7 @@ export default function Video({ video }) {
   const [open, setOpen] = useState(false);
   const { _id, title, duration, thumbnail, views, createdAt } = video;
   const time = moment(createdAt).fromNow();
+  const matches = useMediaQuery('(min-width:600px)');
 
   const handleOpen = () => {
     setOpen(true);
@@ -76,7 +77,7 @@ export default function Video({ video }) {
   return (
     <div className={classes.root}>
       <Grid container>
-        <Grid item xs={6}>
+        <Grid item xs={matches ? 4 : 6}>
           <CardMedia
             component={NavLink}
             to={`/watch/${_id}`}
@@ -87,7 +88,7 @@ export default function Video({ video }) {
             <Typography className={classes.duration}>{duration}</Typography>
           </CardMedia>
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={matches ? 8 : 6}>
           <Link
             component={NavLink}
             to={`/watch/${_id}`}

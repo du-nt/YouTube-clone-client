@@ -1,13 +1,16 @@
 import React from "react";
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import TopBar from "./TopBar";
 import Results from "./Results";
 
 export default function SearchResult({ query }) {
+  const matches = useMediaQuery("(min-width:960px)");
+
   return (
     <>
-      <TopBar query={query} />
-      <Results query={query} />
+      {!matches && <TopBar query={query} />}
+      <Results />
     </>
   );
 }

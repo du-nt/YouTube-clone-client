@@ -3,11 +3,8 @@ import { fade, makeStyles } from "@material-ui/core/styles";
 import InputBase from "@material-ui/core/InputBase";
 import SearchIcon from "@material-ui/icons/Search";
 import CloseIcon from "@material-ui/icons/Close";
-import Typography from "@material-ui/core/Typography";
-import Grow from "@material-ui/core/Grow";
-import Link from "@material-ui/core/Link";
 
-import { NavLink } from "react-router-dom";
+import { useLocation, useHistory } from "react-router-dom";
 
 import { useHover, useOnClickOutside } from "../../../hooks";
 
@@ -15,17 +12,12 @@ const useStyles = makeStyles((theme) => ({
     search: {
         position: "relative",
         borderRadius: theme.shape.borderRadius,
-        backgroundColor: fade(theme.palette.common.white, 0.15),
+        backgroundColor: fade(theme.palette.common.black, 0.15),
         "&:hover": {
-            backgroundColor: fade(theme.palette.common.white, 0.25),
+            backgroundColor: fade(theme.palette.common.black, 0.25),
         },
-        marginRight: theme.spacing(2),
         marginLeft: 0,
-        width: "100%",
-        [theme.breakpoints.up("sm")]: {
-            marginLeft: theme.spacing(3),
-            width: "auto",
-        },
+        width: "auto",
     },
     searchIcon: {
         padding: theme.spacing(0, 2),
@@ -37,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
         justifyContent: "center",
     },
     inputRoot: {
-        // width: "100%",
+        width: "100%",
         color: "inherit",
     },
     inputInput: {
@@ -46,7 +38,13 @@ const useStyles = makeStyles((theme) => ({
         paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
         transition: theme.transitions.create("width"),
         width: "100%",
-        [theme.breakpoints.up("sm")]: {
+        [theme.breakpoints.up("md")]: {
+            width: "250px",
+            "&:focus": {
+                width: "320px",
+            },
+        },
+        [theme.breakpoints.up("lg")]: {
             width: "420px",
             "&:focus": {
                 width: "500px",
@@ -60,11 +58,9 @@ const useStyles = makeStyles((theme) => ({
         top: "50%",
         transform: "translate(0,-50%)",
         cursor: "pointer",
-        color: theme.palette.primary.dark,
+        color: theme.palette.primary.light,
     },
     searchResult: {
-        minWidth: 400,
-        maxWidth: 500,
         height: "auto",
         zIndex: 110,
         position: "absolute",
@@ -75,22 +71,21 @@ const useStyles = makeStyles((theme) => ({
         borderRadius: "4px",
         boxShadow: theme.shadows[1],
         backgroundColor: '#eee',
-        [theme.breakpoints.up(960)]: {
-            minWidth: 500,
-            maxWidth: 600,
-        },
+        color: 'black'
     },
 }));
 
 export default function Search() {
     const classes = useStyles();
     const [show, setShow] = useState(false);
-    const [search, setSearch] = useState("");
     const searchRef = useRef(null);
     const inputRef = useRef(null);
     const isHover = useHover(searchRef);
 
-    const trimmedSearch = search.trim();
+    const useQuery = () => new URLSearchParams(useLocation().search);
+    const query = useQuery().get("search");
+    const [search, setSearch] = useState(query || '');
+    const history = useHistory();
 
     const handleClickOutside = () => setShow(false);
 
@@ -111,9 +106,13 @@ export default function Search() {
         value ? setShow(true) : setShow(false);
     };
 
-    const handleKeepFocus = (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
-        inputRef.current.focus();
+        if (search.trim()) {
+            inputRef.current.blur()
+            setShow(false);
+            history.push(`/results?search=${search}`);
+        }
     };
 
     useOnClickOutside(searchRef, handleClickOutside);
@@ -123,18 +122,24 @@ export default function Search() {
             <div className={classes.searchIcon}>
                 <SearchIcon />
             </div>
-            <InputBase
-                inputRef={inputRef}
-                placeholder="Search…"
+            <form
+                noValidate
                 autoComplete="off"
-                name="search"
-                value={search}
-                onChange={handleChange}
-                classes={{
-                    root: classes.inputRoot,
-                    input: classes.inputInput,
-                }}
-            />
+                onSubmit={handleSubmit}
+            >
+                <InputBase
+                    inputRef={inputRef}
+                    placeholder="Search…"
+                    autoComplete="off"
+                    name="search"
+                    value={search}
+                    onChange={handleChange}
+                    classes={{
+                        root: classes.inputRoot,
+                        input: classes.inputInput,
+                    }}
+                />
+            </form>
             {(show || (isHover && search)) && (
                 <CloseIcon
                     fontSize="small"
@@ -143,46 +148,6 @@ export default function Search() {
                 />
             )}
 
-            <Grow
-                in={trimmedSearch && show ? true : false}
-                style={{ transformOrigin: "right top" }}
-                onMouseDown={handleKeepFocus}
-            >
-                <div className={classes.searchResult}>
-                    <Link component={NavLink} to="/profile">
-                        to Profile
-                    </Link>
-                    <Typography variant="h5" gutterBottom>
-                        h5. Heading
-                    </Typography>
-                    <Typography variant="h6" gutterBottom>
-                        h6. Heading
-                    </Typography>
-                    <Typography variant="subtitle1" gutterBottom>
-                        subtitle1. Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                        Quos blanditiis tenetur
-                    </Typography>
-                    <Typography variant="subtitle2" gutterBottom>
-                        subtitle2. Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                        Quos blanditiis tenetur
-                    </Typography>
-                    <Typography variant="body1" gutterBottom>
-                        body1. Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                        Quos blanditiis tenetur unde suscipit, quam beatae rerum inventore
-                        consectetur, neque doloribus, cupiditate numquam dignissimos laborum
-                        fugiat deleniti? Eum quasi quidem quibusdam.
-                    </Typography>
-                    <Typography variant="body2" gutterBottom>
-                        body2. Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                        Quos blanditiis tenetur unde suscipit, quam beatae rerum inventore
-                        consectetur, neque doloribus, cupiditate numquam dignissimos laborum
-                        fugiat deleniti? Eum quasi quidem quibusdam.
-                    </Typography>
-                    <Typography variant="button" display="block" gutterBottom>
-                        button text
-                    </Typography>
-                </div>
-            </Grow>
         </div>
     );
 }
