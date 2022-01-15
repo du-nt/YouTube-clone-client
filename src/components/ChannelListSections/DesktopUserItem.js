@@ -61,7 +61,7 @@ export default function DesktopUserItem({ user }) {
     const dispatch = useDispatch();
 
     const auth = useSelector((state) => state.auth);
-    const isMe = auth.user._id === _id
+    const isMe = auth?.user?._id === _id
     const isSubscribed = auth.user.subscribedUsers.some((user) => user.userTo._id === _id)
 
     const handleOpenModal = () => {
