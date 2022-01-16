@@ -187,7 +187,7 @@ export default function DesktopUserItem({ user }) {
                 <DialogActions >
                     <Button
                         component={NavLink}
-                        to={{ pathname: "/login", state: { from: location.pathname } }}
+                        to={{ pathname: "/login", state: { from: location.pathname + location.search } }}
                         color="primary"
                     >
                         Sign in
