@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Layout({ children, noHeader, isNoPadding }) {
     const classes = useStyles();
-    const matches = useMediaQuery('(min-width:960px)');
+    const matches = useMediaQuery('(min-width:960px)', {noSsr: true});
 
     return (
         <div className={classes.root}>
