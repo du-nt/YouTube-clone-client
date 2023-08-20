@@ -3,7 +3,7 @@ import axios from "axios";
 
 // axios.defaults.baseURL = 'https://youtube-clone-server-wek8.onrender.com/api/';
 // axios.defaults.baseURL = '/api/';
-axios.defaults.baseURL = process.env.REACT_APP_PROD_API_URL;
+axios.defaults.baseURL = `${process.env.REACT_APP_PROD_API_URL}/api`;
 
 axios.defaults.withCredentials = true;
 
