@@ -86,7 +86,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     margin: theme.spacing(2, 0),
   },
-  sicialGroup: {
+  socialGroup: {
     marginTop: theme.spacing(2),
     padding: 0
   }
@@ -100,8 +100,9 @@ export default function Login({ setIsRedirect }) {
   const classes = useStyles();
   const theme = useTheme();
   const blurMatch = useMediaQuery(theme.breakpoints.up('md'));
-  const serverUrl = 'https://api-youtubeclone.herokuapp.com/';
+  // const serverUrl = 'https://api-youtubeclone.herokuapp.com/';
   // const serverUrl = 'http://localhost:8000/'
+  const serverUrl = process.env.REACT_APP_PROD_API_URL
 
   const {
     values,
@@ -235,7 +236,7 @@ export default function Login({ setIsRedirect }) {
               >
                 Continiue with Facebook
               </Button>
-              <Container className={classes.sicialGroup}>
+              <Container className={classes.socialGroup}>
                 <Grid container>
                   <Grid item xs>
                     <Link
