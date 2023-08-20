@@ -100,8 +100,6 @@ export default function Login({ setIsRedirect }) {
   const classes = useStyles();
   const theme = useTheme();
   const blurMatch = useMediaQuery(theme.breakpoints.up('md'));
-  // const serverUrl = 'https://api-youtubeclone.herokuapp.com/';
-  // const serverUrl = 'http://localhost:8000/'
   const serverUrl = process.env.REACT_APP_PROD_API_URL
 
   const {
